@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<chapter xml:id="ch-fem-mc" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <title>Hybrid FE-MC</title>
+
+  <introduction>
+    <p> This chapter constitutes the work of my short personal research project (PRP) undertaken in spring 2026. </p>
+  </introduction>
+
+  <!-- include sections -->
+  <xi:include href="sec-fem-mc-intro.ptx" />
+
+</chapter>

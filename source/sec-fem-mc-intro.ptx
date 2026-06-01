@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<section xml:id="sec-fem-mc-intro" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <title>Introduction</title>
+
+  <p> Radiative transfer models originate in the linear Boltzmann equation, a high-dimensional integro-differential equation whose solution describes the distribution of particles as they stream, scatter, and are absorbed through a medium.
+  Obtaining a numerical solution is made challenging not only due to high dimensionality: collision operators take the form of <em>{nonlocal}</em> integrals, requiring knowledge of the solution across the entire spatial domain. 
+  In applying finite element methods (FEM) directly, these nested integrals would yield a dense coupling between degrees of freedom, dominating the computational cost~\cite{craus2020accelerating}.
+  </p>
+
+</section>
