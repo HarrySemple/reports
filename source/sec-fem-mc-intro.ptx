@@ -3,16 +3,71 @@
 <section xml:id="sec-fem-mc-intro" xmlns:xi="http://www.w3.org/2001/XInclude">
   <title>Introduction</title>
 
-  <p> Radiation transport models originate in the linear Boltzmann equation, a high-dimensional integro-differential equation whose solution describes the distribution of particles as they stream, scatter, and are absorbed through a medium.
-  Obtaining numerical solutions to such models is made challenging not only due to high dimensionality: collision operators take the form of <em>nonlocal</em> integrals, requiring knowledge of the solution across the entire spatial domain. 
-  If one were to apply a typical finite element method (FEM) regime directly, these nested integrals would yield a dense coupling between degrees of freedom, dominating the computational cost~\cite{craus2020accelerating}.
+
+  <!-- use hyperlinks to reference -->
+   <!--first populate, then find-replace for the links.
+   references to be reformatted added later.
+   add references to end of each section as you go along.-->  
+
+  <p> 
+    Radiation transport models originate in the linear Boltzmann equation, a high-dimensional integro-differential equation whose solution describes the distribution of particles as they stream, scatter, and are absorbed through a medium.
+    Obtaining numerical solutions to such models is made challenging not only due to high dimensionality: collision operators take the form of <em>nonlocal</em> integrals, requiring knowledge of the solution across the entire spatial domain. 
+    If one were to apply a typical finite element method (FEM) regime directly, these nested integrals would yield a dense coupling between degrees of freedom, dominating the computational cost~\cite{craus2020accelerating}
+    <url href="https://www.mdpi.com/2227-7390/8/12/2111">[n]</url>.
   </p>
 
   <p>
-    To handle this nonlocality, classical deterministic approaches make limiting approximations. In shielding applications, buildup factors and low-order discrete-ordinates (<m>S_N</m>) quadratures are used, but both degrade for complex geometries and highly anisotropic scattering~\cite{oliveira2005comparison}. 
-    Diffusion synthetic acceleration (DSA), which uses a low-order diffusion correction to accelerate the source iteration (Richardson) scheme for the $S_N$ equations, is effective in the diffusive regime but is known to lose stability for problems with strong reflective boundaries or high scattering ratios~\cite{larsen1984diffusion}.
+    To handle this nonlocality, classical deterministic approaches make limiting approximations. In shielding applications, buildup factors and low-order discrete-ordinates (<m>S_N</m>) quadratures are used, but both degrade for complex geometries and highly anisotropic scattering
+    <url href="https://academic.oup.com/rpd/article-abstract/115/1-4/254/1601276?login=false">[n]</url>.
+    Diffusion synthetic acceleration (DSA), which uses a low-order diffusion correction to accelerate the source iteration (Richardson) scheme for the $S_N$ equations, is effective in the diffusive regime but is known to lose stability for problems with strong reflective boundaries or high scattering ratios
+    <url href="https://www.tandfonline.com/doi/abs/10.1080/00411458408211656?casa_token=JbM2uQPpCxsAAAAA:hNAM31ZvKrtGbxRJOJXjqcGYmXkwfGh8v1F9-QWLvEfE2mNA9o0rvMTNLmnJEh7dEG1tNlF5gKRB">[n]</url>.
+  </p>
+
+  <p>
+    Purely Monte Carlo approaches handle arbitrarily complex geometries and scattering operators without such approximations, but their slow convergence rate
+    attributes a steep computational cost for naive implementations. Variance reduction techniques, through importance sampling or weight windows, are therefore essential.
+    The Consistent Adjoint Driven Importance Sampling (CADIS) method and its forward-weighted extension FW-CADIS use adjoint flux solutions - computed by a deterministic solver - to generate importance maps and weight windows automatically, achieving speedups of two to four orders of magnitude over unbiased MC in typical shielding configurations
+    <url href="https://inis.iaea.org/records/wens3-yy658">[n]</url>.
+    Both methods are implemented in the production shielding codes MAVRIC and 
+    ADVANTG~\cite{peplow2011monte}
+    <url href="https://www.tandfonline.com/doi/abs/10.13182/NT174-289?casa_token=WgjCjIXUT9YAAAAA:GOAx27EEJEj9i6_JzqXMpG-d4H200l3MWvAzAPVJmblfefnM-FxNP5II4Mowhn136OMEQ2wwmzF7">[n]</url>.
+  </p>
+
+  <p>
+    Hybrid deterministic-stochastic schemes aim to exploit the complementary strengths of both frameworks: the flexibility and unbiasedness of Monte Carlo and the efficiency of FEM. In shielding and gamma-ray detector modelling, several such frameworks have been proposed, including sparse Monte Carlo methods~\cite{kaliuzhnyi2022sparse}, hybrid discontinuous Galerkin discretisations~\cite{krotz2024hybrid}, and the use of deterministic adjoint solutions to guide importance sampling~\cite{wagner2010forward,wagner2010review}.
+    However, a rigorous numerical analysis of schemes that couple a stabilised finite element discretisation of the spatial transport operator with a Monte Carlo approximation of the scattering integral appears to be absent from the literature.
+  </p>
+
+  <p>
+    The work presented in this report is motivated by that gap. We analyse a source-iteration scheme for a stationary linear transport equation with nonlocal scattering, in which the spatial operator is discretised by a Streamline Upwind Petrov-Galerkin (SUPG) finite element method and the scattering integral is approximated by a Monte Carlo estimator at each iteration. 
+  </p>
+
+  <p>
+    The report is organised as follows. Section~\ref{sec:model} 
+    introduces the strong form of the model problem and states 
+    assumptions on the data. Section~\ref{sec:prelim} 
+    provides a brief background on finite element methods, 
+    SUPG stabilisation, and Monte Carlo integration. 
+    Section~\ref{sec:var} presents the SUPG variational formulation 
+    of the transport equation, introduces the source iteration 
+    scheme, and outlines the structure of the error analysis via 
+    the triangle inequality. Section~\ref{sec:det} develops the 
+    deterministic analysis - establishing coercivity and continuity 
+    of the bilinear forms, a C\'{e}a-type best-approximation 
+    estimate for the discretisation error, and proves a
+    contraction rate for source iteration under 
+    a subcriticality condition on the scattering operator. 
+    Section~\ref{sec:sto} extends this analysis to the stochastic 
+    setting, deriving a Strang-type error estimate in which the 
+    Monte Carlo consistency error is bounded probabilistically 
+    via Hoeffding's inequality. The resulting estimate makes 
+    explicit the interplay between mesh size $h$, sample size $M$, and iteration 
+    count $n$. Section~\ref{sec:numerics} verifies the predicted 
+    convergence rates using a manufactured solution on the unit 
+    square, and Section~\ref{sec:conclusion} concludes with a 
+    discussion of limitations and directions for further work.
   </p>
 
 
-  <!-- use hyperlinks to reference -->
+
 </section>
