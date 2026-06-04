@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<section xml:id="sec-fem-mc-prelim" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <title>Preliminaries</title>
+
+
+  <!-- use hyperlinks to reference -->
+   <!--first populate, then find-replace for the links.
+   references to be reformatted added later.
+   add references to end of each section as you go along.-->  
+
+   <subsection xml:id="subsec-fem">
+    <title>Finite Element Methods</title>
+    <p>
+        The finite element method (FEM) seeks an approximate weak solution 
+        <m>u_h</m> to a PDE by selecting from finite-dimensional 
+        subspace <m>V_h \subset V</m> of a suitable Hilbert space <m>V</m>\cite{pryer2022fem}.  
+        For the model Poisson 
+        problem <m>-\Delta u = f</m> on <m>\Omega</m> with <m>u|_{\partial\Omega} = 0</m>, 
+        this gives: find <m>u \in H^1_0(\Omega)</m> such that
+        <md number="yes" xml:id="eqn-poisson-weak">
+            a(u,v) := \int_\Omega \nabla u \cdot \nabla v\,\mathrm{d}x 
+            = \int_\Omega f v\,\mathrm{d}x =: l(v) 
+            \qquad \forall\, v \in H^1_0(\Omega).
+        </md>
+        The Lax-Milgram theorem guarantees a unique solution whenever 
+        <m>a(\cdot,\cdot)</m> is coercive and continuous on <m>V</m>, and <m>l</m> 
+        is a bounded linear functional. 
+        Restricting to a conforming finite element space 
+        <m>V_h \subset H^1_0(\Omega)</m> and choosing a basis 
+        <m>\{\phi_i\}_{i=1}^{N_h}</m> yields the linear system 
+        <m>\mathbf{A}\mathbf{u} = \mathbf{f}</m> with <m>A_{ij} = a(\phi_j,\phi_i)</m>. The coercivity and continuity of <m>a(\cdot,\cdot)</m> results in an  
+        <m>\mathbf{A}</m> positive-definite and bounded. The C\'{e}a lemma provides the best-approximation 
+        estimate
+        <md number="yes" xml:id="eqn-cea">
+            \| u - u_h \|_V \;\leq\; \frac{\gamma}{\alpha} 
+            \inf_{w_h \in V_h} \| u - w_h \|_V,
+        </md>
+        where <m>\alpha</m> and <m>\gamma</m> are the coercivity and continuity 
+        constants of <m>a(\cdot,\cdot)</m> respectively.
+    </p>
+   </subsection>
+
+
+   <subsection xml:id="subsec-supg">
+    <title>SUPG Stabilisation</title>
+    <p>
+        For advection-dominated problems, the standard Galerkin 
+        formulation becomes unstable.
+        The bilinear form associated 
+        with the operator $\mathbf{b}\cdot\nabla u + \sigma u$ 
+        is not necessarily coercive in $H^1(\Omega)$, and the Galerkin solution may exhibit
+        spurious oscillations~\cite{ern2004theory}. 
+        The Streamline Upwind Petrov-Galerkin (SUPG) method~\cite{brooks1982streamline, johnson1983finite} 
+        addresses this by modifying the test function to 
+        $v + \delta_K \mathbf{b}\cdot\nabla v$ on each element $K$, 
+        where $\delta_K > 0$ is a mesh-dependent stabilisation 
+        parameter.
+    </p>
+    
+    <p>
+        The effect of SUPG is to add an artificial diffusion of strength $\delta_K$ along streamlines of the solution. Consistency is preserved - as the additional term vanishes when evaluating the exact solution - while coercivity is ensured for a sufficient strength $\delta_K$.
+    </p>
+   </subsection>
+
+   <subsection xml:id="subsec-mc">
+    <title>Monte Carlo Integration</title>
+    <p>
+        Monte Carlo integration estimates an integral 
+        $I = \int_\Omega f(y)\,\mathrm{d}y$ by the sample mean
+        \begin{equation}
+            \label{eqn:mc-estimator}
+            I_M := \frac{|\Omega|}{M}\sum_{j=1}^M f(Y_j), 
+            \qquad Y_j \stackrel{\mathrm{iid}}{\sim} \mathrm{Unif}(\Omega).
+        \end{equation}
+        The estimator is unbiased with $\mathbb{E}[I_M] = I$, and its 
+        standard deviation satisfies
+        \begin{equation}
+            \label{eqn:mc-error}
+            \mathbb{E}\bigl[|I - I_M|^2\bigr]^{1/2} 
+            = \frac{\mathrm{Var}(f)^{1/2}}{\sqrt{M}},
+        \end{equation}
+        where $\mathrm{Var}(f) = \int_\Omega (f - I/|\Omega|)^2\,
+        \mathrm{d}y$~\cite{gobet2016monte}. Notably, this $\mathcal{O}(M^{-1/2})$ rate 
+        is independent of dimension, making Monte Carlo the method 
+        of choice for high-dimensional integration.
+    </p>
+   </subsection>
+
+   <subsection xml:id="subsec-identities">
+    <title>Useful Identities</title>
+    <p>
+        Finally, the following identities are used repeatedly in the analysis and stated here for convenience. 
+        The first is the Green's formula for the advection operator. 
+        Given $v, w \in H^1(\Omega)$ and 
+        $\mathbf{b} \in [W^{1,\infty}(\Omega)]^2$, we have
+        \begin{equation}
+            \label{eqn:greens}
+            \int_{\Omega} (\mathbf{b} \cdot \nabla v)\, w \, \mathrm{d}x
+            = \int_{\partial \Omega} v w (\mathbf{b} \cdot \mathbf{n})\,\mathrm{d}S
+            - \int_{\Omega} (\mathbf{b} \cdot \nabla w)\, v\,\mathrm{d}x
+            - \int_{\Omega} v w \, \nabla\cdot\mathbf{b}\,\mathrm{d}x .
+        \end{equation}
+        For much of our analysis, $\mathbf{b}$ is taken to be a constant advection direction, thus the final term vanishes.
+    </p>
+
+    <p>
+        In addition, Young's inequality states that, for any $a,b\in\mathbb{R}$ we have
+        \begin{equation}
+            \label{eqn:youngs}
+            |ab| \leq \frac{a^2}{2} + \frac{b^2}{2}.
+        \end{equation}
+    </p>
+   </subsection>
+
+</section>
