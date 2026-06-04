@@ -9,5 +9,6 @@
 
   <!-- include sections -->
   <xi:include href="sec-fem-mc-intro.ptx" />
+  <xi:include href="sec-fem-mc-model.ptx" />
 
 </chapter>

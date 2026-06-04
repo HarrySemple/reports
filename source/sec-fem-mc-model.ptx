@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<section xml:id="sec-fem-mc-model" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <title>Model Formulation</title>
+
+
+  <!-- use hyperlinks to reference -->
+   <!--first populate, then find-replace for the links.
+   references to be reformatted added later.
+   add references to end of each section as you go along.-->  
+
+  <p> 
+    We consider the stationary linear transport equation
+    <md number="yes" xml:id="eqn-strong">
+      \mathbf{b} \cdot \nabla u + \sigma_A u = \sigma_T\!\left(
+      \int_{\Omega} \mathcal{K}(x,y)\, u(y)\, \mathrm{d}y - u(x)\right) + q 
+      \quad \text{in } \Omega,
+    </md>
+    subject to inflow boundary condition
+    <md number="yes" xml:id="eqn-strong-bcs">
+      u = g \quad \text{on } 
+      \Gamma_- := \{x \in \partial\Omega : \mathbf{b}\cdot\mathbf{n} \lt 0\}.
+    </md>
+  </p>
+  
+  <p>
+    Here <m>\Omega \subset \mathbb{R}^2</m> is a bounded Lipschitz domain 
+    with outward unit normal <m>\mathbf{n}</m>. The data are as follows.
+    <ol>
+      <li>
+        <p>
+          <m>\mathbf{b} \in \mathbb{R}^2</m> is a constant wind field.
+        </p>
+      </li>
+      <li>
+        <p>
+          <m>\sigma_A \in L^\infty(\Omega)</m>, <m>\sigma_A \geq 0</m>, is the absorption cross section.
+        </p>
+      </li>
+      <li>
+        <p>
+          <m>\sigma_T \in L^\infty(\Omega)</m>, <m>\sigma_T \geq 0</m>, is the scattering cross section.
+        </p>
+      </li>
+      <li>
+        <p>
+          <m>\mathcal{K} \in L^\infty(\Omega \times \Omega)</m>, <m>\mathcal{K} \geq 0</m>, is the scattering kernel, normalised so that
+          <md number="yes" xml:id="eqn-kernel-normalisation">
+            \int_\Omega \mathcal{K}(x,y)\,\mathrm{d}y = 1 \qquad
+            \text{for all} x \in \Omega.
+          </md>
+        </p>
+      </li>
+      <li>
+        <p>
+          <m>q \in L^2(\Omega)</m> is an interior source and <m>g \in L^2(\Gamma_-)</m> is the inflow datum.
+        </p>
+      </li>
+    </ol>
+  </p>
+
+  <p>
+    The combined absorption and scattering cross sections form the total (extinction) cross section~\cite{ROUSSIN2003581}
+    <md number="yes">
+        \sigma(x) := \sigma_A(x) + \sigma_T(x),
+    </md>
+    which appears throughout the analysis. We assume the positivity condition
+    <md number="yes">
+        \label{eqn:positivity}
+        \sigma(x) 
+        \;\geq\; \mu \;\gt\; 0 
+        \qquad \forall x\in \Omega.
+    </md>
+  </p>
+
+  <p>
+    Equation <xref ref="eqn-strong"/> generalises classical diffusion by replacing the local Fick's-law closure with an explicit nonlocal scattering term. Rather than approximating the effect of collisions by a gradient of <m>u</m>, the integral 
+    <m>\int_\Omega \mathcal{K}(x,y)u(y)\,\mathrm{d}y</m> accounts for particles arriving at <m>x</m> from a neighbourhood weighted by the probability density <m>\mathcal{K}(x,\cdot)</m>. The subtracted term <m>-u(x)</m> accounts for particles lost from <m>x</m> due to scattering, so that the net scattering contribution vanishes when <m>u</m> is spatially uniform and <m>K</m> is normalised as in <xref ref="eqn-kernel-normalisation"/>.
+  </p>
+  
+  <p>
+    This nonlocal structure is physically significant under 
+    three modelling regimes pertinent to shielding applications, which are in direct contradiction of the diffusion approximation~\cite{dematte2026diffusion}. One instance is where absorption is not negligible relative to scattering, meaning the diffusion approximation <m>\sigma_A \ll \sigma_T</m> breaks down. Second, where the mean free path is comparable to the domain length scale, so that particles travel non-negligible distances between collisions. Third, where microstructure induces long-range spatial correlations in the 
+    collision probability, as in heterogeneous or stochastic media.
+  </p>
+
+  <p>
+    The choice of kernel <m>\mathcal{K}</m> determines the character of the nonlocal interaction. Gaussian kernels model short-range scattering with an exponentially decaying influence. Algebraically decaying kernels <m>\mathcal{K}(x,y) \propto |x-y|^{-(2+2s)}</m>, arise from the fractional Laplacian and capture superdiffusive or long-tailed transport. A final trivial choice in the case of <m>\Omega=[0,1]^2</m> is the constant unit kernel <m>\mathcal{K} = 1</m>, deflating the scattering operator to simply integrating <m>u</m>. Although this operation is still nonlocal, it makes for a straightforward test case in validating our analytical results.
+  </p>
+
+</section>
