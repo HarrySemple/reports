@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<section xml:id="sec-fem-mc-variation" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <title>Outline of Analysis</title>
+
+  <subsection>
+    <title>Introduction</title>
+    <p>
+        In this section, we present a framework for solving~\eqref{eqn:strong} through a hybrid deterministic-stochastic method. We derive the SUPG variational formulation, and provide an outline on the analytical contribution of this report:
+        deriving an error estimate in terms of mesh size <m>h</m>, fixed-point iteration <m>n</m> and Monte Carlo sampling size <m>M</m>. 
+    </p>
+  </subsection>
+
+  
+
+
+
+    <subsection xml:id="subsec-reform-strong-form">
+        <title>Reformulation of the Strong Form</title>
+        <p>
+            It is convenient to rewrite~\eqref{eqn:strong} by collecting 
+            the reaction terms on the left-hand side. Absorbing 
+            <m>-\sigma_T u</m> into the LHS with total 
+            cross section <m>\sigma := \sigma_A + \sigma_T</m>, 
+            equation~\eqref{eqn:strong} becomes
+            <md number="yes" xml:id="eqn-stong-simple">
+                \mathbf{b}\cdot\nabla u + \sigma u = \mathcal{S}u + q,
+            </md>
+            where <m>\sigma = \sigma_A + \sigma_T</m> is the total cross section and the scattering operator <m>\mathcal{S}</m> is given by
+            <md number="yes" xml:id="eqn-def-big-s">
+                \label{eqn:def-big-s}
+                (\mathcal{S}u)(x) := \sigma_T(x) \int_{\Omega} \mathcal{K}(x,y)\,u(y)\,dy.
+            </md>
+        </p>
+    </subsection>
+
+
+
+
+    <subsection xml:id="subsec-supg">
+    <title>SUPG Variational Form</title>
+    <p>
+        We define <m>\mathscr{T}_h</m> to be be a conforming, shape-regular triangulation of <m>\Omega</m>. 
+        That is, <m>\mathscr{T}_h</m> is a finite set of sub-domains <m>K\subset\Omega</m> with the following properties:
+        \begin{enumerate}
+        \item <m>K \in \mathscr{T}_h</m> implies <m>K</m> is an open simplex or box.
+        \item For any <m>K, J \in \mathscr{T}_h</m> we have that <m>K \cap J</m> is a full lower-dimensional simplex
+        (i.e., it is either <m>\emptyset</m>, a vertex, an edge, or the whole of <m>K</m> and <m>J</m>) of both <m>K</m> and <m>J</m>.
+        \item <m>\bigcup_{K \in \mathscr{T}_h} \overline{K} = \overline{\Omega}</m>.
+        \end{enumerate}
+        Let <m>V_h\subset H^1(\Omega)</m> be a conforming finite element space.
+        In the SUPG framework, we employ a modified test function given by
+        <md number="yes">
+            \hat{v} = v + \delta \mathbf{b}\cdot\nabla v
+        </md>
+        where <m>\delta|_K = \delta_K</m> is an element-specific stabilisation parameter and <m>v\in V_h</m>. We will further assume that 
+        <md number="yes" xml:id="eqn-delta-bound">
+            \delta_K %\sim \frac{h_K}{\|\mathbf{b}\|}.
+            \leq \min\left\{h_K, \frac{\mu}{\linf{\sigma}^2}\right\}
+        </md>
+    </p>
+
+    <p>
+        To put \eqref{eqn:strong-simple} into SUPG variational form, we multiply by each side by the modified test function, integrate over the domain and subtract a boundary inflow term. The RHS becomes the bilinear form 
+        <md number="yes" xml:id="eqn-a">
+            a(u,v) :=
+            \overbrace{
+                \int_{\Omega} (\boldsymbol{b}\cdot\nabla u)\, v \, \mathrm{d}x
+            }^{\text{Advection term}} +
+            \overbrace{
+                \int_{\Omega} \sigma u v \, \mathrm{d}x
+            }^{\text{Reaction term}} -
+            \overbrace{
+                \int_{\Gamma_-} (\boldsymbol{b}\cdot \boldsymbol{n})\, u v \, \mathrm{d}S
+            }^{\text{Boundary inflow term}} 
+            +
+            \underbrace{
+                \sum_{K \in \mathscr{T}_h}
+                \int_K
+                \delta_K \, (\boldsymbol{b}\cdot\nabla u + \sigma u)\,
+                (\boldsymbol{b}\cdot\nabla v)\, \mathrm{d}x
+            }_{\text{SUPG stabilisation term}}.
+        </md>
+        We apply the same treatment to the LHS of~\eqref{eqn:strong-simple} while keeping the terms distinct. The first term becomes the bilinear scattering form
+        <md number="yes" xml:id="eqn-s">
+            s(u,v) :=
+            \int_{\Omega} (\mathcal{S}u)\, v \, \mathrm{d}x
+            + \sum_{K \in \mathscr{T}_h}
+            \int_K \delta_K (\mathcal{S}u)\,(\boldsymbol{b}\cdot\nabla v)\, \mathrm{d}x .
+        </md>
+        and the source term takes on the boundary inflow term, resulting in the linear form
+        <md number="yes" xml:id="eqn-l">
+            l(v) :=
+            \int_{\Omega} q\, v \, \mathrm{d}x
+            + \sum_{K \in \mathscr{T}_h}
+            \int_K \delta_K q\,(\boldsymbol{b}\cdot\nabla v)\, \mathrm{d}x
+            - \int_{\Gamma_-} (\boldsymbol{b}\cdot\boldsymbol{n})\, g\, v \, \mathrm{d}S .
+        </md>
+        We note that the boundary integral terms (boundary inflow term in~\eqref{eqn:a} and final integral in~\eqref{eqn:l}) are not present in the standard SUPG formulation~\cite{johnson1983finite}. They are added to account for the non-homogeneous inflow boundary condition. For an exact solution <m>u</m> of~\eqref{eqn:strong-simple}, these terms cancel out.
+    </p>
+
+    <p>
+        This brings us to the SUPG variational problem: find <m>u_h\in V_h</m> such that
+        <md number="yes" xml:id="eqn-fe-problem">
+            a(u_h, v) = s(u_h, v) + l(v) \qquad \forall v\in V_h
+        </md>
+    </p>
+
+    <p>
+        However, implementing this problem in a finite element scheme is impractical. The scattering operator <m>s(\cdot,\cdot)</m> is nonlocal, requiring <m>u</m> to be evaluated over the whole domain. As opposed to the sparse linear system seen in the previous section, we are left with a full matrix to invert.
+    </p>
+
+    <p>
+        We adopt source iteration to work around this. Given an initial estimate <m>u_h^{(0)}\in V_h</m>, we compute for all <m>n\in\mathbb{N}</m>
+        <md number="yes" xml:id="eqn-iter-problem">
+            a(u_h^{(n)}, v) = s(u_h^{(n-1)}, v) + l(v) \qquad \forall v\in V_h.
+        </md>
+        Upon each iteration, the scattering term is treated as a 
+        known source evaluated at the previous iterate 
+        <m>u_h^{(n-1)}</m>. Evaluating this source requires computing the integral <m>\mathcal{S}u_h^{(n-1)}</m>, which we do via Monte Carlo. Although deterministic quadrature can compute the integral far more accurately and efficiently in the <m>\Omega\in\mathbb{R}^2</m> setting of this report (indeed, our later analytical results hold for any positively-weighted quadrature), we focus on Monte Carlo as a precursor to working in higher dimensions and more complex geometries.
+    </p>
+
+    <p>
+        This leaves us with the following objective: 
+        find appropriate design choices of <m>n</m>, <m>h</m> and Monte Carlo sampling size <m>M</m> so we balance the error attributed to each component of the algorithm.
+    </p>
+    </subsection>
+
+
+    
+    <subsection xml:id="subsec-outline-of-analysis">
+    <title>Outline of Analysis</title>
+    <p>
+        We analyse~\eqref{eqn:iter-problem} with the following objective: find appropriate design choices of <m>n</m>, <m>h</m> and Monte Carlo sampling size <m>M</m> in order to appropriately balance the error attributed to each component of the algorithm.
+    </p>
+
+    <p>
+        The framework of our error analysis is based on the triangle inequality. 
+        Under the SUPG norm (defined in the next section), we split the error into two components
+        <md number="yes" xml:id="eqn-triangle-ineq">
+            \enorm{u - u^{(n)}_h} \leq \enorm{u - u_h} + \enorm{u_h - u^{(n)}_h}
+        </md>
+        Here, <m>u_h\in V_h</m> denotes the solution of the fully coupled discrete problem~\eqref{eqn:FE-problem}, which is never computed in practice but serves as an analytical reference point. 
+        The first term measures how well the finite element space <m>V_h</m> approximates the true solution <m>u</m> of~\eqref{eqn:strong-simple}, and is controlled by the mesh size <m>h</m> and the regularity of <m>u</m> via the C\'{e}a-type estimate derived in Section~\ref{sec:FE-det}. The second term measures how far the source iteration has progressed towards <m>u_h</m> after <m>n</m> steps, and is controlled by the contraction rate <m>2C_s \lt 1</m> of the iteration established in Section~\ref{sec:iter-det}. When the scattering integral is replaced by a Monte Carlo estimator, a third source of error enters through the consistency term in the Strang estimate of Section~\ref{sec:sto}, governed by the sample size <m>M</m>.
+    </p>
+
+    <p>
+        The analysis is developed in two stages. In Section~\ref{sec:det}, we work under the assumption of exact evaluation of the scattering integral and derive a bound for \eqref{eqn:triangle-ineq} in terms of mesh size <m>h</m> and fixed-point iterate <m>n</m>. This proves convergence of <m>u_h^{(n)} \rightarrow u</m> as <m>n\rightarrow \infty</m> and <m>h\rightarrow 0</m>, with rates parametised by scattering/absorption properties (<m>\sigma_T</m> and <m>\mu</m>), choice of kernel <m>\mathcal{K}</m> and the regularity <m>r</m> of the true solution <m>u</m>.
+    </p>
+
+    <p>
+        In Section~\ref{sec:sto}, we extend this analysis to the fully discrete scheme in which the scattering integral is approximated by the Monte Carlo estimator~\eqref{eqn:mc-estimator}. Replacing the exact operator <m>\mathcal{S}</m> by its empirical approximation <m>\mathcal{S}_M</m> introduces a consistency error, which we bound probabilistically using Hoeffding's inequality. The resulting estimate bounds <m>\enorm{u - u_h^{(n)}}</m> with probability at least <m>1 - \delta</m> for any prescribed <m>\delta \in (0,1)</m>, with an additional term of order <m>\mathcal{O}(M^{-1/2})</m> that vanishes as the sample size grows. The full estimate makes explicit the interplay between <m>h, n</m> and <m>M</m>, and provides practical guidance on how to balance these parameters for a given accuracy and confidence level.
+    </p>
+    </subsection>
+
+
+
+</section>

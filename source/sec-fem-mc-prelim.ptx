@@ -42,7 +42,7 @@
    </subsection>
 
 
-   <subsection xml:id="subsec-supg">
+   <subsection xml:id="subsec-supg-prelim">
     <title>SUPG Stabilisation</title>
     <p>
         For advection-dominated problems, the standard Galerkin 

@@ -11,5 +11,6 @@
   <xi:include href="sec-fem-mc-intro.ptx" />
   <xi:include href="sec-fem-mc-model.ptx" />
   <xi:include href="sec-fem-mc-prelim.ptx" />
+  <xi:include href="sec-fem-mc-variation.ptx" />
 
 </chapter>
