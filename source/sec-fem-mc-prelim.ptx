@@ -48,18 +48,18 @@
         For advection-dominated problems, the standard Galerkin 
         formulation becomes unstable.
         The bilinear form associated 
-        with the operator $\mathbf{b}\cdot\nabla u + \sigma u$ 
-        is not necessarily coercive in $H^1(\Omega)$, and the Galerkin solution may exhibit
+        with the operator <m>\mathbf{b}\cdot\nabla u + \sigma u</m> 
+        is not necessarily coercive in <m>H^1(\Omega)</m>, and the Galerkin solution may exhibit
         spurious oscillations~\cite{ern2004theory}. 
         The Streamline Upwind Petrov-Galerkin (SUPG) method~\cite{brooks1982streamline, johnson1983finite} 
         addresses this by modifying the test function to 
-        $v + \delta_K \mathbf{b}\cdot\nabla v$ on each element $K$, 
-        where $\delta_K > 0$ is a mesh-dependent stabilisation 
+        <m>v + \delta_K \mathbf{b}\cdot\nabla v</m> on each element <m>K</m>, 
+        where <m>\delta_K > 0</m> is a mesh-dependent stabilisation 
         parameter.
     </p>
     
     <p>
-        The effect of SUPG is to add an artificial diffusion of strength $\delta_K$ along streamlines of the solution. Consistency is preserved - as the additional term vanishes when evaluating the exact solution - while coercivity is ensured for a sufficient strength $\delta_K$.
+        The effect of SUPG is to add an artificial diffusion of strength <m>\delta_K</m> along streamlines of the solution. Consistency is preserved - as the additional term vanishes when evaluating the exact solution - while coercivity is ensured for a sufficient strength <m>\delta_K</m>.
     </p>
    </subsection>
 
@@ -67,21 +67,19 @@
     <title>Monte Carlo Integration</title>
     <p>
         Monte Carlo integration estimates an integral 
-        $I = \int_\Omega f(y)\,\mathrm{d}y$ by the sample mean
-        \begin{equation}
-            \label{eqn:mc-estimator}
+        <m>I = \int_\Omega f(y)\,\mathrm{d}y</m> by the sample mean
+        <md number="yes" xml:id="eqn-mc-estimator">
             I_M := \frac{|\Omega|}{M}\sum_{j=1}^M f(Y_j), 
             \qquad Y_j \stackrel{\mathrm{iid}}{\sim} \mathrm{Unif}(\Omega).
-        \end{equation}
-        The estimator is unbiased with $\mathbb{E}[I_M] = I$, and its 
+        </md>
+        The estimator is unbiased with <m>\mathbb{E}[I_M] = I</m>, and its 
         standard deviation satisfies
-        \begin{equation}
-            \label{eqn:mc-error}
+        <md number="yes" xml:id="eqn-mc-error">
             \mathbb{E}\bigl[|I - I_M|^2\bigr]^{1/2} 
             = \frac{\mathrm{Var}(f)^{1/2}}{\sqrt{M}},
-        \end{equation}
-        where $\mathrm{Var}(f) = \int_\Omega (f - I/|\Omega|)^2\,
-        \mathrm{d}y$~\cite{gobet2016monte}. Notably, this $\mathcal{O}(M^{-1/2})$ rate 
+        </md>
+        where <m>\mathrm{Var}(f) = \int_\Omega (f - I/|\Omega|)^2\,
+        \mathrm{d}y</m>~\cite{gobet2016monte}. Notably, this <m>\mathcal{O}(M^{-1/2})</m> rate 
         is independent of dimension, making Monte Carlo the method 
         of choice for high-dimensional integration.
     </p>
@@ -92,24 +90,22 @@
     <p>
         Finally, the following identities are used repeatedly in the analysis and stated here for convenience. 
         The first is the Green's formula for the advection operator. 
-        Given $v, w \in H^1(\Omega)$ and 
-        $\mathbf{b} \in [W^{1,\infty}(\Omega)]^2$, we have
-        \begin{equation}
-            \label{eqn:greens}
+        Given <m>v, w \in H^1(\Omega)</m> and 
+        <m>\mathbf{b} \in [W^{1,\infty}(\Omega)]^2</m>, we have
+        <md number="yes" xml:id="eqn-greens">
             \int_{\Omega} (\mathbf{b} \cdot \nabla v)\, w \, \mathrm{d}x
             = \int_{\partial \Omega} v w (\mathbf{b} \cdot \mathbf{n})\,\mathrm{d}S
             - \int_{\Omega} (\mathbf{b} \cdot \nabla w)\, v\,\mathrm{d}x
             - \int_{\Omega} v w \, \nabla\cdot\mathbf{b}\,\mathrm{d}x .
-        \end{equation}
-        For much of our analysis, $\mathbf{b}$ is taken to be a constant advection direction, thus the final term vanishes.
+        </md>
+        For much of our analysis, <m>\mathbf{b}</m> is taken to be a constant advection direction, thus the final term vanishes.
     </p>
 
     <p>
-        In addition, Young's inequality states that, for any $a,b\in\mathbb{R}$ we have
-        \begin{equation}
-            \label{eqn:youngs}
+        In addition, Young's inequality states that, for any <m>a,b\in\mathbb{R}</m> we have
+        <md number="yes" xml:id="eqn-youngs">
             |ab| \leq \frac{a^2}{2} + \frac{b^2}{2}.
-        \end{equation}
+        </md>
     </p>
    </subsection>
 
