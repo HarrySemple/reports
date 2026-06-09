@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<section xml:id="sec-fem-mc-numerics" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <title>Preliminaries</title>
+
+
+  <!-- use hyperlinks to reference -->
+   <!--first populate, then find-replace for the links.
+   references to be reformatted added later.
+   add references to end of each section as you go along.-->  
+
+   <subsection>
+    <title>Introduction</title>
+
+<p>
+We validate the theoretical convergence rates established in <xref ref="sec-fem-mc-det"/> and <xref ref="sec-fem-mc-sto"/> through a series of numerical experiments, considering both deterministic (exact) and Monte Carlo evaluation of the scattering operator. All experiments use the method of manufactured solutions on the unit square, with parameters fixed as follows:
+<ol>
+    <li>
+        <p>
+            <m>\Omega = [0,1]^2</m>
+        </p>
+    </li>
+    <li>
+        <p>
+            <m>\sigma_A = 4.5, \sigma_T = 1, \sigma = \sigma_A + \sigma_T = 5.5</m>
+        </p>
+    </li>
+    <li>
+        <p>
+            <m>\mathbf{b} = (1, \sqrt{2})^T</m>
+        </p>
+    </li>
+    <li>
+        <p>
+            <m>\delta_K = h_K</m>
+        </p>
+    </li>
+</ol>
+The source <m>q</m> is chosen so that the exact solution is
+<md number="yes">
+    u(x_1,x_2) = \sin(\pi x_1)\sin(\pi x_2)
+</md>
+and the inflow data is <m>g = u|_{\Gamma_-}</m>. We consider only the unit kernel <m>\mathcal{K}(x,y) = 1</m>, for which the scattering integral reduces to <m>\int_\Omega u(y)\,\mathrm{d}y</m> - a scalar independent of <m>x</m>.
+Although this may seem a substantial simplification, we have found empirically that Gaussian kernels exhibit the exact same convergence characteristics (as to be expected, as this only impacts the constants of the convergence results). </p>
+
+<p>Thus, we have
+<md number="yes">
+    <mrow>
+        C_s &amp;= \linf{\sigma_T}\ldouble{\mathcal{K}}\frac{1}{\mu}\left(
+            1 + (\mu\delta_\text{max})^{1/2}
+        \right)
+    </mrow><mrow>
+        &amp;= \frac{1+\sqrt{5.5h}}{5.5}.
+    </mrow>
+</md>
+Therefore, we have <m>C_s\leq \frac{1}{2}</m> whenever <m>h\leq \frac{49}{88} \approx 0.557</m>. Hence, for a uniform square mesh on <m>\Omega = [0,1]^2</m>, <xref ref="thm-det"/> and <xref ref="thm-sto"/> apply whenever the grid size is greater than <m>3\times3</m>. Finally, we note that all implementations use <m>P^1</m> elements, setting <m>k = 1</m> in the aforementioned theorems.</p>
+
+</subsection>
+<subsection >
+    <title>Deterministic Case</title>
+<p>    
+We first validate the source iteration convergence result of <xref ref="thm-conv-l2"/>. In <xref ref="fig-source-det-h-512"/>, we see the iterative scheme <xref ref="eqn-iter-problem"/> on a <m>64\times64</m> mesh and a <m>512\times512</m> mesh, each showing an initial convergence rate greater than <m>(2C_s)^n</m> - faster even than <m>(C_s)^n</m>, hinting at the slack in our estimates. </p>
+
+<p>This continues until the discretisation error <m>\enorm{u-u_h}</m> starts to dominate. Indeed, by plotting the full error <m>\ltwo{u-u_h^{(n)}}</m>, the early stages demonstrate iteration error convergence with negligible discretisation error, while convergence stagnates once iteration error falls below discretisation error. We are effectively viewing the triangle inequality
+<md number="yes">
+        \ltwo{u-u_h^{(n)}} \leq \ltwo{u-u_h} + \ltwo{u_h - u_h^{(n)}}
+        \leq \frac{1}{\mu^{1/2}}\enorm{u-u_h} + \ltwo{u_h - u_h^{(n)}}
+</md>
+The stagnation in <xref ref="fig-source-det-h-512"/>
+occurs later on the finer mesh, consistent with its smaller 
+discretisation error, and the error floor is lower by a 
+factor of approximately <m>(64/512)^{k+1/2} = (1/8)^{3/2} \approx 0.044</m>, in agreement with the rate in <xref ref="thm-det"/>.</p>
+
+<figure xml:id="fig-source-det-h-512">
+    <caption>
+        <m>L^2(\Omega)</m>-norm  error <m>\enorm{u - u_h^{(n)}}</m> against 
+        iteration count <m>n</m> for source iteration on a 
+        <m>64\times64</m> mesh (top) and a
+        <m>512\times512</m> mesh (bottom) on <m>\Omega=[0,1]^2</m> with unit kernel <m>\mathcal{K}(x,y) = 1</m> and exact (quadrature-based) evaluation of the scattering operator. The graphs show the sequence <m>\{u_h^{(1)}, u_h^{(2)}, \ldots\}</m> initialised with <m>u_h^{(0)} = 0</m>, and the orange dashed line indicates the theoretical bound <m>(2C_s)^n</m>.
+    </caption>
+    <sidebyside widths="50% 50%">
+    <image source="./images/source-det-h-64.png">
+    </image>
+    <image source="./images/source-det-h-512.png">
+    </image>
+    </sidebyside>
+</figure>
+
+
+<p><xref ref="fig-fe-det-h-2-512"/> validates <xref ref="cor-fe-conv-rate"/>, 
+which predicts that the discretisation error decays at rate 
+<m>\mathcal{O}(h^{k+1/2}) = \mathcal{O}(h^{3/2})</m> for <m>P^1</m> 
+elements in the SUPG norm. For each value of 
+<m>h \in \{1/2, 1/4, 1/8, \ldots, 1/512\}</m>, we run <m>n = 10</m> 
+source iterations initialised at <m>u_h^{(0)} = 0</m> and record 
+the error <m>\enorm{u - u_h^{(10)}}</m>. The choice <m>n = 10</m> is 
+justified by <xref ref="fig-source-det-h-512"/>: for all mesh sizes 
+considered, the iteration error <m>\enorm{u_h - u_h^{(10)}}</m> 
+has already fallen well below the discretisation error 
+<m>\enorm{u - u_h}</m> by the tenth iteration, so the plotted 
+quantity is an accurate proxy for <m>\enorm{u - u_h}</m>. 
+The observed slope is in exact agreement with the theoretical 
+rate <m>h^{3/2}</m>, confirming the sharpness of the 
+interpolation-based estimate in <xref ref="cor-fe-conv-rate"/>.
+</p>
+
+<figure xml:id="fig-fe-det-h-2-512">
+    <caption>Convergence of the finite element discretisation for increasingly refined uniform square meshes on <m>\Omega=[0,1]^2</m> with unit kernel <m>\mathcal{K}(x,y) = 1</m> and deterministic scattering (computed with quadrature). 
+    For each mesh (value of <m>h</m>), the ten source iterations are performed before moving to the next refinement.
+    The graph shows the sequence <m>\{u_{0.5}^{(10)}, u_{0.25}^{(10)}, u_{0.125}^{(10)} , \ldots\}</m> and is initialised on each mesh with <m>u_{h}^{(0)} = 0</m>.</caption>
+    <image width="50%" source="./images/FE-det-h-2-512.png">        
+    </image>
+</figure>
+
+
+
+
+</subsection>
+<subsection >
+    <title>Stochastic Case</title>
+    <p>
+We now introduce Monte Carlo estimation of the scattering 
+operator and examine its effect on both the iteration 
+convergence and the mesh refinement study.
+</p>
+
+<p><xref ref="fig-source-sto-h-512"/> overlays the deterministic 
+and stochastic (<m>M = 10000</m>) iteration error curves for 
+the <m>64\times64</m> and <m>512\times512</m> meshes. The MC 
+estimator introduces a noise floor at approximately 
+<m>10^{-3}</m>: once the iteration error falls to this level, 
+further iterations no longer reduce the total error, 
+and the curve stagnates earlier than in the deterministic 
+case. This is consistent with the Strang estimate of 
+<xref ref="thm-sto"/>, in which the MC consistency 
+error contributes a term of order <m>\mathcal{O}(M^{-1/2})</m> 
+independently of <m>n</m>. The stagnation level is 
+comparable across both meshes, confirming that the 
+MC error dominates once the discretisation error 
+falls below <m>\mathcal{O}(M^{-1/2})</m>.</p>
+
+<figure xml:id="fig-source-sto-h-512">
+    <caption><m>L^2(\Omega)</m>-norm error <m>\enorm{u - u_h^{(n)}}</m> against 
+    iteration count <m>n</m> for source iteration on a 
+    <m>64\times64</m> mesh (top) and a
+    <m>512\times512</m> mesh (bottom) on <m>\Omega=[0,1]^2</m> with unit kernel <m>\mathcal{K}(x,y) = 1</m>. 
+    Exact (quadrature-based) computation of the scattering operator is shown in blue, with orange representing
+    Monte Carlo estimation of the scattering operator, with <m>M = 10000</m>. The graphs show the sequence <m>\{u_h^{(1)}, u_h^{(2)}, \ldots\}</m> initialised with <m>u_h^{(0)} = 0</m>, and the green dashed line indicates the theoretical bound <m>(2C_s)^n</m>.</caption>
+    <sidebyside widths="50% 50%">
+    <image source="./images/source-det-sto-h-64">
+    </image>
+    <image source="./images/source-det-sto-h-512">
+    </image>
+    </sidebyside>
+</figure>
+
+<p><xref ref="fig-fe-sto-h-2-512"/> repeats the mesh refinement 
+study of <xref ref="fig-fe-det-h-2-512"/> with MC estimation 
+of the scattering operator (<m>M = 10000</m>). For coarse 
+meshes, where the discretisation error exceeds the 
+MC noise floor, the expected <m>h^{3/2}</m> rate is 
+recovered. As <m>h</m> decreases and 
+<m>\enorm{u - u_h}</m> approaches <m>\mathcal{O}(M^{-1/2})</m>, 
+the MC consistency error begins to dominate and the 
+convergence curve flattens and becomes irregular. 
+This saturation is precisely what the Strang estimate 
+predicts: once the best-approximation term 
+<m>(1 + C_a)\inf_{w_h}\|u - w_h\|_*</m> is smaller than 
+the MC term, further mesh refinement yields no 
+improvement without a corresponding increase in <m>M</m>. 
+The persistent downward trend visible even in the 
+irregular regime reflects the decreasing discretisation 
+error floor, but finer meshes are increasingly 
+dominated by the <m>\mathcal{O}(M^{-1/2})</m> 
+consistency error.</p>
+
+<figure xml:id="fig-fe-sto-h-2-512">
+    <caption>Convergence of the finite element discretisation for increasingly refined uniform square meshes on <m>\Omega=[0,1]^2</m> with unit kernel <m>\mathcal{K}(x,y) = 1</m> and Monte Carlo estimation of the scattering operator, with <m>M = 10000</m>. 
+    For each mesh (value of <m>h</m>), the ten source iterations are performed before moving to the next refinement.
+    The graph shows the sequence <m>\{u_{0.5}^{(10)}, u_{0.25}^{(10)}, u_{0.125}^{(10)} , \ldots\}</m> and is initialised on each mesh with <m>u_{h}^{(0)} = 0</m>.}</caption>
+    <image width="50%" source="./images/FE-sto-h-2-512.png">
+    </image>
+</figure>
+
+<p>Finally, we investigate the effect of increasing Monte Carlo Samples. <xref ref="fig-source-sto-h-512-40000"/> shows the iteration convergence plot for the case of <m>M=40000</m> samples. As this is a 4-fold increase, we expect to see a factor of <m>\frac{1}{\sqrt{4}} = \frac{1}{2}</m> reduction in the associated Monte Carlo error. In comparison with <xref ref="fig-source-sto-h-512"/>, we have tentative results motivating this is the case. However, this is difficult to verify as the spread of the Monte Carlo error itself ranges an order of magnitude. 
+We leave to future work the process of averaging over 
+multiple independent realisations to estimate the 
+expected noise floor - which would relieve us from relying on a 
+single sample path.</p>
+
+<figure xml:id="fig-source-sto-h-512-40000">
+    <caption><m>L^2(\Omega)</m>-norm error <m>\enorm{u - u_h^{(n)}}</m> against 
+    iteration count <m>n</m> for source iteration on a 
+    <m>64\times64</m> mesh (top) and a
+    <m>512\times512</m> mesh (bottom) on <m>\Omega=[0,1]^2</m> with unit kernel <m>\mathcal{K}(x,y) = 1</m>.  and Monte Carlo estimation of the scattering operator, with <m>M = 40000</m>. The graphs show the sequence <m>\{u_h^{(1)}, u_h^{(2)}, \ldots\}</m> initialised with <m>u_h^{(0)} = 0</m>, and the green dashed line indicates the theoretical bound <m>(2C_s)^n</m>.</caption>
+    <sidebyside widths="50% 50%">
+        <image source="./images/source-det-sto-h-64-40000.png">
+        </image>
+        <image source="./images/source-det-sto-h-512-40000.png">
+        </image>
+    </sidebyside>
+</figure>
+
+
+
+</subsection>
+
+</section>

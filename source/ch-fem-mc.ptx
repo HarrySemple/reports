@@ -13,5 +13,8 @@
   <xi:include href="sec-fem-mc-prelim.ptx" />
   <xi:include href="sec-fem-mc-variation.ptx" />
   <xi:include href="sec-fem-mc-det.ptx" />
+  <xi:include href="sec-fem-mc-sto.ptx" />
+  <xi:include href="sec-fem-mc-numerics.ptx" />
+  <xi:include href="sec-fem-mc-conclusion.ptx" />
 
 </chapter>

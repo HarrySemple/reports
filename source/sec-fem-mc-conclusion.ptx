@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<section xml:id="sec-fem-mc-conclusion" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <title>Conclusion</title>
+
+
+  <!-- use hyperlinks to reference -->
+   <!--first populate, then find-replace for the links.
+   references to be reformatted added later.
+   add references to end of each section as you go along.-->  
+
+
+
+<p>This report has developed a numerical analysis framework for a 
+hybrid deterministic-stochastic scheme applied to a stationary 
+linear transport equation with nonlocal scattering. The scheme 
+combines an SUPG-stabilised finite element discretisation of the 
+spatial transport operator with a Monte Carlo approximation of 
+the scattering integral, embedded within a source iteration to 
+decouple the dense nonlocal coupling at each step.
+</p>
+
+
+<p>
+We have presented three main analytical contributions. First, in the 
+deterministic setting (<xref ref="thm-det"/>), we established a 
+C\'{e}a-type best-approximation estimate for the SUPG variational 
+formulation under the sharp continuity condition $C_s \lt \tfrac{1}{2}$ 
+on the scattering operator, and proved that source iteration 
+contracts at a mesh-independent rate $(2C_s)^n$. These combine via 
+the triangle inequality to give an explicit convergence rate of 
+$\mathcal{O}(h^{k+1/2})$ in the SUPG norm, with iteration error 
+decaying geometrically. Second, in the stochastic setting 
+(<xref ref="thm-sto"/>), we derived a Strang-type error estimate 
+that cleanly separates the finite element approximation error 
+from the Monte Carlo consistency error, and obtained a 
+probabilistic bound on the latter via Hoeffding's inequality. 
+The resulting estimate explicitly states 
+the interplay between mesh size $h$, sample size $M$, and 
+iteration count $n$ in this class of schemes, and bounds 
+$\enorm{u - u_h^{(n)}}$ with prescribed confidence $1 - \eta$. 
+Third, the analysis identifies the subcriticality 
+condition $C_s \lt \tfrac{1}{2}$ as the single hypothesis 
+underlying \emph{both} well-posedness of the discrete problem 
+and contraction of the iteration.
+</p>
+
+<p>
+The numerical experiments in <xref ref="sec-fem-mc-numerics"/> validate 
+the predicted rates. The $\mathcal{O}(h^{3/2})$ discretisation 
+error rate for $P^1$ elements was recovered exactly in the 
+deterministic case, and the Monte Carlo noise floor was observed 
+to dominate at fine mesh sizes in agreement with the Strang 
+estimate. The observed contraction rate of source iteration was 
+markedly faster than the theoretical bound $(2C_s)^n$, suggesting 
+this bound may potentially be tightened. One obvious strategy is to keep hold of factors of $\delta_K$ in our analysis, another is to consider the spectral radius 
+of the iteration operator, rather than its operator norm.
+</p>
+
+<p>
+Further research has been motivated on the following six points:
+<ol>
+    <li>
+        <p>
+            <alert>Parameter selection</alert> The error decomposition in 
+    <xref ref="thm-sto"/> naturally lends itself to a parameter 
+    tuning procedure: given a computational budget, the three 
+    terms (discretisation, iteration, Monte Carlo) can be balanced 
+    to minimise the total error bound. Automating this for 
+    practical use is an immediate next step.
+        </p>
+    </li>
+    <li>
+        <p>
+            <alert>Higher dimensions and complex geometries</alert> In the 
+    two-dimensional setting considered here, deterministic 
+    quadrature is strictly more efficient than Monte Carlo for 
+    the scattering integral, and our contraction results in fact 
+    hold for any positively weighted quadrature rule. The 
+    motivation for Monte Carlo lies in higher-dimensional 
+    phase-space settings (with angular and energy variables) and 
+    on complex geometries where deterministic quadrature becomes 
+    prohibitive. Extending the analysis to such settings, 
+    including coupling with discrete-ordinates angular 
+    discretisations, is a natural continuation.
+        </p>
+    </li>
+    <li>
+        <p>
+            <alert>Nonhomogeneous inflow data</alert> The deterministic analysis 
+    assumed $g = 0$ for simplicity. Extending to general 
+    $g \in L^2(\Gamma_-)$ requires a more advanced analysis, with careful treatment of trace operators.
+        </p>
+    </li>
+    <li>
+        <p>
+            <alert>Sharper probabilistic bounds</alert> Hoeffding's inequality 
+    gives a worst-case tail bound that is sharp in $M$ but 
+    conservative in the dependence on the boundedness constant $B$. 
+    Alternatively, an analysis bounding the expected error 
+    $\mathbb{E}\,\enorm{u - u_h^{(n)}}$ rather than a 
+    high-probability event would avoid the $\sqrt{\log(1/\eta)}$ 
+    factor.
+        </p>
+    </li>
+    <li>
+        <p>
+            <alert>Variance reduction</alert> The naive Monte Carlo estimator used 
+    here is the simplest possible choice. Importance sampling, 
+    stratified sampling, or quasi-Monte Carlo would reduce the 
+    effective constant $B$ in the consistency bound by orders 
+    of magnitude in typical shielding configurations, and the 
+    analysis framework developed here may be extended to such 
+    strategies. Importance sampling that makes use of the previous guess is also of interest.
+        </p>
+    </li>
+    <li>
+        <p>
+            <alert>Numerical experiments.</alert> The experiments presented are 
+    simplistic, for the purpose of validating the analysis on a 
+    manufactured solution with a unit kernel. Extending to 
+    Gaussian and algebraically decaying kernels, test problems 
+    motivated by shielding applications, and taking averages over 
+    multiple Monte Carlo realisations to estimate the expected 
+    noise floor, are all natural next steps. Larger-scale 
+    experiments with a substantial computational budget would 
+    also help to verify the asymptotic balance between $h$, $n$, 
+    and $M$ predicted by <xref ref="thm-sto"/>.
+        </p>
+    </li>
+</ol>
+Overall, the analysis presented in this report provides 
+a rigorous foundation for hybrid finite element-Monte Carlo 
+methods in radiation transport, identifying the key constants 
+and rates that govern their behaviour and providing theory 
+for principled algorithm development in complex higher-dimensional settings.
+</p>
+
+
+
+
+
+</section>
+
+
+
+

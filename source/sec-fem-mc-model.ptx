@@ -65,7 +65,7 @@
         \sigma(x) := \sigma_A(x) + \sigma_T(x),
     </md>
     which appears throughout the analysis. We assume the positivity condition
-    <md number="yes">
+    <md number="yes" xml:id="eqn-positivity">
         \label{eqn:positivity}
         \sigma(x) 
         \;\geq\; \mu \;\gt\; 0 

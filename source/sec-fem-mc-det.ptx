@@ -267,7 +267,7 @@
         <mrow>
             \label{eqn:a-cont-2}
             \left| \int_{\Omega} \sigma v w \, dx \right|
-            &amp;\leq \linf{\sigma} \|w\|_{L^2} \|v\|_{L^2}</mrow><mrow>
+            &amp;\leq \linf{\sigma} \|w\|_{L^2} \|v\|_{L^2}</mrow><mrow xml:id="eqn-a-cont-2">
             &amp;\leq \frac{\linf{\sigma}}{\mu}\snorm{w}\enorm{v}.</mrow>
     </md>
     The inflow boundary term is bounded by
@@ -599,7 +599,7 @@
 
 </subsection>
 
-<subsection xml:id="fe-det">
+<subsection xml:id="sec-fem-mc-fe-det">
     <title>Finite Element Error</title>
     <p>
         We consider the first term in the triangle inequality in<xref ref="eqn-triangle-ineq"/>. That is, we find an error estimate and convergence rate for the theoretical finite element solution <m>u_h\in V_h</m> of<xref ref="eqn-fe-problem"/>. 
@@ -765,7 +765,7 @@
 
 </subsection>
 
-<subsection xml:id="sec-iter-det">
+<subsection xml:id="sec-fem-mc-iter-det">
     <title>Fixed Point Error</title>
     <p>
         Now, we turn to the second error term in the triangle inequality<xref ref="eqn-triangle-ineq"/>. That is, we now derive a convergence rate for <m>\enorm{u_h - u_h^{(n)}}</m>. In doing so, we also find a rate in the <m>L^2(\Omega)</m>-norm.
@@ -851,7 +851,7 @@
     <title>Convergence in SUPG-norm</title>
     <statement>
         <p>
-    \label{cor:conv-sugp}
+    \label{cor:conv-supg}
     Let <m>u_h\in V_h</m> be the solution of the stationary finite element problem<xref ref="eqn-fe-problem"/>. Take <m>u_h^{(0)}\in V_h</m> and denote by <m>\{u_h^{(n)}\}_{n\in\mathbb{N}_0}</m> the sequence of solutions to the iterative problem<xref ref="eqn-iter-problem"/>. We have that, for all <m>n\in \mathbb{N}_0</m>
     <md number="yes" >
         \enorm{u_h-u_h^{(n)}} 
@@ -871,7 +871,7 @@
 
 </subsection>
 
-<subsection xml:id="sec-combined-det">
+<subsection xml:id="sec-fem-mc-combined-det">
     <title>Combined Error Estimate</title>
     <p>
 We can now populate the triangle inequality for iterative solution error originally proposed in<xref ref="eqn-triangle-ineq"/>.
@@ -908,7 +908,7 @@ We can now populate the triangle inequality for iterative solution error origina
         +
         \enorm{u_h-u_h^{(n)}},
     </md>
-    and the result follows from applying <xref ref="cor-conv-sugp"/> and <xref ref="cor-FE-conv-rate"/>.
+    and the result follows from applying <xref ref="cor-conv-supg"/> and <xref ref="cor-fe-conv-rate"/>.
 </p></proof>
 
 </subsection>
@@ -924,7 +924,7 @@ the parameters of the problem.
 First, the combined coercivity result for <m>a - s</m> 
 (<xref ref="cor-a-s-coer"/>) and the contraction rate for 
 source iteration (<xref ref="thm-conv-l2"/> and 
-<xref ref="cor-conv-sugp"/>) both rely on the single 
+<xref ref="cor-conv-supg"/>) both rely on the single 
 constraint
 <md number="yes" xml:id="eqn-cs-condition">
     \label{eqn:Cs-condition}

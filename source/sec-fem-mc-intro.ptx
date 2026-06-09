@@ -43,28 +43,28 @@
   </p>
 
   <p>
-    The report is organised as follows. Section~\ref{sec:model} 
+    The report is organised as follows. <xref ref="sec-fem-mc-model"/> 
     introduces the strong form of the model problem and states 
-    assumptions on the data. Section~\ref{sec:prelim} 
+    assumptions on the data. <xref ref="sec-fem-mc-prelim"/> 
     provides a brief background on finite element methods, 
     SUPG stabilisation, and Monte Carlo integration. 
-    Section~\ref{sec:var} presents the SUPG variational formulation 
+    <xref ref="sec-fem-mc-variation"/> presents the SUPG variational formulation 
     of the transport equation, introduces the source iteration 
     scheme, and outlines the structure of the error analysis via 
-    the triangle inequality. Section~\ref{sec:det} develops the 
+    the triangle inequality. <xref ref="sec-fem-mc-det"/> develops the 
     deterministic analysis - establishing coercivity and continuity 
     of the bilinear forms, a C\'{e}a-type best-approximation 
     estimate for the discretisation error, and proves a
     contraction rate for source iteration under 
     a subcriticality condition on the scattering operator. 
-    Section~\ref{sec:sto} extends this analysis to the stochastic 
+    <xref ref="sec-fem-mc-sto"/> extends this analysis to the stochastic 
     setting, deriving a Strang-type error estimate in which the 
     Monte Carlo consistency error is bounded probabilistically 
     via Hoeffding's inequality. The resulting estimate makes 
     explicit the interplay between mesh size $h$, sample size $M$, and iteration 
-    count $n$. Section~\ref{sec:numerics} verifies the predicted 
+    count $n$. <xref ref="sec-fem-mc-numerics"/> verifies the predicted 
     convergence rates using a manufactured solution on the unit 
-    square, and Section~\ref{sec:conclusion} concludes with a 
+    square, and <xref ref="sec-fem-mc-conclusion"/> concludes with a 
     discussion of limitations and directions for further work.
   </p>
 
