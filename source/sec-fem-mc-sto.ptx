@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <section xml:id="sec-fem-mc-sto" xmlns:xi="http://www.w3.org/2001/XInclude">
-  <title>Preliminaries</title>
+  <title>Stochastic Analysis</title>
 
 
   <!-- use hyperlinks to reference -->
@@ -14,11 +14,11 @@
     <p>
         Now we consider the case of inexact computation of the scattering form, <m>s(\cdot,\cdot)</m>, through Monte-Carlo integration.
     </p>
-
+<!-- -->
     <p>
         That is, we approximate the nonlocal term of <xref ref="eqn-strong"/> as
         <md number="yes" xml:id="eqn-monte-carlo-approx">
-            \label{eqn:monte-carlo-approx}
+            <!-- \label{eqn:monte-carlo-approx}-->
             \int_\Omega \mathcal{K}(x,y)u(y)\mathrm{d}y
             \approx
             \frac{|\Omega|}{M} \sum_{j=1}^M \mathcal{K}(x,Y_j)u(Y_j)
@@ -29,12 +29,12 @@
 <p>
 This leads us to a modified iterative finite element problem to be solved in practice. Given an initial estimate <m>u_h^{(0)}\in V_h</m>, we compute for all <m>n\in\mathbb{N}</m>
 <md number="yes" xml:id="eqn-iter-prob-mc">
-    \label{eqn:iter-prob-MC}
+    <!-- \label{eqn:iter-prob-MC}-->
     a(u_h^{(n)}, v) = s_M(u_h^{(n-1)}, v) + l(v) \qquad \forall v\in V_h,
 </md>
 where
 <md number="yes" xml:id="eqn-s-m">
-    \label{eqn:s-M}
+    <!-- \label{eqn:s-M}-->
     s_M(u,v) :=
     \int_{\Omega} (\mathcal{S}_M u)\, v \, \mathrm{d}x
     + \sum_{K \in \mathscr{T}_h}
@@ -42,7 +42,7 @@ where
 </md>
 where 
 <md number="yes" xml:id="eqn-def-big-s-m">
-    \label{eqn:def-big-s-M}
+    <!-- \label{eqn:def-big-s-M}-->
     (\mathcal{S}_M u)(x) := \sigma_T(x) \frac{|\Omega|}{M} \sum_{j=1}^M \mathcal{K}(x,Y_j)u(Y_j),
 </md>
 for random draws <m>\{y_j\}_{j=1}^M</m> from <m>\Omega</m>.
@@ -52,7 +52,7 @@ for random draws <m>\{y_j\}_{j=1}^M</m> from <m>\Omega</m>.
 <p>
 To account for this in our analysis, we similarly modify the theoretical steady-state finite element problem. Placing <m>s_M</m> in <xref ref="eqn-fe-problem"/>, we seek to find <m>u_h\in V_h</m> such that
 <md number="yes" xml:id="eqn-fe-prob-mc">
-    \label{eqn:FE-prob-MC}
+    <!-- \label{eqn:FE-prob-MC}-->
     a(u_h, v) = s_M(u_h, v) + l(v) \qquad \forall v\in V_h.
 </md>
 </p>
@@ -70,7 +70,7 @@ We must modify the analysis for our previous Best Approximation result (<xref re
 <theorem xml:id="thm-strang">
     <title>Strang-Type Error Estimate</title>
     <statement><p>
-    \label{thm:strang}
+    <!-- \label{thm:strang}-->
     Let <m>u\in H^1_0(\Omega)</m> be the solution of <xref ref="eqn-strong"/> and <m>u_h</m> the solution of <xref ref="eqn-fe-prob-mc"/>. Then,
     <md number="yes">
         \enorm{u - u_h}
@@ -258,7 +258,7 @@ We must modify the analysis for our previous Best Approximation result (<xref re
     <title>Error Estimate for the Steady State</title>  
     <statement>
         <p>
-    \label{cor:MC-ss-err}
+    <!-- \label{cor:MC-ss-err}-->
     Suppose <m>u\in H^1_0(\Omega)</m> is the solution of <xref ref="eqn-strong"/> and <m>u_h</m> the solution of <xref ref="eqn-fe-prob-mc"/>. 
     Given that <m>\mathcal{K}\in L^\infty(\Omega\times\Omega)</m> and <m>C_s\leq 1</m>, we have with probability at least <m>1-\eta</m>
     <md number="yes" >
@@ -298,7 +298,7 @@ Indeed, <m>s_M(\cdot,\cdot)</m> appears in both <xref ref="eqn-fe-prob-mc"/> and
 <p>
     Instead, all that is needed for our convergence results (<xref ref="thm-conv-l2"/> and <xref ref="cor-conv-supg"/>) to carry over is that <m>s_M(\cdot,\cdot)</m> admits a continuity result equivalent to <xref ref="lem-s-cont"/>. By bounding <m>\mathcal{K}</m> above by its infinity-norm evaluated everywhere on the domain, we arrive at the following:
     <md number="yes" xml:id="eqn-sm-cont">
-        \label{eqn:sM-cont}
+        <!-- \label{eqn:sM-cont}-->
         s_M(w,v) \leq C_s^M \enorm{w}\enorm{v},
     </md>
     where
@@ -316,7 +316,7 @@ Indeed, <m>s_M(\cdot,\cdot)</m> appears in both <xref ref="eqn-fe-prob-mc"/> and
     
     <statement>
         <p>
-    \label{cor:conv-supg-MC}
+    <!-- \label{cor:conv-supg-MC}-->
     Let <m>u_h</m> be the solution of <xref ref="eqn-fe-prob-mc"/>, <m>u_h^{(0)}\in V_h</m> arbitrary and <m>\{u_h^{(n)}\}_{n\in\mathbb{N}}</m> the sequence defined by <xref ref="eqn-iter-prob-mc"/>.
     Given <m>\mathcal{K}\in L^\infty(\Omega\times\Omega)</m>, we have for all <m>n\in\mathbb{N}_0</m>,
     <md number="yes" >
@@ -345,7 +345,7 @@ Indeed, <m>s_M(\cdot,\cdot)</m> appears in both <xref ref="eqn-fe-prob-mc"/> and
 <theorem xml:id="thm-sto">
     <title>Error Estimate with Monte Carlo Integration</title>
     <statement><p>
-    \label{thm:sto}
+    <!-- \label{thm:sto}-->
     Suppose <m>u</m> is the solution of <xref ref="eqn-strong"/>.
     Let <m>u_h</m> be the solution of <xref ref="eqn-fe-prob-mc"/>, <m>u_h^{(0)}\in V_h</m> arbitrary and <m>\{u_h^{(n)}\}_{n\in\mathbb{N}}</m> the sequence defined by <xref ref="eqn-iter-prob-mc"/>.
     Given <m>\mathcal{K}\in L^\infty(\Omega\times\Omega)</m>, we have for all <m>n\in\mathbb{N}_0</m>, with probability <m>1-\eta</m>,

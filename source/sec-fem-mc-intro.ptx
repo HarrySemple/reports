@@ -19,7 +19,7 @@
   <p>
     To handle this nonlocality, classical deterministic approaches make limiting approximations. In shielding applications, buildup factors and low-order discrete-ordinates (<m>S_N</m>) quadratures are used, but both degrade for complex geometries and highly anisotropic scattering
     <url href="https://academic.oup.com/rpd/article-abstract/115/1-4/254/1601276?login=false">[n]</url>.
-    Diffusion synthetic acceleration (DSA), which uses a low-order diffusion correction to accelerate the source iteration (Richardson) scheme for the $S_N$ equations, is effective in the diffusive regime but is known to lose stability for problems with strong reflective boundaries or high scattering ratios
+    Diffusion synthetic acceleration (DSA), which uses a low-order diffusion correction to accelerate the source iteration (Richardson) scheme for the <m>S_N</m> equations, is effective in the diffusive regime but is known to lose stability for problems with strong reflective boundaries or high scattering ratios
     <url href="https://www.tandfonline.com/doi/abs/10.1080/00411458408211656?casa_token=JbM2uQPpCxsAAAAA:hNAM31ZvKrtGbxRJOJXjqcGYmXkwfGh8v1F9-QWLvEfE2mNA9o0rvMTNLmnJEh7dEG1tNlF5gKRB">[n]</url>.
   </p>
 
@@ -61,8 +61,8 @@
     setting, deriving a Strang-type error estimate in which the 
     Monte Carlo consistency error is bounded probabilistically 
     via Hoeffding's inequality. The resulting estimate makes 
-    explicit the interplay between mesh size $h$, sample size $M$, and iteration 
-    count $n$. <xref ref="sec-fem-mc-numerics"/> verifies the predicted 
+    explicit the interplay between mesh size <m>h</m>, sample size <m>M</m>, and iteration 
+    count <m>n</m>. <xref ref="sec-fem-mc-numerics"/> verifies the predicted 
     convergence rates using a manufactured solution on the unit 
     square, and <xref ref="sec-fem-mc-conclusion"/> concludes with a 
     discussion of limitations and directions for further work.

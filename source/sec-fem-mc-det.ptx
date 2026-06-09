@@ -44,7 +44,6 @@
         <title>Consistency of the SUPG Method</title>
         <statement>
             <p>
-                \label{lem:well-posed}
                 Let <m>u</m> be the true solution of<xref ref="eqn-strong-simple"/>. Then for all <m>v\in V_h</m> we have 
                 <md number="yes">
                     a(u,v) = s(u,v) + l(v).
@@ -80,7 +79,6 @@
     <title>Coercivity of <m>a(\cdot,\cdot)</m></title>
     <statement>
         <p>
-    \label{lem:a-coer}
     For all <m>v\in V_h</m> we have 
     <md number="yes">
         a(v,v) \geq \frac{1}{2}\enorm{v}^2.
@@ -189,7 +187,6 @@
     <title>Continuity of <m>a(\cdot,\cdot)</m></title>
     <statement>
         <p>
-    \label{lem:a-cont}
     For all <m>w,v\in V_h</m> we have that
     <md number="yes" xml:id="eqn-a-cont">
         a(w,v) \leq C_a \snorm{w} \enorm{v},
@@ -384,7 +381,6 @@
     <title>Boundedness of <m>\mathcal{S}</m></title>
     <statement>
         <p>
-    \label{lem:bound-big-s}
     For all <m>v\in H^1(\Omega)</m> we have that
     <md number="yes">
         \ltwo{\mathcal{S}v} \leq \linf{\sigma_T}\|\mathcal{K}\|_{L^2(\Omega\times\Omega)} \ltwo{v},
@@ -430,7 +426,6 @@
     <title>Continuity of <m>s(\cdot,\cdot)</m></title>
     <statement>
         <p>
-    \label{lem:s-cont}
     For all <m>w,v\in V_h</m> we have that
     <md number="yes" >
         s(w,v) \leq \tilde{C}_s \ltwo{w} \enorm{v},
@@ -513,7 +508,6 @@
     <title>Coercivity of <m>a-s</m></title>
     <statement>
         <p>
-    \label{lem:a-s-coer}
     Suppose
     <md number="yes" xml:id="eqn-a-s-coer-1">
         \label{eqn:a-s-coer-1}<!--
@@ -553,7 +547,6 @@
     <title>Continuity of <m>a-s</m></title>
     <statement>
         <p>
-    \label{lem:a-s-cont}
     For all <m>w,v\in V_h</m>, we have that
     <md number="yes" >
         a(w,v) - s(w,v) \leq C_A \snorm{w}\enorm{v},
@@ -609,7 +602,6 @@
     <title>C\'{e}a-type best-approximation estimate</title>
     <statement>
         <p>
-    \label{thm:best-approx}
     Let <m>u\in H^1_0</m> be a solution of<xref ref="eqn-strong"/> with <m>g=0</m> and let <m>u_h\in V_h</m> be a solution of<xref ref="eqn-fe-problem"/>. Then we have the following best approximation result:
     <md number="yes" >
         \enorm{u - u_h}
@@ -716,7 +708,6 @@
     <title>Rates of Convergence</title>
     <statement>
         <p>
-    \label{cor:FE-conv-rate}
     Let <m>k\geq 1</m> denote the piecewise polynomial degree of elements of <m>V_h</m>.
     Suppose the exact solution <m>u\in H_0^r(\Omega)</m> of<xref ref="eqn-strong"/> is such that <m>r</m> is sufficiently large for <m>u</m> to belong to the domain of the Lagrange interpolation operator. Then, there exists a constant <m>C</m> such that
     <md number="yes" >
@@ -775,7 +766,6 @@
     <title>Contraction in mixed norms</title>
     <statement>
         <p>
-    \label{lem:cont-mix}
     Let <m>u_h\in V_h</m> be the solution of the stationary finite element problem<xref ref="eqn-fe-problem"/>. Take <m>u_h^{(0)}\in V_h</m> and denote by <m>\{u_h^{(n)}\}_{n\in\mathbb{N}_0}</m> the sequence of solutions to the iterative problem<xref ref="eqn-iter-problem"/>. We have that, for all <m>n\in \mathbb{N}_0</m>
     <md number="yes" >
         \enorm{u_h-u_h^{(n)}} 
@@ -816,7 +806,6 @@
     <title>Convergence in <m>L^2(\Omega)</m>-norm</title>
     <statement>
         <p>
-    \label{thm:conv-l2}
     Let <m>u_h\in V_h</m> be the solution of the stationary finite element problem<xref ref="eqn-fe-problem"/>. Take <m>u_h^{(0)}\in V_h</m> and denote by <m>\{u_h^{(n)}\}_{n\in\mathbb{N}_0}</m> the sequence of solutions to the iterative problem<xref ref="eqn-iter-problem"/>. We have that, for all <m>n\in \mathbb{N}_0</m>
     <md number="yes" xml:id="eqn-conv-l2">
         \label{eqn:conv-l2}
@@ -851,7 +840,6 @@
     <title>Convergence in SUPG-norm</title>
     <statement>
         <p>
-    \label{cor:conv-supg}
     Let <m>u_h\in V_h</m> be the solution of the stationary finite element problem<xref ref="eqn-fe-problem"/>. Take <m>u_h^{(0)}\in V_h</m> and denote by <m>\{u_h^{(n)}\}_{n\in\mathbb{N}_0}</m> the sequence of solutions to the iterative problem<xref ref="eqn-iter-problem"/>. We have that, for all <m>n\in \mathbb{N}_0</m>
     <md number="yes" >
         \enorm{u_h-u_h^{(n)}} 
@@ -883,7 +871,6 @@ We can now populate the triangle inequality for iterative solution error origina
     <title>Error Estimate in the Deterministic Setting</title>
     <statement>
         <p>
-    \label{thm:det}
     Let <m>u</m> be the solution of<xref ref="eqn-strong"/> and suppose <m>u_h\in V_h</m> is the solution of the stationary finite element problem<xref ref="eqn-fe-problem"/>. Take <m>u_h^{(0)}\in V_h</m> and denote by <m>\{u_h^{(n)}\}_{n\in\mathbb{N}_0}</m> the sequence of solutions to the iterative problem<xref ref="eqn-iter-problem"/>. We have that, for all <m>n\in \mathbb{N}_0</m>
     <md number="yes" >
         \enorm{u-u_h^{(n)}}
