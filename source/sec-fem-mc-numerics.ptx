@@ -79,10 +79,10 @@ factor of approximately <m>(64/512)^{k+1/2} = (1/8)^{3/2} \approx 0.044</m>, in 
         <m>512\times512</m> mesh (bottom) on <m>\Omega=[0,1]^2</m> with unit kernel <m>\mathcal{K}(x,y) = 1</m> and exact (quadrature-based) evaluation of the scattering operator. The graphs show the sequence <m>\{u_h^{(1)}, u_h^{(2)}, \ldots\}</m> initialised with <m>u_h^{(0)} = 0</m>, and the orange dashed line indicates the theoretical bound <m>(2C_s)^n</m>.
     </caption>
     <sidebyside widths="50% 50%">
-    <image source="./images/source-det-h-64.png">
+    <image source="images/source-det-h-64.png">
     </image>
-    <image source="./images/source-det-h-512.png">
-    </image>
+    <image source="images/source-det-h-512.png">
+    </image>    
     </sidebyside>
 </figure>
 
@@ -108,7 +108,7 @@ interpolation-based estimate in <xref ref="cor-fe-conv-rate"/>.
     <caption>Convergence of the finite element discretisation for increasingly refined uniform square meshes on <m>\Omega=[0,1]^2</m> with unit kernel <m>\mathcal{K}(x,y) = 1</m> and deterministic scattering (computed with quadrature). 
     For each mesh (value of <m>h</m>), the ten source iterations are performed before moving to the next refinement.
     The graph shows the sequence <m>\{u_{0.5}^{(10)}, u_{0.25}^{(10)}, u_{0.125}^{(10)} , \ldots\}</m> and is initialised on each mesh with <m>u_{h}^{(0)} = 0</m>.</caption>
-    <image width="50%" source="./images/FE-det-h-2-512.png">        
+    <image width="50%" source="images/FE-det-h-2-512.png">        
     </image>
 </figure>
 
@@ -147,9 +147,9 @@ falls below <m>\mathcal{O}(M^{-1/2})</m>.</p>
     Exact (quadrature-based) computation of the scattering operator is shown in blue, with orange representing
     Monte Carlo estimation of the scattering operator, with <m>M = 10000</m>. The graphs show the sequence <m>\{u_h^{(1)}, u_h^{(2)}, \ldots\}</m> initialised with <m>u_h^{(0)} = 0</m>, and the green dashed line indicates the theoretical bound <m>(2C_s)^n</m>.</caption>
     <sidebyside widths="50% 50%">
-    <image source="./images/source-det-sto-h-64">
+    <image source="images/source-det-sto-h-64.png">
     </image>
-    <image source="./images/source-det-sto-h-512">
+    <image source="images/source-det-sto-h-512.png">
     </image>
     </sidebyside>
 </figure>
@@ -178,7 +178,7 @@ consistency error.</p>
     <caption>Convergence of the finite element discretisation for increasingly refined uniform square meshes on <m>\Omega=[0,1]^2</m> with unit kernel <m>\mathcal{K}(x,y) = 1</m> and Monte Carlo estimation of the scattering operator, with <m>M = 10000</m>. 
     For each mesh (value of <m>h</m>), the ten source iterations are performed before moving to the next refinement.
     The graph shows the sequence <m>\{u_{0.5}^{(10)}, u_{0.25}^{(10)}, u_{0.125}^{(10)} , \ldots\}</m> and is initialised on each mesh with <m>u_{h}^{(0)} = 0</m>.}</caption>
-    <image width="50%" source="./images/FE-sto-h-2-512.png">
+    <image width="50%" source="images/FE-sto-h-2-512.png">
     </image>
 </figure>
 
@@ -194,9 +194,9 @@ single sample path.</p>
     <m>64\times64</m> mesh (top) and a
     <m>512\times512</m> mesh (bottom) on <m>\Omega=[0,1]^2</m> with unit kernel <m>\mathcal{K}(x,y) = 1</m>.  and Monte Carlo estimation of the scattering operator, with <m>M = 40000</m>. The graphs show the sequence <m>\{u_h^{(1)}, u_h^{(2)}, \ldots\}</m> initialised with <m>u_h^{(0)} = 0</m>, and the green dashed line indicates the theoretical bound <m>(2C_s)^n</m>.</caption>
     <sidebyside widths="50% 50%">
-        <image source="./images/source-det-sto-h-64-40000.png">
+        <image source="images/source-det-sto-h-64-40000.png">
         </image>
-        <image source="./images/source-det-sto-h-512-40000.png">
+        <image source="images/source-det-sto-h-512-40000.png">
         </image>
     </sidebyside>
 </figure>
