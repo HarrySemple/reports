@@ -2,37 +2,35 @@
 
 <section xml:id="sec-fem-mc-det" xmlns:xi="http://www.w3.org/2001/XInclude">
   <title>Deterministic Analysis</title>
-
-  <p> Text of section. </p>
-
-<subsection>
+  
+  <subsection>
     <title>Introduction</title>
     <p>
-        In this section, we present a preliminary error analysis under the simplifying assumption that $\mathcal{S}$ is computed exactly. We define the norms used throughout, before establishing well-posedness through verifying the conditions for the Lax-Milgram theorem. We then derive separate bounds for the discretisation error $\enorm{u-u_h}$ and the iteration error $\enorm{u_h-u_h^{(n)}}$, which combine via the triangle inequality to give the main deterministic estimate. For simplicity, we take $g=0$ (meaning $u\in H_0^1$) from this section onwards - an extension to nonhomogenous inflow data is left to future work.
+        In this section, we present a preliminary error analysis under the simplifying assumption that <m>\mathcal{S}</m> is computed exactly. We define the norms used throughout, before establishing well-posedness through verifying the conditions for the Lax-Milgram theorem. We then derive separate bounds for the discretisation error <m>\enorm{u-u_h}</m> and the iteration error <m>\enorm{u_h-u_h^{(n)}}</m>, which combine via the triangle inequality to give the main deterministic estimate. For simplicity, we take <m>g=0</m> (meaning <m>u\in H_0^1</m>) from this section onwards - an extension to nonhomogenous inflow data is left to future work.
     </p>  
 </subsection>
 
 <subsection>
     <title>Norms</title>
     <p>
-        We equip $V_h$ with the SUPG norm, defined as
-        \begin{equation}
+        We equip <m>V_h</m> with the SUPG norm, defined as
+        <md number="yes" xml:id="eqn-supg-norm">
             \label{eqn:supg-norm}
             \enorm{v}^2 := \mu\ltwo{v}^2 
             + \sum_{K\in\mathscr{T}_h} \delta_K \ltwok{\mathbf{b}\cdot\nabla v}^2
             + \int_{\partial\Omega} |\mathbf{b}\cdot\mathbf{n}| v^2 \, \mathrm{d}S,
-        \end{equation}
-        where $\mu$ is the positivity constant defined in~\eqref{eqn:positivity} and $\delta_K$ is the element-wise stabilisation parameter.
+        </md>
+        where <m>\mu</m> is the positivity constant defined in<xref ref="eqn-positivity"/> and <m>\delta_K</m> is the element-wise stabilisation parameter.
         This immediately results in the following relation of norms, used frequently in later analysis
-        \begin{equation}
+        <md number="yes" xml:id="eqn-rel-norms">
             \label{eqn:rel-norms}
             \enorm{v}^2 \geq \mu\ltwo{v}^2 \qquad \forall v\in V_h.
-        \end{equation}
+        </md>
         For continuity estimates, we also require the stronger star-SUPG norm, given by
-        \begin{equation}
+        <md number="yes" xml:id="eqn-star-supg-norm">
             \label{eqn:star-supg-norm}
             \snorm{v}^2 = \enorm{v}^2 + \sum_{K\in\mathscr{T}} \delta_K^{-1} \ltwok{v}^2.
-        \end{equation}
+        </md>
     </p>
 </subsection>
 
@@ -40,328 +38,312 @@
 <subsection>
     <title>Well-Posedness and Key Properties</title>
     <p>
-        We now present key properties of the bilinear and linear forms defined in~\eqref{eqn:a},~\eqref{eqn:s} and~\eqref{eqn:l}. This will show that the variational problem~\eqref{eqn:FE-problem} is well-posed, and provide the necessary results for error analysis.
+        We now present key properties of the bilinear and linear forms defined in<xref ref="eqn-a"/>,<xref ref="eqn-s"/> and<xref ref="eqn-l"/>. This will show that the variational problem<xref ref="eqn-FE-problem"/> is well-posed, and provide the necessary results for error analysis.
     </p>
     <lemma xml:id="lem-well-posed">
         <title>Consistency of the SUPG Method</title>
         <statement>
             <p>
                 \label{lem:well-posed}
-                Let $u$ be the true solution of~\eqref{eqn:strong-simple}. Then for all $v\in V_h$ we have 
-                \begin{equation}
+                Let <m>u</m> be the true solution of<xref ref="eqn-strong-simple"/>. Then for all <m>v\in V_h</m> we have 
+                <md number="yes">
                     a(u,v) = s(u,v) + l(v).
-                \end{equation}
+                </md>
             </p>
         </statement>
     </lemma>
     <proof>
         <p>
             We have 
-            \begin{equation}
-                \begin{aligned}
-                    a(u,v) - s(u,v) - l(v) =&
-                    \int_{\Omega} (\mathbf{b}\cdot\nabla u + \sigma u - \mathcal{S}u - q) v \, \mathrm{d}x\\
-                    &+ \sum_{K\in\mathscr{T}_h} \int_K \delta_K (\mathbf{b}\cdot\nabla u + \sigma u - \mathcal{S}u - q)(\mathbf{b}\cdot\nabla v) \, \mathrm{d}x\\
-                    &- \int_{\Gamma_-} (\mathbf{b}\cdot\mathbf{n})(u-g)v\, ds\\
-                    =& 0.
-                \end{aligned}
-            \end{equation}
+            <md number="yes">
+                <mrow>
+                    a(u,v) - s(u,v) - l(v) &amp;
+                    \int_{\Omega} (\mathbf{b}\cdot\nabla u + \sigma u - \mathcal{S}u - q) v \, \mathrm{d}x
+                </mrow>
+                <mrow>
+                    &amp;+ \sum_{K\in\mathscr{T}_h} \int_K \delta_K (\mathbf{b}\cdot\nabla u + \sigma u - \mathcal{S}u - q)(\mathbf{b}\cdot\nabla v) \, \mathrm{d}x
+                </mrow>
+                <mrow>
+                    &amp;- \int_{\Gamma_-} (\mathbf{b}\cdot\mathbf{n})(u-g)v\, ds
+                </mrow>
+                <mrow>
+                    =&amp; 0.
+                </mrow>
+            </md>
         </p>
     </proof>
     
 
 
 
-\begin{lemma}[Coercivity of $a(\cdot,\cdot)$]
+<lemma xml:id="lem-a-coer">
+    <title>Coercivity of <m>a(\cdot,\cdot)</m></title>
+    <statement>
+        <p>
     \label{lem:a-coer}
-    For all $v\in V_h$ we have 
-    \begin{equation}
+    For all <m>v\in V_h</m> we have 
+    <md number="yes">
         a(v,v) \geq \frac{1}{2}\enorm{v}^2.
-    \end{equation}    
-\end{lemma}
-\begin{proof}
-    We treat each term in~\eqref{eqn:a} separately.
-    For the convection term, by Green's formula~\eqref{eqn:greens} we have
-    \begin{equation}
-        \begin{aligned}
-            \int_{\Omega} (\mathbf{b} \cdot \nabla v)\, v \, \mathrm{d}x 
-            &= \frac{1}{2} \int_{\Omega} \mathbf{b} \cdot \nabla (v^2)\, \mathrm{d}x \\
-            &= \frac{1}{2} \int_{\partial \Omega} (\mathbf{b} \cdot \mathbf{n})\, v^2 \, \mathrm{d}S .  
-        \end{aligned}
-    \end{equation}
-    We combine this with the boundary inflow term. Let $\Gamma_+ = \partial\Omega\setminus\Gamma_-$. We have
-    \begin{equation}
-        \begin{aligned}
-            \frac{1}{2} \int_{\partial \Omega} (\mathbf{b} \cdot \mathbf{n})\, v^2 \, \mathrm{d}S 
-            - \int_{\Gamma_-} (\mathbf{b} &\cdot \mathbf{n})\, v^2 \, \mathrm{d}S \\
-            &= \frac{1}{2}\int_{\Gamma_+} (\mathbf{b} \cdot \mathbf{n})\, v^2 \, \mathrm{d}S 
-            - \frac{1}{2}\int_{\Gamma_-} (\mathbf{b} \cdot \mathbf{n})\, v^2 \, \mathrm{d}S \\
-            &= \frac{1}{2}\int_{\partial\Omega} |\mathbf{b} \cdot \mathbf{n}|\, v^2 \, \mathrm{d}S,
-        \end{aligned}
-    \end{equation}
-    where the last equality follows from definition of $\Gamma_-$ in~\eqref{eqn:strong-bcs}.
+    </md>    
+        </p>
+    </statement>
+</lemma>
+<proof><p>
+    We treat each term in<xref ref="eqn-a"/> separately.
+    For the convection term, by Green's formula<xref ref="eqn-greens"/> we have
+    <md number="yes">
+            <mrow>\int_{\Omega} (\mathbf{b} \cdot \nabla v)\, v \, \mathrm{d}x 
+            &amp;= \frac{1}{2} \int_{\Omega} \mathbf{b} \cdot \nabla (v^2)\, \mathrm{d}x</mrow>
+            <mrow>&amp;= \frac{1}{2} \int_{\partial \Omega} (\mathbf{b} \cdot \mathbf{n})\, v^2 \, \mathrm{d}S .</mrow> 
+    </md>
+    We combine this with the boundary inflow term. Let <m>\Gamma_+ = \partial\Omega\setminus\Gamma_-</m>. We have
+    <md number="yes">
+            <mrow>\frac{1}{2} \int_{\partial \Omega} (\mathbf{b} \cdot \mathbf{n})\, v^2 \, \mathrm{d}S 
+            - \int_{\Gamma_-} (\mathbf{b} &amp;\cdot \mathbf{n})\, v^2 \, \mathrm{d}S </mrow>
+            <mrow>&amp;= \frac{1}{2}\int_{\Gamma_+} (\mathbf{b} \cdot \mathbf{n})\, v^2 \, \mathrm{d}S 
+            - \frac{1}{2}\int_{\Gamma_-} (\mathbf{b} \cdot \mathbf{n})\, v^2 \, \mathrm{d}S </mrow>
+            <mrow>&amp;= \frac{1}{2}\int_{\partial\Omega} |\mathbf{b} \cdot \mathbf{n}|\, v^2 \, \mathrm{d}S,</mrow>
+    </md>
+    where the last equality follows from definition of <m>\Gamma_-</m> in<xref ref="eqn-strong-bcs"/>.
     Combined with the reaction term, we have
-    \begin{equation}
-        \begin{aligned}
-            \label{eqn:coer-a-1}
-            \int_{\Omega} (\mathbf{b} \cdot \nabla v)\, v + \sigma v^2\, \mathrm{d}x 
-            - \int_{\Gamma_-} (\mathbf{b} &\cdot \mathbf{n})\, v^2 \, \mathrm{d}S\\
-            &= \int_{\Omega} \sigma v^2\, \mathrm{d}x 
-            + \frac{1}{2}\int_{\partial\Omega} |\mathbf{b} \cdot \mathbf{n}|\, v^2 \, \mathrm{d}S\\
-            &\geq \mu\ltwo{v}^2 + \frac{1}{2}\int_{\partial\Omega} |\mathbf{b} \cdot \mathbf{n}|\, v^2 \, \mathrm{d}S.
-        \end{aligned}
-    \end{equation}
+    <md number="yes">
+            <mrow>\int_{\Omega} (\mathbf{b} \cdot \nabla v)\, v + \sigma v^2\, \mathrm{d}x 
+            - \int_{\Gamma_-} (\mathbf{b} &amp;\cdot \mathbf{n})\, v^2 \, \mathrm{d}S</mrow>
+            <mrow>&amp;= \int_{\Omega} \sigma v^2\, \mathrm{d}x 
+            + \frac{1}{2}\int_{\partial\Omega} |\mathbf{b} \cdot \mathbf{n}|\, v^2 \, \mathrm{d}S</mrow>
+            <mrow xml:id="eqn-coer-a-1">&amp;\geq \mu\ltwo{v}^2 + \frac{1}{2}\int_{\partial\Omega} |\mathbf{b} \cdot \mathbf{n}|\, v^2 \, \mathrm{d}S.</mrow>
+        </md>
     Now, we turn to the SUPG term. We have
-    \begin{equation}
-        \begin{aligned}
-            \sum_{K \in \mathscr{T}_h}
+    <md number="yes">
+            <mrow>\sum_{K \in \mathscr{T}_h}
             \int_K
-            \delta_K \, (\boldsymbol{b}\cdot\nabla v &+ \sigma v)\,
-            (\boldsymbol{b}\cdot\nabla v)\, \mathrm{d}x\\
-            &=
+            \delta_K \, (\boldsymbol{b}\cdot\nabla v &amp;+ \sigma v)\,
+            (\boldsymbol{b}\cdot\nabla v)\, \mathrm{d}x</mrow>
+            <mrow>&amp;=
             \sum_{K \in \mathscr{T}_h} 
             \int_K
             \delta_K \, |\boldsymbol{b}\cdot\nabla v |^2\, \mathrm{d}x
-            + \sum_{K \in \mathscr{T}_h} \int_K \delta_K \sigma v\, (\mathbf{b} \cdot \nabla v)\, dx\\
-            &=
+            + \sum_{K \in \mathscr{T}_h} \int_K \delta_K \sigma v\, (\mathbf{b} \cdot \nabla v)\, dx</mrow>
+            <mrow>&amp;=
             \sum_{K \in \mathscr{T}_h} \delta_K \|\mathbf{b} \cdot \nabla v\|_{L^2(K)}^2
-            + \sum_{K \in \mathscr{T}_h} \int_K \delta_K \sigma v\, (\mathbf{b} \cdot \nabla v)\, dx\\
-        \end{aligned}
-    \end{equation}
-    The second term is indefinite, and we bound its contribution with Young's inequality~\eqref{eqn:youngs}
-    \begin{equation}
+            + \sum_{K \in \mathscr{T}_h} \int_K \delta_K \sigma v\, (\mathbf{b} \cdot \nabla v)\, dx</mrow>
+    </md>
+    The second term is indefinite, and we bound its contribution with Young's inequality<xref ref="eqn-youngs"/>
+    <md number="yes" >
         \left| \int_K \delta_K \sigma v\, (\mathbf{b} \cdot \nabla v)\, dx\right|
         \leq
         \frac{1}{2}\,\delta_K \|\mathbf{b} \cdot \nabla v\|_{L^2(K)}^2
 + \frac{1}{2}\,\delta_K \linf{\sigma}^2 \|v\|_{L^2(K)}^2.
-    \end{equation}
+    </md>
     Thus, the SUPG Term is bounded below by
-    \begin{equation}
-        \begin{aligned}
-            \label{eqn:coer-a-2}
+    <md number="yes">
+        <mrow>
             \sum_{K \in \mathscr{T}_h}
             \int_K
-            \delta_K \, (\boldsymbol{b}\cdot\nabla v &+ \sigma v)\,
-            (\boldsymbol{b}\cdot\nabla v)\, \mathrm{d}x\\
-            &\geq 
+            \delta_K \, (\boldsymbol{b}\cdot\nabla v &amp;+ \sigma v)\,
+            (\boldsymbol{b}\cdot\nabla v)\, \mathrm{d}x</mrow><mrow>
+            &amp;\geq 
             \sum_{K \in \mathscr{T}_h} \delta_K \|\mathbf{b} \cdot \nabla v\|_{L^2(K)}^2
             -
             \sum_{K \in \mathscr{T}_h}
-            \frac{1}{2}\,\delta_K \|\mathbf{b} \cdot \nabla v\|_{L^2(K)}^2\\
-            &\qquad \qquad - 
+            \frac{1}{2}\,\delta_K \|\mathbf{b} \cdot \nabla v\|_{L^2(K)}^2</mrow><mrow>
+            &amp;\qquad \qquad - 
             \sum_{K \in \mathscr{T}_h}
-            \frac{1}{2}\,\delta_K \linf{\sigma}^2 \|v\|_{L^2(K)}^2\\
-            &=
+            \frac{1}{2}\,\delta_K \linf{\sigma}^2 \|v\|_{L^2(K)}^2</mrow><mrow xml:id="eqn-coer-a-2">
+            &amp;=
             \frac{1}{2}
             \sum_{K \in \mathscr{T}_h}
             \delta_K \|\mathbf{b} \cdot \nabla v\|_{L^2(K)}^2 
             - 
             \frac{1}{2}
             \sum_{K \in \mathscr{T}_h}
-            \delta_K \linf{\sigma}^2 \|v\|_{L^2(K)}^2.
-        \end{aligned}
-    \end{equation}
-    By~\eqref{eqn:delta-bound}, we have $\delta_K \leq \mu/\linf{\sigma}^2$. Thus,
-    \begin{equation}
-        \label{eqn:coer-a-3}
-        \begin{aligned}
+            \delta_K \linf{\sigma}^2 \|v\|_{L^2(K)}^2.</mrow>
+    </md>
+    By<xref ref="eqn-delta-bound"/>, we have <m>\delta_K \leq \mu/\linf{\sigma}^2</m>. Thus,
+    <md number="yes">
+        <mrow>
             \sum_{K \in \mathscr{T}_h}
             \int_K
-            \delta_K \, (\boldsymbol{b}\cdot\nabla v &+ \sigma v)\,
-            (\boldsymbol{b}\cdot\nabla v)\, \mathrm{d}x\\
-            &\geq 
+            \delta_K \, (\boldsymbol{b}\cdot\nabla v &amp;+ \sigma v)\,
+            (\boldsymbol{b}\cdot\nabla v)\, \mathrm{d}x</mrow><mrow xml:id="eqn-coer-a-3">
+            &amp;\geq 
             \frac{1}{2}
             \sum_{K \in \mathscr{T}_h}
             \delta_K \|\mathbf{b} \cdot \nabla v\|_{L^2(K)}^2 
             - 
-            \frac{\mu}{2}\ltwo{v}^2
-        \end{aligned}
-    \end{equation}
-    Adding~\eqref{eqn:coer-a-1} and~\eqref{eqn:coer-a-3}, we have
-    \begin{equation}
-        \begin{aligned}
+            \frac{\mu}{2}\ltwo{v}^2</mrow>
+    </md>
+    Adding<xref ref="eqn-coer-a-1"/> and<xref ref="eqn-coer-a-3"/>, we have
+    <md number="yes"><mrow>
             a(v, v) 
-            &\geq \frac{\mu}{2} \|v\|_{L^2(\Omega)}^2
+            &amp;\geq \frac{\mu}{2} \|v\|_{L^2(\Omega)}^2
             + \frac{1}{2} \sum_K \delta_K \|\mathbf{b} \cdot \nabla v\|_{L^2(K)}^2
-            + \frac{1}{2} \| |\mathbf{b} \cdot \mathbf{n}|^{1/2} v\|_{L^2(\partial\Omega)}^2\\
-            &\geq \frac{1}{2} \enorm{v}^2.
-        \end{aligned}
-    \end{equation}
-\end{proof}
+            + \frac{1}{2} \| |\mathbf{b} \cdot \mathbf{n}|^{1/2} v\|_{L^2(\partial\Omega)}^2</mrow>
+            <mrow>&amp;\geq \frac{1}{2} \enorm{v}^2.</mrow>
+    </md>
+</p></proof>
+     
 
 
-\begin{lemma}[Continuity of $a(\cdot,\cdot)$]
+<lemma xml:id="lem-a-cont">
+    <title>Continuity of <m>a(\cdot,\cdot)</m></title>
+    <statement>
+        <p>
     \label{lem:a-cont}
-    For all $w,v\in V_h$ we have that
-    \begin{equation}
-        \label{eqn:a-cont}
+    For all <m>w,v\in V_h</m> we have that
+    <md number="yes" xml:id="eqn-a-cont">
         a(w,v) \leq C_a \snorm{w} \enorm{v},
-    \end{equation}
-    where $C_a = 5 + \linf{\sigma}/\mu$.
-\end{lemma}
-\begin{proof}
-    We bound every term of~\eqref{eqn:a} in the form of~\eqref{eqn:a-cont}.
+    </md>
+    where <m>C_a = 5 + \linf{\sigma}/\mu</m>.
+        </p>
+    </statement>
+</lemma>
+<proof><p>
+    We bound every term of<xref ref="eqn-a"/> in the form of<xref ref="eqn-a-cont"/>.
     Beginning with the convection term, we apply Green's formula
-    \begin{equation}
-        \label{eqn:a-cont-01}
-        \begin{aligned}
+    <md number="yes" xml:id="eqn-a-cont-01">
             \int_\Omega (\mathbf{b}\cdot \nabla w)\,v\,\mathrm{d}x
             =
             \int_{\partial\Omega} (\mathbf{b}\cdot\mathbf{n})\,wv\,\mathrm{d}S
             -
             \int_\Omega (\mathbf{b}\cdot \nabla v)\,w\,\mathrm{d}x.
-        \end{aligned}
-    \end{equation}
-    We bound the first term in~\eqref{eqn:a-cont-01} as
-    \begin{equation}
-        \begin{aligned}
+    </md>
+    We bound the first term in<xref ref="eqn-a-cont-01"/> as
+    <md number="yes">
+        <mrow>
             \left|
                 \int_{\partial\Omega} (\mathbf{b}\cdot\mathbf{n})\,wv\,\mathrm{d}S
             \right|
-            &\leq
+            &amp;\leq
             \int_{\partial\Omega} 
             |\mathbf{b}\cdot\mathbf{n}|\,|w||v|\,
-            \mathrm{d}S\\
-            &\leq
+            \mathrm{d}S\</mrow><mrow>
+            &amp;\leq
             \left|\int_{\partial\Omega} 
             |\mathbf{b}\cdot\mathbf{n}|
             \,w^2\,\mathrm{d}S\right|^{1/2}
             \left|\int_{\partial\Omega} 
             |\mathbf{b}\cdot\mathbf{n}|
-            \,v^2\,\mathrm{d}S\right|^{1/2}\\
-            &\leq
+            \,v^2\,\mathrm{d}S\right|^{1/2}</mrow><mrow>
+            &amp;\leq
             \enorm{w}
-            \enorm{v}\\
-            &\leq
+            \enorm{v}</mrow><mrow>
+            &amp;\leq
             \snorm{w}
-            \enorm{v}.
-        \end{aligned}
-    \end{equation}
-    The second term in~\eqref{eqn:a-cont-01} is bounded as
-    \begin{equation}
-        \begin{aligned}
+            \enorm{v}.</mrow>
+    </md>
+    The second term in<xref ref="eqn-a-cont-01"/> is bounded as
+    <md number="yes">
+        <mrow>
             \left|
                 \int_\Omega (\mathbf{b}\cdot \nabla v)\,w\,\mathrm{d}x
             \right|
-            &\leq
+            &amp;\leq
             \sum_{K \in \mathscr{T}_h}
-            \left|\int_K (\mathbf{b}\cdot \nabla v)\,w\,\mathrm{d}x\right|\\
-            &\leq
+            \left|\int_K (\mathbf{b}\cdot \nabla v)\,w\,\mathrm{d}x\right|</mrow><mrow>
+            &amp;\leq
             \sum_{K \in \mathscr{T}_h}
-            \ltwok{\mathbf{b}\cdot \nabla v} \ltwok{w}\\
-            &\leq            
+            \ltwok{\mathbf{b}\cdot \nabla v} \ltwok{w}</mrow><mrow>
+            &amp;\leq            
             \sum_{K \in \mathscr{T}_h}
             \delta_K^{1/2}\ltwok{\mathbf{b}\cdot \nabla v} 
-            \delta_K^{-1/2}\ltwok{w}\\
-            &\leq
+            \delta_K^{-1/2}\ltwok{w}</mrow><mrow>
+            &amp;\leq
             \left(\sum_{K \in \mathscr{T}_h}
             \delta_K \ltwok{\mathbf{b}\cdot \nabla v}^2 \right)^{1/2}
             \left(\sum_{K \in \mathscr{T}_h}
-            \delta_K^{-1} \ltwok{w}^2\right)^{1/2}\\
-            &\leq
-            \enorm{v}\snorm{w}.\\
-        \end{aligned}
-    \end{equation}
+            \delta_K^{-1} \ltwok{w}^2\right)^{1/2}</mrow><mrow>
+            &amp;\leq
+            \enorm{v}\snorm{w}.</mrow>
+    </md>
     Thus, the convection term is bounded as
-    \begin{equation}
-        \begin{aligned}
-            \label{eqn:a-cont-1}
+    <md number="yes" xml:id="eqn-a-cont-1">
             \left|\int_\Omega (\mathbf{b}\cdot \nabla w)\,v\,\mathrm{d}x\right|
-            &\leq
+            \leq
             2\snorm{w}\enorm{v}.
-        \end{aligned}
-    \end{equation}
+    </md>
     The reaction term is bounded by
-    \begin{equation}
-        \begin{aligned}
+    <md number="yes">
+        <mrow>
             \label{eqn:a-cont-2}
             \left| \int_{\Omega} \sigma v w \, dx \right|
-            &\leq \linf{\sigma} \|w\|_{L^2} \|v\|_{L^2}\\
-            &\leq \frac{\linf{\sigma}}{\mu}\snorm{w}\enorm{v}.
-        \end{aligned}
-    \end{equation}
+            &amp;\leq \linf{\sigma} \|w\|_{L^2} \|v\|_{L^2}</mrow><mrow>
+            &amp;\leq \frac{\linf{\sigma}}{\mu}\snorm{w}\enorm{v}.</mrow>
+    </md>
     The inflow boundary term is bounded by
-    \begin{equation}
-        \begin{aligned}
-            \label{eqn:a-cont-3}
+    <md number="yes">
+            <mrow>
             \left| \int_{\Gamma_-} (\mathbf{b} \cdot \mathbf{n}) \, w v \, \mathrm{d}S \right|
-            &\leq 
+            &amp;\leq 
             \int_{\Gamma_-} 
             |\mathbf{b} \cdot \mathbf{n}|
-            \, |w| |v| \, \mathrm{d}S\\
-            &\leq
+            \, |w| |v| \, \mathrm{d}S</mrow><mrow>
+            &amp;\leq
             \left(
                 \int_{\Gamma_-} |\mathbf{b}\cdot\mathbf{n}|\,w^2\,\mathrm{d}S
             \right)^{1/2}
             \left(
                 \int_{\Gamma_-} |\mathbf{b}\cdot\mathbf{n}|\,v^2\,\mathrm{d}S
-            \right)^{1/2}\\
-            &\leq
+            \right)^{1/2}</mrow><mrow>
+            &amp;\leq
             \left(
                 \int_{\partial\Omega} |\mathbf{b}\cdot\mathbf{n}|\,w^2\,\mathrm{d}S
             \right)^{1/2}
             \left(
                 \int_{\partial\Omega} |\mathbf{b}\cdot\mathbf{n}|\,v^2\,\mathrm{d}S
-            \right)^{1/2}\\
-            &\leq
+            \right)^{1/2}</mrow><mrow>
+            &amp;\leq
             \enorm{w}
-            \enorm{v}\\
-            &\leq
+            \enorm{v}</mrow><mrow xml:id="eqn-a-cont-3">
+            &amp;\leq
             \snorm{w}
-            \enorm{v}
-        \end{aligned}
-    \end{equation}
+            \enorm{v}</mrow>
+    </md>
     For the SUPG term, we have
-    \begin{equation}
-        \label{eqn:supg-continuity}
-        \begin{aligned}
+    <md number="yes">
+        <mrow>
             \sum_{K \in \mathscr{T}_h}
             \int_K
-            \delta_K \, (\boldsymbol{b}\cdot\nabla w &+ \sigma w)\,
-            (\boldsymbol{b}\cdot\nabla v)\, \mathrm{d}x\\
-            &=
+            \delta_K \, (\boldsymbol{b}\cdot\nabla w &amp;+ \sigma w)\,
+            (\boldsymbol{b}\cdot\nabla v)\, \mathrm{d}x</mrow><mrow>
+            &amp;=
             \sum_{K \in \mathscr{T}_h}
             \int_K
             \delta_K \, (\boldsymbol{b}\cdot\nabla w)\,
-            (\boldsymbol{b}\cdot\nabla v)\, \mathrm{d}x\\
-            & \qquad\qquad+
+            (\boldsymbol{b}\cdot\nabla v)\, \mathrm{d}x</mrow><mrow xml:id="eqn-supg-continuity">
+            &amp; \qquad\qquad+
             \sum_{K \in \mathscr{T}_h}
             \int_K
             \delta_K \, \sigma w\,
-            (\boldsymbol{b}\cdot\nabla v)\, \mathrm{d}x.
-        \end{aligned}
-    \end{equation}
-    We bound the first RHS term of~\eqref{eqn:supg-continuity} as
-    \begin{equation}
-        \begin{aligned}
-            \label{eqn:a-cont-4}
-            &\left|\sum_{K \in \mathscr{T}_h}            
+            (\boldsymbol{b}\cdot\nabla v)\, \mathrm{d}x.</mrow>
+    </md>
+    We bound the first RHS term of<xref ref="eqn-supg-continuity"/> as
+    <md number="yes">
+        <mrow>
+            &amp;\left|\sum_{K \in \mathscr{T}_h}            
             \int_K\delta_K  
             (\boldsymbol{b}\cdot\nabla w)\,(\boldsymbol{b}\cdot\nabla v)\, \mathrm{d}x
-            \right|\\
-            &\qquad\qquad\leq
+            \right|</mrow><mrow>
+            &amp;\qquad\qquad\leq
             \left(\sum_{K \in \mathscr{T}_h}
             \delta_K \ltwok{\mathbf{b}\cdot \nabla w}^2 \right)^{1/2}
             \left(\sum_{K \in \mathscr{T}_h}
-            \delta_K \ltwok{\mathbf{b}\cdot \nabla v}^2 \right)^{1/2}\\
-            &\qquad\qquad\leq
-            \snorm{w}\enorm{v}
-        \end{aligned}
-    \end{equation}
-    we bound the second term in~\eqref{eqn:supg-continuity} as
-    \begin{equation}
-        \label{eqn:a-cont-5}
-        \begin{aligned}
+            \delta_K \ltwok{\mathbf{b}\cdot \nabla v}^2 \right)^{1/2}</mrow><mrow xml:id="eqn-a-cont-4">
+            &amp;\qquad\qquad\leq
+            \snorm{w}\enorm{v}</mrow>
+    </md>
+    we bound the second term in<xref ref="eqn-supg-continuity"/> as
+    <md number="yes" ><mrow>
             \left|\sum_{K \in \mathscr{T}_h}
             \int_K
             \delta_K \, \sigma w\,
             (\boldsymbol{b}\cdot\nabla v)\, \mathrm{d}x\right|
-            &\leq
+            &amp;\leq
             \linf{\sigma}
             \sum_{K \in \mathscr{T}_h}
             \delta_K
-            \ltwok{w}\ltwok{\mathbf{b}\cdot\nabla v}\\
-            &\leq
+            \ltwok{w}\ltwok{\mathbf{b}\cdot\nabla v}</mrow><mrow>
+            &amp;\leq
             \linf{\sigma}
             \left(
                 \sum_{K \in \mathscr{T}_h}
@@ -372,60 +354,63 @@
                 \sum_{K \in \mathscr{T}_h}
                 \delta_K
                 \ltwok{\mathbf{b}\cdot\nabla v}^2
-            \right)^{1/2}\\
-            &\leq
+            \right)^{1/2}</mrow><mrow>
+            &amp;\leq
             \linf{\sigma}
             \delta_\text{max}^{1/2} 
             \ltwo{w}
-            \enorm{v}\\
-            &\leq
+            \enorm{v}</mrow><mrow>
+            &amp;\leq
             \linf{\sigma}
             \delta_\text{max}^{1/2}
             \frac{1}{\mu^{1/2}}
             \snorm{w}
-            \enorm{v}\\
-            &\leq
+            \enorm{v}</mrow><mrow xml:id="eqn-a-cont-5">
+            &amp;\leq
             \snorm{w}
-            \enorm{v}
-        \end{aligned}
-    \end{equation}
-    Adding together~\eqref{eqn:a-cont-1},~\eqref{eqn:a-cont-2},~\eqref{eqn:a-cont-3},~\eqref{eqn:a-cont-4} and~\eqref{eqn:a-cont-5}, we have
-    \begin{equation}
+            \enorm{v}</mrow>
+    </md>
+    Adding together<xref ref="eqn-a-cont-1"/>,<xref ref="eqn-a-cont-2"/>,<xref ref="eqn-a-cont-3"/>,<xref ref="eqn-a-cont-4"/> and<xref ref="eqn-a-cont-5"/>, we have
+    <md number="yes" >
         a(w,v) 
         \leq
         \left(5 + \frac{\linf{\sigma}}{\mu}\right)
         \snorm{w}
         \enorm{v}
-    \end{equation}
-\end{proof}
+    </md>
+</p></proof>
 
-\begin{lemma}[Boundedness of $\mathcal{S}$]
+<lemma xml:id="lem-bound-big-s">
+    <title>Boundedness of <m>\mathcal{S}</m></title>
+    <statement>
+        <p>
     \label{lem:bound-big-s}
-    For all $v\in H^1(\Omega)$ we have that
-    \begin{equation}
+    For all <m>v\in H^1(\Omega)</m> we have that
+    <md number="yes">
         \ltwo{\mathcal{S}v} \leq \linf{\sigma_T}\|\mathcal{K}\|_{L^2(\Omega\times\Omega)} \ltwo{v},
-    \end{equation}
-\end{lemma}
-\begin{proof}
+    </md>
+        </p>
+    </statement>
+</lemma>
+<proof><p>
     By Cauchy-Schwarz, we have
-    \begin{equation}
+    <md number="yes" >
         \left| \int_{\Omega} \mathcal{K}(x,y) v(y)\, \mathrm{d}y \right|^2
         \leq
         \left( \int_{\Omega} |\mathcal{K}(x,y)|^2 \, \mathrm{d}y \right) \|v\|_{L^2}^2.
-    \end{equation}
-    Thus, by definition of $\mathcal{S}$~\eqref{eqn:def-big-s},
-    \begin{equation}
-        \begin{aligned}
+    </md>
+    Thus, by definition of <m>\mathcal{S}</m><xref ref="eqn-def-big-s"/>,
+    <md number="yes"><mrow>
             \ltwo{\mathcal{S}v} 
-            &= \ltwo{\sigma_T(x)\int_\Omega \mathcal{K}(x,y) v(y)\mathrm{d}y}\\
-            &\leq
+            &amp;= \ltwo{\sigma_T(x)\int_\Omega \mathcal{K}(x,y) v(y)\mathrm{d}y}\\
+            &amp;\leq
             \linf{\sigma_T} 
             \left(
             \int_\Omega 
             \left| \int_{\Omega} \mathcal{K}(x,y) v(y)\, \mathrm{d}y \right|^2
             \mathrm{d}x
-            \right)^{1/2}\\
-            &=
+            \right)^{1/2}</mrow><mrow>
+            &amp;=
             \linf{\sigma_T} 
             \left(
                 \int_\Omega 
@@ -434,45 +419,48 @@
                 \mathrm{d}x
                 \mathrm{d}y
             \right)^{1/2}
-            \,\ltwo{v}\\
-            &= 
+            \,\ltwo{v}</mrow><mrow>
+            &amp;= 
             \linf{\sigma_T}\|\mathcal{K}\|_{L^2(\Omega\times\Omega)}
-            \ltwo{v}.
-        \end{aligned}
-    \end{equation}
-\end{proof}
+            \ltwo{v}.</mrow>
+    </md>
+</p></proof>
 
-\begin{lemma}[Continuity of $s(\cdot,\cdot)$]
+<lemma xml:id="lem-s-cont">
+    <title>Continuity of <m>s(\cdot,\cdot)</m></title>
+    <statement>
+        <p>
     \label{lem:s-cont}
-    For all $w,v\in V_h$ we have that
-    \begin{equation}
+    For all <m>w,v\in V_h</m> we have that
+    <md number="yes" >
         s(w,v) \leq \tilde{C}_s \ltwo{w} \enorm{v},
-    \end{equation}
+    </md>
     and thus (by relation of norms),
-    \begin{equation}
+    <md number="yes" >
         s(w,v) \leq C_s \enorm{w} \enorm{v}.
-    \end{equation}
+    </md>
     where 
-    \begin{equation}
+    <md number="yes" >
         C_s = \frac{1}{\mu^{1/2}}\tilde{C}_s = \linf{\sigma_T}\ldouble{\mathcal{K}}\frac{1}{\mu}\left(1 + \mu^{1/2}\delta_\text{max}^{1/2}\right)
-    \end{equation}
-\end{lemma}
-\begin{proof}
+    </md>
+        </p>
+    </statement>
+</lemma>
+<proof><p>
     We have 
-    \begin{equation*}
-        \begin{aligned}
+    <md number="yes"><mrow>
             s(w,v) 
-            &=
+            &amp;=
             \int_{\Omega} (\mathcal{S}w)\, v \, \mathrm{d}x
             + \sum_{K \in \mathscr{T}_h}
-            \int_K \delta_K (\mathcal{S}w)\,(\boldsymbol{b}\cdot\nabla v)\, \mathrm{d}x \\
-            &\leq
+            \int_K \delta_K (\mathcal{S}w)\,(\boldsymbol{b}\cdot\nabla v)\, \mathrm{d}x </mrow><mrow>
+            &amp;\leq
             \ltwo{\mathcal{S}w}\ltwo{v}
             +
             \sum_{K \in \mathscr{T}_h}
             \delta_K
-            \ltwok{\mathcal{S}w}\ltwok{\mathbf{b}\cdot\nabla v}\\
-            &\leq
+            \ltwok{\mathcal{S}w}\ltwok{\mathbf{b}\cdot\nabla v}</mrow><mrow>
+            &amp;\leq
             \ltwo{\mathcal{S}w}
             \ltwo{v} 
             + 
@@ -482,120 +470,131 @@
                 \sum_{K \in \mathscr{T}_h}
                 \delta_K
                 \ltwok{\mathbf{b}\cdot\nabla v}^2
-            \right)^{1/2}\\
-            &\leq
+            \right)^{1/2}</mrow><mrow>
+            &amp;\leq
             \ltwo{\mathcal{S}w}
             \ltwo{v} 
             +
             \delta_\text{max}^{1/2}
             \ltwo{\mathcal{S}w}
-            \enorm{v}\\
-            &\leq
+            \enorm{v}</mrow><mrow>
+            &amp;\leq
             \ltwo{\mathcal{S}w}
             \left(
                 \frac{1}{\mu^{1/2}} + \delta_\text{max}^{1/2}
             \right)\enorm{v}\\
-            \text{by Lemma~\ref{lem:bound-big-s}, }\\
-            &\leq
+            \text{by Lemma <xref ref="lem-bound-big-s"/>, }</mrow><mrow>
+            &amp;\leq
             \linf{\sigma_T}\|\mathcal{K}\|_{L^2(\Omega\times\Omega)}
             \left(
                 \frac{1}{\mu^{1/2}} + \delta_\text{max}^{1/2}
-            \right)\ltwo{w}\enorm{v}\\
-            &\leq
+            \right)\ltwo{w}\enorm{v}</mrow><mrow>
+            &amp;\leq
             \linf{\sigma_T}\|\mathcal{K}\|_{L^2(\Omega\times\Omega)}
             \left(
                 \frac{1}{\mu^{1/2}} + \delta_\text{max}^{1/2}
             \right)
             \frac{1}{\mu^{1/2}}
-            \enorm{w}\enorm{v}.
-        \end{aligned}
-    \end{equation*}
-    Using~\eqref{eqn:delta-bound}, we take
-    \begin{equation}
-        \begin{aligned}
-            \tilde{C}_s &= \linf{\sigma_T}\|\mathcal{K}\|_{L^2(\Omega\times\Omega)}
+            \enorm{w}\enorm{v}.</mrow>
+    </md>
+    Using<xref ref="eqn-delta-bound"/>, we take
+    <md number="yes"><mrow>
+            \tilde{C}_s &amp;= \linf{\sigma_T}\|\mathcal{K}\|_{L^2(\Omega\times\Omega)}
             \left(
                 \frac{1}{\mu^{1/2}} + \delta_\text{max}^{1/2}
-            \right)\\
-            C_s &= \frac{1}{\mu^{1/2}}\tilde{C}_s
-        \end{aligned}
-    \end{equation}
-\end{proof}
+            \right)</mrow><mrow>
+            C_s &amp;= \frac{1}{\mu^{1/2}}\tilde{C}_s</mrow>
+    </md>
+</p></proof>
 
-\begin{corollary}[Coercivity of $a-s$]
+
+
+<corollary xml:id="cor-a-s-coer">
+    <title>Coercivity of <m>a-s</m></title>
+    <statement>
+        <p>
     \label{lem:a-s-coer}
     Suppose
-    \begin{equation}
-        \label{eqn:a-s-coer-1}
+    <md number="yes" xml:id="eqn-a-s-coer-1">
+        \label{eqn:a-s-coer-1}<!--
         % \linf{\sigma_T}\|\mathcal{K}\|_{L^2(\Omega\times\Omega)}
         % \left(
         %     \frac{1}{\mu} +\frac{1}{\sqrt{2}\linf{\sigma}}
-        % \right)
+        % \right)-->
         C_s
         \leq
         \frac{1}{2}.
-    \end{equation}
-    Then the bilinear form $a-s$ is coercive. That is, there exists an $\alpha>0$ such that for all $v\in V_h$
-    \begin{equation}
+    </md>
+    Then the bilinear form <m>a-s</m> is coercive. That is, there exists an <m>\alpha>0</m> such that for all <m>v\in V_h</m>
+    <md number="yes" >
         a(v,v) - s(v,v) \geq \alpha \enorm{v}^2.
-    \end{equation}
-\end{corollary}
-\begin{proof}
-    By Lemma~\ref{lem:a-coer} and Lemma~\ref{lem:s-cont}, we have
-    \begin{equation}
-        \begin{aligned}
+    </md>
+        </p>
+    </statement>
+</corollary>
+<proof><p>
+    By <xref ref="lem-a-coer"/> and <xref ref="lem-s-cont"/>, we have
+    <md number="yes" >
             a(v,v)-s(v,v) 
-            &\geq
+            \geq
             \frac{1}{2}\enorm{v}^2 - C_s\enorm{v}\enorm{v}.
-        \end{aligned}
-    \end{equation}
-    By the assumption~\eqref{eqn:a-s-coer-1}, we have
-    \begin{equation}
+    </md>
+    By the assumption<xref ref="eqn-a-s-coer-1"/>, we have
+    <md number="yes" >
         C_s \leq \frac{1}{2}.
-    \end{equation}
-    Therefore, taking $\alpha = 1/2 - C_s$,
-    \begin{equation}
+    </md>
+    Therefore, taking <m>\alpha = 1/2 - C_s</m>,
+    <md number="yes" >
         a(v,v) - s(v,v) \geq \alpha \enorm{v}^2.
-    \end{equation}
-\end{proof}
+    </md>
+</p></proof>
 
-\begin{corollary}[Continuity of $a-s$]
+<corollary xml:id="cor-a-s-cont">
+    <title>Continuity of <m>a-s</m></title>
+    <statement>
+        <p>
     \label{lem:a-s-cont}
-    For all $w,v\in V_h$, we have that
-    \begin{equation}
+    For all <m>w,v\in V_h</m>, we have that
+    <md number="yes" >
         a(w,v) - s(w,v) \leq C_A \snorm{w}\enorm{v},
-    \end{equation}
-    where $C_A = C_a + C_s$.
-\end{corollary}
-\begin{proof}
-    By Lemma~\ref{lem:s-cont} and Lemma~\ref{lem:a-cont}, we have
-    \begin{equation}
+    </md>
+    where <m>C_A = C_a + C_s</m>.
+        </p>
+    </statement>
+</corollary>
+<proof><p>
+    By <xref ref="lem-s-cont"/> and <xref ref="lem-a-cont"/>, we have
+    <md number="yes" >
         a(w,v) - s(w,v) \leq C_a \snorm{w}\enorm{v} + C_s\enorm{w}\enorm{v} \leq (C_a + C_s)\snorm{w}\enorm{v}.
-    \end{equation}
-\end{proof}
+    </md>
+</p></proof>
 
-\begin{theorem}[Well-posedness]
-    Let $g\in H^{1/2}(\partial\Omega)$ with an extension $\hat{g}\in H^1(\Omega)$ such that $\hat{g}|_{\partial\Omega} = g$. Then the variational problem of finding $u\in H^1(\Omega)$ such that $u = g$ on $\Gamma_-$ and
-    \begin{eqnarray}
-        \label{eqn:lax-2}
+<theorem xml:id="thm-well-posed">
+    <title>Well-posedness</title>
+    <statement>
+        <p>
+    Let <m>g\in H^{1/2}(\partial\Omega)</m> with an extension <m>\hat{g}\in H^1(\Omega)</m> such that <m>\hat{g}|_{\partial\Omega} = g</m>. Then the variational problem of finding <m>u\in H^1(\Omega)</m> such that <m>u = g</m> on <m>\Gamma_-</m> and
+    <md number="yes" xml:id="eqn-lax-2">
         a(u,v) - s(u,v) = l(v) \qquad \forall v\in H_0^1(\Omega)
-    \end{eqnarray}
+    </md>
     has a unique solution.
-\end{theorem}
-\begin{proof}
-    Define $\tilde{u} = u - \hat{g}\in H_0^1(\Omega)$. We seek 
-    \begin{equation}
+        </p>
+    </statement>
+</theorem>
+<proof><p>
+    Define <m>\tilde{u} = u - \hat{g}\in H_0^1(\Omega)</m>. We seek 
+    <md number="yes" xml:id="eqn-lax-1">
         \label{eqn:lax-1}
         a(\tilde{u},v) - s(\tilde{u},v) = \tilde{l}(v) \qquad \forall v\in H_0^1(\Omega)
-    \end{equation}
+    </md>
     where
-    \begin{equation}
+    <md number="yes" >
         \tilde{l}(v) = l(v) - a(\hat{g},v) + s(\hat{g}, v).
-    \end{equation}
-    By Corollary~\ref{lem:a-s-coer} and Corollary~\ref{lem:a-s-cont}, we have that $a-s$ is coercive and bounded. Moreover, $\tilde{l}$ is controlled by the SUPG-norm, with each term bounded since $q\in L^2(\Omega)$ and $\hat{g}\in H^1(\Omega)$.
+    </md>
+    By <xref ref="cor-a-s-coer"/> and <xref ref="cor-a-s-cont"/>, we have that <m>a-s</m> is coercive and bounded. Moreover, <m>\tilde{l}</m> is controlled by the SUPG-norm, with each term bounded since <m>q\in L^2(\Omega)</m> and <m>\hat{g}\in H^1(\Omega)</m>.
 
-    Therefore, the Lax-Milgram theorem applies to give a unique $\tilde{u}$ solving~\eqref{eqn:lax-1}, hence a unique $u = \tilde{u}+\hat{g}$ solving~\eqref{eqn:lax-2}.
-\end{proof}
+    Therefore, the Lax-Milgram theorem applies to give a unique <m>\tilde{u}</m> solving<xref ref="eqn-lax-1"/>, hence a unique <m>u = \tilde{u}+\hat{g}</m> solving<xref ref="eqn-lax-2"/>.
+</p></proof>
 
 
 </subsection>
@@ -603,217 +602,223 @@
 <subsection xml:id="fe-det">
     <title>Finite Element Error</title>
     <p>
-        We consider the first term in the triangle inequality in~\eqref{eqn:triangle-ineq}. That is, we find an error estimate and convergence rate for the theoretical finite element solution $u_h\in V_h$ of~\eqref{eqn:FE-problem}. 
+        We consider the first term in the triangle inequality in<xref ref="eqn-triangle-ineq"/>. That is, we find an error estimate and convergence rate for the theoretical finite element solution <m>u_h\in V_h</m> of<xref ref="eqn-FE-problem"/>. 
     </p>
 
-\begin{theorem}[C\'{e}a-type best-approximation estimate]
+<theorem xml:id="thm-best-approx">
+    <title>C\'{e}a-type best-approximation estimate</title>
+    <statement>
+        <p>
     \label{thm:best-approx}
-    Let $u\in H^1_0$ be a solution of~\eqref{eqn:strong} with $g=0$ and let $u_h\in V_h$ be a solution of~\eqref{eqn:FE-problem}. Then we have the following best approximation result:
-    \begin{equation}
+    Let <m>u\in H^1_0</m> be a solution of<xref ref="eqn-strong"/> with <m>g=0</m> and let <m>u_h\in V_h</m> be a solution of<xref ref="eqn-FE-problem"/>. Then we have the following best approximation result:
+    <md number="yes" >
         \enorm{u - u_h}
         \leq 
         \left(1 + \frac{C_A}{\alpha}\right)
         \inf_{w_h \in V_h} 
         \snorm{u - w_h}.
-    \end{equation}
-\end{theorem}
-\begin{proof}
-    Let $w_h\in V_h$ be arbitrary, we split the error as
-    \begin{equation}
+    </md>
+        </p>
+    </statement>
+</theorem>
+<proof><p>
+    Let <m>w_h\in V_h</m> be arbitrary, we split the error as
+    <md number="yes" xml:id="eqn-best-appro-1">
         \label{eqn:best-appro-1}
         u - u_h
         = (u - w_h)
         + \underbrace{(w_h - u_h)}_{\phi_h \in V_h}.
-    \end{equation}
-    Applying coercivity to $A = a-s$ (Corollary~\ref{lem:a-s-coer}), we have
-    \begin{equation}
+    </md>
+    Applying coercivity to <m>A = a-s</m> (<xref ref="cor-a-s-coer"/>), we have
+    <md number="yes" >
         \alpha \enorm{\phi_h}^2
         \leq
         A(\phi_h, \phi_h) = A(w_h-u_h, \phi_h).
-    \end{equation}
-    We insert the exact solution $u$ into the first slot,
-    \begin{equation}
-        \begin{aligned}
+    </md>
+    We insert the exact solution <m>u</m> into the first slot,
+    <md number="yes"><mrow>
             A(w_h-u_h, \phi_h)
-            &=
-            A(w_h-u + u-u_h, \phi_h)\\
-            &=
-            A(w_h-u, \phi_h) + A(u-u_h, \phi_h)\\
-            &=
-            A(w_h-u, \phi_h),
-        \end{aligned}
-    \end{equation}
+            &amp;=
+            A(w_h-u + u-u_h, \phi_h)</mrow><mrow>
+            &amp;=
+            A(w_h-u, \phi_h) + A(u-u_h, \phi_h)</mrow><mrow>
+            &amp;=
+            A(w_h-u, \phi_h),</mrow>
+    </md>
     where the last equality is due to Galerkin orthogonality.
-    By continuity (Corollary~\ref{lem:a-s-cont}), we have
-    \begin{equation}
-        \begin{aligned}
+    By continuity (<xref ref="cor-a-s-cont"/>), we have
+    <md number="yes">
             \alpha \enorm{\phi_h}^2
             \leq
             A(w_h-u, \phi_h)
             \leq
             C_A\snorm{w_h - u} \enorm{\phi_h}.
-        \end{aligned}
-    \end{equation}
+    </md>
     Thus,
-    \begin{equation}
+    <md number="yes" >
         \enorm{\phi_h} \leq \frac{C_A}{\alpha}\snorm{w_h - u}.
-    \end{equation}
-    Applying the triangle inequality to~\eqref{eqn:best-appro-1}, 
-    \begin{equation}
-        \begin{aligned}
+    </md>
+    Applying the triangle inequality to<xref ref="eqn-best-appro-1"/>, 
+    <md number="yes"><mrow>
             \enorm{u-u_h}
-            &\leq
+            &amp;\leq
             \enorm{u - w_h}
             +
-            \enorm{\phi_h}\\
-            &\leq
+            \enorm{\phi_h}</mrow><mrow>
+            &amp;\leq
             \snorm{u - w_h}
             +
-            \frac{C_A}{\alpha}\snorm{w_h - u}\\
-            &=
+            \frac{C_A}{\alpha}\snorm{w_h - u}</mrow><mrow>
+            &amp;=
             \left(
                 1 + \frac{C_A}{\alpha}
-            \right)\snorm{w_h - u}.
-        \end{aligned}
-    \end{equation}
-    Taking the infimum over $w_h\in V_h$, we have the result
-    \begin{equation}
+            \right)\snorm{w_h - u}.</mrow>
+    </md>
+    Taking the infimum over <m>w_h\in V_h</m>, we have the result
+    <md number="yes" >
         \enorm{u - u_h}
         \leq 
         \left(1 + \frac{C_A}{\alpha}\right)
         \inf_{w_h \in V_h} 
         \snorm{u - w_h}.
-    \end{equation}
-\end{proof}
+    </md>
+</p></proof>
 
-% \begin{proof}
-%     Let $e = u-u_h$, take $v_h\in V_h$ arbitrarily. By Lemma~\ref{lem:a-s-coer},
-%     \begin{equation}
-%         \begin{aligned}
+<!--% <proof><p>
+%     Let <m>e = u-u_h</m>, take <m>v_h\in V_h</m> arbitrarily. By <xref ref="lem-a-s-coer"/>,
+%     <md number="yes"><mrow>
 %             \alpha \enorm{e}^2
-%             &\leq
-%             a(e,e) - s(e,e)\\
-%             &= 
+%             &amp;\leq
+%             a(e,e) - s(e,e)</mrow>
+%             &amp;= 
 %             a(u-v_h+v_h-u_h,e) - s(u-v_h+v_h-u_h,e)\\
-%             &=
+%             &amp;=
 %             a(u-v_h,e) + a(v_h-u_h,e)\\
-%             & \qquad \qquad - s(u-v_h,e) - s(v_h-u_h,e)\\
+%             &amp; \qquad \qquad - s(u-v_h,e) - s(v_h-u_h,e)\\
 %             \text{By Galerkin orthogonality,}\\
-%             &=
+%             &amp;=
 %             a(u-v_h,e) - s(u-v_h,e)\\
-%             &\leq
+%             &amp;\leq
 %             C\snorm{u-v_h}\enorm{e}.
 %         \end{aligned}
-%     \end{equation}
-%     Thus, for all $v_h\in V_h$ we have
-%     \begin{equation}
+%     </md>
+%     Thus, for all <m>v_h\in V_h</m> we have
+%     <md number="yes" >
 %         \enorm{e} \leq \frac{2C}{\alpha} \snorm{u - v_h}.
-%     \end{equation}
-%     Taking the infimum over $v_h\in V_h$, we have
-%     \begin{equation}
+%     </md>
+%     Taking the infimum over <m>v_h\in V_h</m>, we have
+%     <md number="yes" >
 %         \enorm{e} \leq \frac{2C}{\alpha} \inf_{v_h\in V_h}\snorm{u-v_h}.
-%     \end{equation}
-% \end{proof}
+%     </md>
+% </p></proof>-->
 
-\begin{corollary}[Rates of Convergence]
+<corollary xml:id="cor-fe-conv-rate">
+    <title>Rates of Convergence</title>
+    <statement>
+        <p>
     \label{cor:FE-conv-rate}
-    Let $k\geq 1$ denote the piecewise polynomial degree of elements of $V_h$.
-    Suppose the exact solution $u\in H_0^r(\Omega)$ of~\eqref{eqn:strong} is such that $r$ is sufficiently large for $u$ to belong to the domain of the Lagrange interpolation operator. Then, there exists a constant $C$ such that
-    \begin{equation}
+    Let <m>k\geq 1</m> denote the piecewise polynomial degree of elements of <m>V_h</m>.
+    Suppose the exact solution <m>u\in H_0^r(\Omega)</m> of<xref ref="eqn-strong"/> is such that <m>r</m> is sufficiently large for <m>u</m> to belong to the domain of the Lagrange interpolation operator. Then, there exists a constant <m>C</m> such that
+    <md number="yes" >
         \enorm{u-u_h} \leq C h^{\min\{k+1,r\} - 1/2} |u|_{H^r(\Omega)}.
-    \end{equation}
-\end{corollary}
-\begin{proof}
+    </md>
+        </p>
+    </statement>
+</corollary>
+<proof><p>
     The proof follows that of~\cite{ashby2025nodally}, Corollary 3.5; we provide a brief overview.
-    Denote by $\mathcal{I}u\in V_h$ the piecewise polynomial Lagrange interpolant of $u$ onto the finite element space $V_h$.
-    Taking $v_h = \mathcal{I}u$ in Theorem~\ref{thm:best-approx}, we have
-    \begin{equation}
-        \label{eqn:FE-conv-1}
-        \begin{aligned}
+    Denote by <m>\mathcal{I}u\in V_h</m> the piecewise polynomial Lagrange interpolant of <m>u</m> onto the finite element space <m>V_h</m>.
+    Taking <m>v_h = \mathcal{I}u</m> in <xref ref="thm-best-approx"/>, we have
+    <md number="yes">
+        <mrow>
             \enorm{u-u_h}^2
-            &\leq
-            \snorm{u-\mathcal{I}u}^2 \\
-            &= \mu \ltwo{u-\mathcal{I}u}^2
-            + \sum_{K\in\mathscr{T}} \delta_K \ltwok{\mathbf{b}\cdot\nabla (u-\mathcal{I}u)}^2\\
-            &\qquad \qquad + \||\mathbf{b}\cdot\mathbf{n}|^{1/2}(u-\mathcal{I}u)\|_{L^2(\partial\Omega)}^2
-            + \sum_{K\in\mathscr{T}} \delta_K^{-1}\ltwok{u-\mathcal{I}u}^2.
-        \end{aligned}
-    \end{equation}
-    Each of these terms are bounded using standard interpolation estimates~\cite{ern2021finite}, which apply to norms over $L^2(\Omega)$ and $L^2(K)$. The third term is first bounded by a trace estimate (see e.g.~\cite{evans2022partial}, Section 5.5) in terms of these norms. The following estimates combine to give~\eqref{eqn:FE-conv-1}:
-    \begin{equation}
+            &amp;\leq
+            \snorm{u-\mathcal{I}u}^2 </mrow><mrow>
+            &amp;= \mu \ltwo{u-\mathcal{I}u}^2
+            + \sum_{K\in\mathscr{T}} \delta_K \ltwok{\mathbf{b}\cdot\nabla (u-\mathcal{I}u)}^2</mrow><mrow xml:id="eqn-FE-conv-1">
+            &amp;\qquad \qquad + \||\mathbf{b}\cdot\mathbf{n}|^{1/2}(u-\mathcal{I}u)\|_{L^2(\partial\Omega)}^2
+            + \sum_{K\in\mathscr{T}} \delta_K^{-1}\ltwok{u-\mathcal{I}u}^2.</mrow>
+    </md>
+    Each of these terms are bounded using standard interpolation estimates~\cite{ern2021finite}, which apply to norms over <m>L^2(\Omega)</m> and <m>L^2(K)</m>. The third term is first bounded by a trace estimate (see e.g.~\cite{evans2022partial}, Section 5.5) in terms of these norms. The following estimates combine to give<xref ref="eqn-FE-conv-1"/>:
+    <md number="yes" >
         \|u - \mathcal{I}u\|_{L^2(\Omega)} \leq C_I \, h_K^r \, |u|_{H^r(\Omega)},
-    \end{equation}
+    </md>
 
-    \begin{equation}
+    <md number="yes" >
         \left\| \delta_K^{1/2} \, \mathbf{b} \cdot \nabla (u - \mathcal{I}u) \right\|_{L^2(K)}
         \leq C_I \, \|\mathbf{b}\|_{\infty,K} \, C_\delta^{1/2} \, h_K^{r - \tfrac{1}{2}} \, |u|_{H^r(\Omega)}, 
-    \end{equation}
+    </md>
 
-    \begin{equation}
-        \begin{aligned}
+    <md number="yes">
+        <mrow>
              \left\||\mathbf{b}\cdot\mathbf{n}|(u-\mathcal{I}u)\right\|_{L^2(\partial\Omega\cap K)}
-            &\leq C_{\mathrm{tr}} \left( h_K^{-1/2} \|u - Iu\|_{L^2(K)} + h_K^{1/2} \|\nabla (u - Iu)\|_{L^2(K)} \right)\\
-            &\leq 2 C_{\mathrm{tr}} C_I \, h_K^{r - \tfrac{1}{2}} \, |u|_{H^r(\Omega)},
-        \end{aligned}
-    \end{equation}
+            &amp;\leq C_{\mathrm{tr}} \left( h_K^{-1/2} \|u - Iu\|_{L^2(K)} + h_K^{1/2} \|\nabla (u - Iu)\|_{L^2(K)} \right)</mrow><mrow>
+            &amp;\leq 2 C_{\mathrm{tr}} C_I \, h_K^{r - \tfrac{1}{2}} \, |u|_{H^r(\Omega)},</mrow>
+    </md>
 
-    \begin{equation}
+    <md number="yes" >
         \delta_K^{-1/2} \, \|u - \mathcal{I}u\|_{L^2(K)}
         \leq C_I \, C_\delta^{-1/2} \, h_K^{r - \tfrac{1}{2}} \, |u|_{H^r(\Omega)}.
-    \end{equation}
-    where $C_{\mathrm{tr}}$ and $C_\mathcal{I}$ are constants for trace and interpolation estimates, respectively.
-\end{proof}
+    </md>
+    where <m>C_{\mathrm{tr}}</m> and <m>C_\mathcal{I}</m> are constants for trace and interpolation estimates, respectively.
+</p></proof>
 
 </subsection>
 
 <subsection xml:id="sec-iter-det">
     <title>Fixed Point Error</title>
     <p>
-        Now, we turn to the second error term in the triangle inequality~\eqref{eqn:triangle-ineq}. That is, we now derive a convergence rate for $\enorm{u_h - u_h^{(n)}}$. In doing so, we also find a rate in the $L^2(\Omega)$-norm.
+        Now, we turn to the second error term in the triangle inequality<xref ref="eqn-triangle-ineq"/>. That is, we now derive a convergence rate for <m>\enorm{u_h - u_h^{(n)}}</m>. In doing so, we also find a rate in the <m>L^2(\Omega)</m>-norm.
     </p>
     
-\begin{lemma}[Contraction in mixed norms]
+<lemma xml:id="lem-cont-mix">
+    <title>Contraction in mixed norms</title>
+    <statement>
+        <p>
     \label{lem:cont-mix}
-    Let $u_h\in V_h$ be the solution of the stationary finite element problem~\eqref{eqn:FE-problem}. Take $u_h^{(0)}\in V_h$ and denote by $\{u_h^{(n)}\}_{n\in\mathbb{N}_0}$ the sequence of solutions to the iterative problem~\eqref{eqn:iter-problem}. We have that, for all $n\in \mathbb{N}_0$
-    \begin{equation}
+    Let <m>u_h\in V_h</m> be the solution of the stationary finite element problem<xref ref="eqn-FE-problem"/>. Take <m>u_h^{(0)}\in V_h</m> and denote by <m>\{u_h^{(n)}\}_{n\in\mathbb{N}_0}</m> the sequence of solutions to the iterative problem<xref ref="eqn-iter-problem"/>. We have that, for all <m>n\in \mathbb{N}_0</m>
+    <md number="yes" >
         \enorm{u_h-u_h^{(n)}} 
         \leq
         2\tilde{C}_s 
         \ltwo{u_h - u_h^{(n-1)}}.
-    \end{equation}
-\end{lemma}
-\begin{proof}
-    Let $e = u_h - u_h^{(n)}$
-    By coercivity of $a(\cdot,\cdot)$ (Lemma~\ref{lem:a-coer}), 
-    \begin{equation}
-        \begin{aligned}
+    </md>
+        </p>
+    </statement>
+</lemma>
+<proof><p>
+    Let <m>e = u_h - u_h^{(n)}</m>
+    By coercivity of <m>a(\cdot,\cdot)</m> (<xref ref="lem-a-coer"/>), 
+    <md number="yes"><mrow>
             \frac{1}{2}\enorm{e}^2
-            &\leq
-            a(e,e)\\
-            &=
-            a(u_h,e) - a(u_h^{(n)},e)\\
-            &=
-            s(u_h,e) + l(e) - s(u_h^{(n-1)},e) - l(e)\\
-            &=
-            s(u_h-u_h^{(n-1)},e)\\
-            \text{by Lemma~\ref{lem:s-cont},}\\
-            &\leq
-            \tilde{C}_s \ltwo{u_h-u_h^{(n-1)}}\enorm{e}.
-        \end{aligned}
-    \end{equation}
+            &amp;\leq
+            a(e,e)</mrow><mrow>
+            &amp;=
+            a(u_h,e) - a(u_h^{(n)},e)</mrow><mrow>
+            &amp;=
+            s(u_h,e) + l(e) - s(u_h^{(n-1)},e) - l(e)</mrow><mrow>
+            &amp;=
+            s(u_h-u_h^{(n-1)},e)</mrow><mrow>
+            \text{by <xref ref="lem-s-cont"/>,}</mrow><mrow>
+            &amp;\leq
+            \tilde{C}_s \ltwo{u_h-u_h^{(n-1)}}\enorm{e}.</mrow>
+    </md>
     Thus,
-    \begin{equation}
+    <md number="yes">
         \enorm{e} 
         \leq
         2\tilde{C}_s 
         \ltwo{u_h - u_h^{(n-1)}}.
-    \end{equation}
-\end{proof}
+    </md>
+</p></proof>
 
-\begin{theorem}[Convergence in $L^2(\Omega)$-norm]
+<theorem xml:id="thm-conv-l2">
+    <title>Convergence in <m>L^2(\Omega)</m>-norm</title>
+    <statement>
+        <p>
     \label{thm:conv-l2}
-    Let $u_h\in V_h$ be the solution of the stationary finite element problem~\eqref{eqn:FE-problem}. Take $u_h^{(0)}\in V_h$ and denote by $\{u_h^{(n)}\}_{n\in\mathbb{N}_0}$ the sequence of solutions to the iterative problem~\eqref{eqn:iter-problem}. We have that, for all $n\in \mathbb{N}_0$
-    \begin{equation}
+    Let <m>u_h\in V_h</m> be the solution of the stationary finite element problem<xref ref="eqn-FE-problem"/>. Take <m>u_h^{(0)}\in V_h</m> and denote by <m>\{u_h^{(n)}\}_{n\in\mathbb{N}_0}</m> the sequence of solutions to the iterative problem<xref ref="eqn-iter-problem"/>. We have that, for all <m>n\in \mathbb{N}_0</m>
+    <md number="yes" xml:id="eqn-conv-l2">
         \label{eqn:conv-l2}
         \ltwo{u_h-u_h^{(n)}} 
         \leq
@@ -821,29 +826,34 @@
             \frac{2\tilde{C}_s}{\mu^{1/2}}
         \right)^n
         \ltwo{u_h - u_h^{(0)}}.
-    \end{equation}
-\end{theorem}
-\begin{proof}
-    By the relation of norms~\eqref{eqn:rel-norms}, we have
-    \begin{equation}
+    </md>
+        </p>
+    </statement>
+</theorem>
+<proof><p>
+    By the relation of norms<xref ref="eqn-rel-norms"/>, we have
+    <md number="yes" >
         \ltwo{u_h-u_h^{(n)}} \leq \frac{1}{\mu^{1/2}}\enorm{u_h-u_h^{(n)} }.
-    \end{equation}
-    Applying Lemma~\ref{lem:cont-mix} gives
-    \begin{equation}
+    </md>
+    Applying <xref ref="lem-cont-mix"/> gives
+    <md number="yes" xml:id="eqn-cont-l2">
         \label{eqn:cont-l2}
         \ltwo{u_h-u_h^{(n)}} 
         \leq
         \frac{2\tilde{C}_s}{\mu^{1/2}}
         \ltwo{u_h - u_h^{(n-1)}}.
-    \end{equation}
-    Iterating~\eqref{eqn:cont-l2} yields the desired convergence result.
-\end{proof}
+    </md>
+    Iterating<xref ref="eqn-cont-l2"/> yields the desired convergence result.
+</p></proof>
 
 
-\begin{corollary}[Convergence in SUPG-norm]
+<corollary xml:id="cor-conv-supg">
+    <title>Convergence in SUPG-norm</title>
+    <statement>
+        <p>
     \label{cor:conv-sugp}
-    Let $u_h\in V_h$ be the solution of the stationary finite element problem~\eqref{eqn:FE-problem}. Take $u_h^{(0)}\in V_h$ and denote by $\{u_h^{(n)}\}_{n\in\mathbb{N}_0}$ the sequence of solutions to the iterative problem~\eqref{eqn:iter-problem}. We have that, for all $n\in \mathbb{N}_0$
-    \begin{equation}
+    Let <m>u_h\in V_h</m> be the solution of the stationary finite element problem<xref ref="eqn-FE-problem"/>. Take <m>u_h^{(0)}\in V_h</m> and denote by <m>\{u_h^{(n)}\}_{n\in\mathbb{N}_0}</m> the sequence of solutions to the iterative problem<xref ref="eqn-iter-problem"/>. We have that, for all <m>n\in \mathbb{N}_0</m>
+    <md number="yes" >
         \enorm{u_h-u_h^{(n)}} 
         \leq
         2\tilde{C}_s
@@ -851,26 +861,31 @@
             \frac{2\tilde{C}_s}{\mu^{1/2}}
         \right)^{n-1}
         \ltwo{u_h - u_h^{(0)}}.
-    \end{equation}
-\end{corollary}
-\begin{proof}
-    The result follows from combining Lemma~\ref{lem:cont-mix} and Theorem~\ref{thm:conv-l2}.
-\end{proof}
+    </md>
+        </p>
+    </statement>
+</corollary>
+<proof><p>
+    The result follows from combining <xref ref="lem-cont-mix"/> and <xref ref="thm-conv-l2"/>.
+</p></proof>
 
-<\subsection>
+</subsection>
 
 <subsection xml:id="sec-combined-det">
     <title>Combined Error Estimate</title>
     <p>
-We can now populate the triangle inequality for iterative solution error originally proposed in~\eqref{eqn:triangle-ineq}.
+We can now populate the triangle inequality for iterative solution error originally proposed in<xref ref="eqn-triangle-ineq"/>.
     </p>
 
 
 
-\begin{theorem}[Error Estimate in the Deterministic Setting]
+<theorem xml:id="thm-det">
+    <title>Error Estimate in the Deterministic Setting</title>
+    <statement>
+        <p>
     \label{thm:det}
-    Let $u$ be the solution of~\eqref{eqn:strong} and suppose $u_h\in V_h$ is the solution of the stationary finite element problem~\eqref{eqn:FE-problem}. Take $u_h^{(0)}\in V_h$ and denote by $\{u_h^{(n)}\}_{n\in\mathbb{N}_0}$ the sequence of solutions to the iterative problem~\eqref{eqn:iter-problem}. We have that, for all $n\in \mathbb{N}_0$
-    \begin{equation}
+    Let <m>u</m> be the solution of<xref ref="eqn-strong"/> and suppose <m>u_h\in V_h</m> is the solution of the stationary finite element problem<xref ref="eqn-FE-problem"/>. Take <m>u_h^{(0)}\in V_h</m> and denote by <m>\{u_h^{(n)}\}_{n\in\mathbb{N}_0}</m> the sequence of solutions to the iterative problem<xref ref="eqn-iter-problem"/>. We have that, for all <m>n\in \mathbb{N}_0</m>
+    <md number="yes" >
         \enorm{u-u_h^{(n)}}
         \leq
         C h^{\min\{k+1,r\} - 1/2} |u|_{H^r(\Omega)}
@@ -880,19 +895,21 @@ We can now populate the triangle inequality for iterative solution error origina
             \frac{2\tilde{C}_s}{\mu^{1/2}}
         \right)^{n-1}
         \ltwo{u_h - u_h^{(0)}}.
-    \end{equation}
-\end{theorem}
-\begin{proof}
+    </md>
+        </p>
+    </statement>
+</theorem>
+<proof><p>
     By the triangle inequality, 
-    \begin{equation}
+    <md number="yes" >
         \enorm{u-u_h^{(n)}}
         \leq
         \enorm{u-u_h}
         +
         \enorm{u_h-u_h^{(n)}},
-    \end{equation}
-    and the result follows from applying Corollary~\ref{cor:conv-sugp} and Corollary~\ref{cor:FE-conv-rate}.
-\end{proof}
+    </md>
+    and the result follows from applying <xref ref="cor-conv-sugp"/> and <xref ref="cor-FE-conv-rate"/>.
+</p></proof>
 
 </subsection>
 
@@ -904,40 +921,41 @@ the parameters of the problem.
     </p>
 
     <p>
-First, the combined coercivity result for $a - s$ 
-(Corollary~\ref{lem:a-s-coer}) and the contraction rate for 
-source iteration (Theorem~\ref{thm:conv-l2} and 
-Corollary~\ref{cor:conv-sugp}) both rely on the single 
+First, the combined coercivity result for <m>a - s</m> 
+(<xref ref="cor-a-s-coer"/>) and the contraction rate for 
+source iteration (<xref ref="thm-conv-l2"/> and 
+<xref ref="cor-conv-sugp"/>) both rely on the single 
 constraint
-\begin{equation}
+<md number="yes" xml:id="eqn-cs-condition">
     \label{eqn:Cs-condition}
     C_s = \frac{\linf{\sigma_T}\,\ldouble{\mathcal{K}}}{\mu}
     \left(1 + (\mu\,\delta_{\max})^{1/2}\right)
     \;\leq\; \tfrac{1}{2}.
-\end{equation}
+</md>
 This is a subcriticality condition on the scattering 
 operator: it requires the scattering cross section 
-$\sigma_T$, kernel mass $\ldouble{\mathcal{K}}$, and 
-stabilisation parameter $\delta_{\max}$ to be small relative 
-to the positivity constant $\mu$. Physically, this refers to
+<m>\sigma_T</m>, kernel mass <m>\ldouble{\mathcal{K}}</m>, and 
+stabilisation parameter <m>\delta_{\max}</m> to be small relative 
+to the positivity constant <m>\mu</m>. Physically, this refers to
 absorption effects sufficiently dominating over scattering. 
     </p>
 
     <p>
-Second, the coercivity proof for $a$ (Lemma~\ref{lem:a-coer}) requires
-\begin{equation}
+Second, the coercivity proof for <m>a</m> (<xref ref="lem-a-coer"/>) requires
+<md number="yes" xml:id="eqn-delta-condition">
     \label{eqn:delta-condition}
     \delta_{\max} \;\leq\; \frac{\mu}{\linf{\sigma}^2},
-\end{equation}
+</md>
 which prevents the indefinite SUPG cross term 
-$\delta_K \sigma v\,(\mathbf{b}\cdot\nabla v)$ from 
+<m>\delta_K \sigma v\,(\mathbf{b}\cdot\nabla v)</m> from 
 overwhelming the streamline diffusion contribution. The 
-standard SUPG scaling $\delta_K = h_K$ used in our numerical 
-experiments satisfies~\eqref{eqn:delta-condition} for 
+standard SUPG scaling <m>\delta_K = h_K</m> used in our numerical 
+experiments satisfies<xref ref="eqn-delta-condition"/> for 
 sufficiently fine meshes, namely 
-$h \leq \mu/\linf{\sigma}^2$.
+<m>h \leq \mu/\linf{\sigma}^2</m>.
     </p>
 
 
+</subsection>
 
 </section>
