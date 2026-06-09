@@ -38,7 +38,7 @@
 <subsection>
     <title>Well-Posedness and Key Properties</title>
     <p>
-        We now present key properties of the bilinear and linear forms defined in<xref ref="eqn-a"/>,<xref ref="eqn-s"/> and<xref ref="eqn-l"/>. This will show that the variational problem<xref ref="eqn-FE-problem"/> is well-posed, and provide the necessary results for error analysis.
+        We now present key properties of the bilinear and linear forms defined in<xref ref="eqn-a"/>,<xref ref="eqn-s"/> and<xref ref="eqn-l"/>. This will show that the variational problem<xref ref="eqn-fe-problem"/> is well-posed, and provide the necessary results for error analysis.
     </p>
     <lemma xml:id="lem-well-posed">
         <title>Consistency of the SUPG Method</title>
@@ -602,7 +602,7 @@
 <subsection xml:id="fe-det">
     <title>Finite Element Error</title>
     <p>
-        We consider the first term in the triangle inequality in<xref ref="eqn-triangle-ineq"/>. That is, we find an error estimate and convergence rate for the theoretical finite element solution <m>u_h\in V_h</m> of<xref ref="eqn-FE-problem"/>. 
+        We consider the first term in the triangle inequality in<xref ref="eqn-triangle-ineq"/>. That is, we find an error estimate and convergence rate for the theoretical finite element solution <m>u_h\in V_h</m> of<xref ref="eqn-fe-problem"/>. 
     </p>
 
 <theorem xml:id="thm-best-approx">
@@ -610,7 +610,7 @@
     <statement>
         <p>
     \label{thm:best-approx}
-    Let <m>u\in H^1_0</m> be a solution of<xref ref="eqn-strong"/> with <m>g=0</m> and let <m>u_h\in V_h</m> be a solution of<xref ref="eqn-FE-problem"/>. Then we have the following best approximation result:
+    Let <m>u\in H^1_0</m> be a solution of<xref ref="eqn-strong"/> with <m>g=0</m> and let <m>u_h\in V_h</m> be a solution of<xref ref="eqn-fe-problem"/>. Then we have the following best approximation result:
     <md number="yes" >
         \enorm{u - u_h}
         \leq 
@@ -735,11 +735,11 @@
             &amp;\leq
             \snorm{u-\mathcal{I}u}^2 </mrow><mrow>
             &amp;= \mu \ltwo{u-\mathcal{I}u}^2
-            + \sum_{K\in\mathscr{T}} \delta_K \ltwok{\mathbf{b}\cdot\nabla (u-\mathcal{I}u)}^2</mrow><mrow xml:id="eqn-FE-conv-1">
+            + \sum_{K\in\mathscr{T}} \delta_K \ltwok{\mathbf{b}\cdot\nabla (u-\mathcal{I}u)}^2</mrow><mrow xml:id="eqn-fe-conv-1">
             &amp;\qquad \qquad + \||\mathbf{b}\cdot\mathbf{n}|^{1/2}(u-\mathcal{I}u)\|_{L^2(\partial\Omega)}^2
             + \sum_{K\in\mathscr{T}} \delta_K^{-1}\ltwok{u-\mathcal{I}u}^2.</mrow>
     </md>
-    Each of these terms are bounded using standard interpolation estimates~\cite{ern2021finite}, which apply to norms over <m>L^2(\Omega)</m> and <m>L^2(K)</m>. The third term is first bounded by a trace estimate (see e.g.~\cite{evans2022partial}, Section 5.5) in terms of these norms. The following estimates combine to give<xref ref="eqn-FE-conv-1"/>:
+    Each of these terms are bounded using standard interpolation estimates~\cite{ern2021finite}, which apply to norms over <m>L^2(\Omega)</m> and <m>L^2(K)</m>. The third term is first bounded by a trace estimate (see e.g.~\cite{evans2022partial}, Section 5.5) in terms of these norms. The following estimates combine to give<xref ref="eqn-fe-conv-1"/>:
     <md number="yes" >
         \|u - \mathcal{I}u\|_{L^2(\Omega)} \leq C_I \, h_K^r \, |u|_{H^r(\Omega)},
     </md>
@@ -776,7 +776,7 @@
     <statement>
         <p>
     \label{lem:cont-mix}
-    Let <m>u_h\in V_h</m> be the solution of the stationary finite element problem<xref ref="eqn-FE-problem"/>. Take <m>u_h^{(0)}\in V_h</m> and denote by <m>\{u_h^{(n)}\}_{n\in\mathbb{N}_0}</m> the sequence of solutions to the iterative problem<xref ref="eqn-iter-problem"/>. We have that, for all <m>n\in \mathbb{N}_0</m>
+    Let <m>u_h\in V_h</m> be the solution of the stationary finite element problem<xref ref="eqn-fe-problem"/>. Take <m>u_h^{(0)}\in V_h</m> and denote by <m>\{u_h^{(n)}\}_{n\in\mathbb{N}_0}</m> the sequence of solutions to the iterative problem<xref ref="eqn-iter-problem"/>. We have that, for all <m>n\in \mathbb{N}_0</m>
     <md number="yes" >
         \enorm{u_h-u_h^{(n)}} 
         \leq
@@ -817,7 +817,7 @@
     <statement>
         <p>
     \label{thm:conv-l2}
-    Let <m>u_h\in V_h</m> be the solution of the stationary finite element problem<xref ref="eqn-FE-problem"/>. Take <m>u_h^{(0)}\in V_h</m> and denote by <m>\{u_h^{(n)}\}_{n\in\mathbb{N}_0}</m> the sequence of solutions to the iterative problem<xref ref="eqn-iter-problem"/>. We have that, for all <m>n\in \mathbb{N}_0</m>
+    Let <m>u_h\in V_h</m> be the solution of the stationary finite element problem<xref ref="eqn-fe-problem"/>. Take <m>u_h^{(0)}\in V_h</m> and denote by <m>\{u_h^{(n)}\}_{n\in\mathbb{N}_0}</m> the sequence of solutions to the iterative problem<xref ref="eqn-iter-problem"/>. We have that, for all <m>n\in \mathbb{N}_0</m>
     <md number="yes" xml:id="eqn-conv-l2">
         \label{eqn:conv-l2}
         \ltwo{u_h-u_h^{(n)}} 
@@ -852,7 +852,7 @@
     <statement>
         <p>
     \label{cor:conv-sugp}
-    Let <m>u_h\in V_h</m> be the solution of the stationary finite element problem<xref ref="eqn-FE-problem"/>. Take <m>u_h^{(0)}\in V_h</m> and denote by <m>\{u_h^{(n)}\}_{n\in\mathbb{N}_0}</m> the sequence of solutions to the iterative problem<xref ref="eqn-iter-problem"/>. We have that, for all <m>n\in \mathbb{N}_0</m>
+    Let <m>u_h\in V_h</m> be the solution of the stationary finite element problem<xref ref="eqn-fe-problem"/>. Take <m>u_h^{(0)}\in V_h</m> and denote by <m>\{u_h^{(n)}\}_{n\in\mathbb{N}_0}</m> the sequence of solutions to the iterative problem<xref ref="eqn-iter-problem"/>. We have that, for all <m>n\in \mathbb{N}_0</m>
     <md number="yes" >
         \enorm{u_h-u_h^{(n)}} 
         \leq
@@ -884,7 +884,7 @@ We can now populate the triangle inequality for iterative solution error origina
     <statement>
         <p>
     \label{thm:det}
-    Let <m>u</m> be the solution of<xref ref="eqn-strong"/> and suppose <m>u_h\in V_h</m> is the solution of the stationary finite element problem<xref ref="eqn-FE-problem"/>. Take <m>u_h^{(0)}\in V_h</m> and denote by <m>\{u_h^{(n)}\}_{n\in\mathbb{N}_0}</m> the sequence of solutions to the iterative problem<xref ref="eqn-iter-problem"/>. We have that, for all <m>n\in \mathbb{N}_0</m>
+    Let <m>u</m> be the solution of<xref ref="eqn-strong"/> and suppose <m>u_h\in V_h</m> is the solution of the stationary finite element problem<xref ref="eqn-fe-problem"/>. Take <m>u_h^{(0)}\in V_h</m> and denote by <m>\{u_h^{(n)}\}_{n\in\mathbb{N}_0}</m> the sequence of solutions to the iterative problem<xref ref="eqn-iter-problem"/>. We have that, for all <m>n\in \mathbb{N}_0</m>
     <md number="yes" >
         \enorm{u-u_h^{(n)}}
         \leq

@@ -144,7 +144,7 @@
     </p>
 
     <p>
-        The analysis is developed in two stages. In Section~\ref{sec:det}, we work under the assumption of exact evaluation of the scattering integral and derive a bound for <xref ref="triangle-ineq"/> in terms of mesh size <m>h</m> and fixed-point iterate <m>n</m>. This proves convergence of <m>u_h^{(n)} \rightarrow u</m> as <m>n\rightarrow \infty</m> and <m>h\rightarrow 0</m>, with rates parametised by scattering/absorption properties (<m>\sigma_T</m> and <m>\mu</m>), choice of kernel <m>\mathcal{K}</m> and the regularity <m>r</m> of the true solution <m>u</m>.
+        The analysis is developed in two stages. In Section~\ref{sec:det}, we work under the assumption of exact evaluation of the scattering integral and derive a bound for <xref ref="eqn-triangle-ineq"/> in terms of mesh size <m>h</m> and fixed-point iterate <m>n</m>. This proves convergence of <m>u_h^{(n)} \rightarrow u</m> as <m>n\rightarrow \infty</m> and <m>h\rightarrow 0</m>, with rates parametised by scattering/absorption properties (<m>\sigma_T</m> and <m>\mu</m>), choice of kernel <m>\mathcal{K}</m> and the regularity <m>r</m> of the true solution <m>u</m>.
     </p>
 
     <p>
