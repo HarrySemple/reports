@@ -1,0 +1,599 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+
+<chapter xml:id="ch-num-int" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <title>Recombination for Numerical Integration</title>
+
+  <introduction>
+    <p> This is my contribution to a group project on exploring the applications of smarter subsampling using <url href="https://github.com/datasig-ac-uk/baryx" visual="baryx"/></p>
+  </introduction>
+
+  <!-- include sections -->
+
+  <section xml:id="sec-num-int-intro">
+    <title>Introduction to Recombination</title>
+    <subsection xml:id="subsec-">
+        <title></title>
+        
+        <p>
+        Given a dataset of <m>n</m> samples, random subsampling reduces computational cost but introduces Monte Carlo noise and may distort important statistical properties such as means, variances, and correlations. Recombination, also known as measure reduction, instead constructs a reduced-complexity discrete measure <m>\hat{\mu}</m> from a larger measure <m>\mu</m> while preserving specified integral properties of the original measure \cite{litterer2012high}.</p>
+        
+        <p>
+        <c>baryx</c> is a Python/JAX-oriented package for recombination \cite{coxon2026baryx}. It replaces many equally weighted points with a smaller set of unequally weighted points while preserving user-specified statistics exactly, up to selected higher-order moments within numerical tolerance. The library provides efficient, hardware-accelerated tools for this purpose, with a particular emphasis on barycentre preservation, which plays a fundamental role in areas such as computational statistics, optimal transport, and numerical integration.</p>
+        
+        <p>
+        This report forms part of a broader group effort to explore applications of the <c>baryx</c> library, covering data compression with feature preservation, statistical bootstrapping via random subsampling, and numerical integration. Here, we consider the last of these applications: the use of recombination for numerical integration.</p>
+    </subsection>
+
+    <subsection xml:id="subsec-num-int">
+        <title>Numerical Integration</title>
+<p>        Constructing efficient quadrature and cubature rules has long been a central challenge in computational mathematics \cite{engels1980numerical}. Many problems of practical interest lack closed-form solutions, among them integral transforms, ODE solution operators, and cumulative probability distributions. In the Finite Element Method, for instance, quadrature must be evaluated repeatedly over many elements, making efficiency especially desirable even on complex or high-dimensional domains. In this report, we explore the use of the recombination algorithm in <c>baryx</c> to improve quadrature efficiency while preserving accuracy and expressiveness.
+</p><p>
+A concise, general view of numerical integration is to "approximate, then integrate": a perspective that also encompasses Monte Carlo methods \cite{nakatsukasa2018approximate}. 
+Given an integrand <m>f:\Omega\rightarrow\mathbb{R}</m>, we construct an approximate polynomial <m>p\in\mathbb{P}^d</m> through interpolation, and integrate <m>p</m> exactly using a quadrature rule. While the first step is treated as given, this report focuses on the second: constructing efficient quadrature rules for <m>p</m>.</p>
+<p>
+The action of recombination in this context is to compress the quadrature rule while preserving its degree of precision. That is, given a quadrature rule <m>Q</m> with degree of precision (DoP) <m>d</m> satisfying
+<md number="yes" xml:id="eqn-quadrature-1">
+    \label{eqn:quadrature-1}
+    Qp = \sum_{i=1}^N w_i p(x_i) = \int_\Omega p(x) \ \mathrm{d}x,
+    \qquad \forall p \in \mathbb{P}^d,
+</md>
+recombination finds a reweighted subset <m>\{x_{i_1}, \ldots, x_{i_M}\} \subset \{x_1, \ldots, x_N\}</m> such that <xref ref="eqn-quadrature-1"/> still holds \cite{tchernychova2016caratheodory}.</p>
+<p>
+We note that this reweighted subset can only provide a quadrature rule of the same or lower DoP of the original rule. 
+Thus, a fundamental consideration in the implementation of <c>baryx</c> is to begin with an overdetermined quadrature rule of sufficiently high DoP, which recombination can then compress into a smaller, equally precise rule.</p>
+
+<p>We demonstrate that recombination performs well on complex 2D domains, reducing any cubature of DoP <m>d</m> to <m>(d+1)(d+2)/2</m> nodes. In higher dimensions, recombination effectively compresses Cartesian-product Gaussian quadrature rules even on simpler domains such as the hypercube. These results motivate the use of <c>baryx</c>, an efficient implementation of recombination, in resource-intensive applications such as the Finite Element Method.
+</p>
+<p>The remainder of this report is organised as follows. In Section 2, we provide background on numerical integration and quadrature rules in one and two dimensions. In Section 3, we develop a general framework for applying recombination to quadrature rules and demonstrate it on simple and complex 2D domains. We derive an upper bound on the node count in terms of the target DoP, and show how suitable modifications that exploit symmetry improve this bound for odd DoP. Finally, we extend the original bound to higher-dimensional domains.
+</p>
+    </subsection>
+  </section>
+
+
+
+
+<section xml:id="sec-num-int-prelim">
+    <title>Preliminaries</title>
+    <subsection xml:id="subsec-Introduction">
+        <title>Introduction</title>
+        
+    <p>
+The aim of numerical integration is to approximate the integral
+<md number="yes">
+    I = \int_\Omega f(x) \ \mathrm{d}x
+</md>
+where <m>\Omega\subset\mathbb{R}^d</m> (predominantly <m>d=1,2</m>) and  <m>f:\Omega\rightarrow\mathbb{R}</m>.
+We focus on quadrature rules, which approximate the integrand by a polynomial <m>p(x) \in \mathbb{P}^d</m> and integrate <m>p</m> exactly:
+<md number="yes">
+    Qp = \sum_{i=1}^N w_i p(x_i) = \int_\Omega p(x) \ \mathrm{d}x \approx I.
+</md>
+A quadrature rule has an associated degree of precision (DoP) <m>d</m>, meaning all polynomials of degree <m>\leq d</m> are integrated exactly. 
+In this section, we provide a background on constructing quadrature rules to a specified DoP. We begin with the well-understood 1D case before turning to the more involved problem of quadrature in 2D.</p>
+    </subsection>
+
+
+<subsection xml:id="subsec-quad">
+    <title>Quadrature in 1D</title>
+
+    <subsubsection>
+        <title>Introduction</title>
+        
+    <p>
+In the following, we take <m>\Omega = [-1,1]</m>, so <m>I = \int_{-1}^1 f(x) \mathrm{d}x</m>.
+For a quadrature rule to have DoP <m>d</m>, we require <m>Qp = Ip</m> for all <m>p\in\mathbb{P}^d</m>. By linearity of integration, it suffices to check this over a basis of <m>\mathbb{P}^d</m>. A natural choice is the monomial basis <m>\{1, x, x^2, \ldots, x^d\}</m>, resulting in the \textit{momentum equations} \cite{engels1980numerical} (also referred to as moment matching equations \cite{tchernychova2016caratheodory})
+<md number="yes" xml:id="eqn-quad-sys-1">
+    \label{eqn:quad-sys-1}
+    Qx^k = \sum_{n=1}^{N} w_n x_n^k = c_k,
+    \qquad \forall k \in \{0, \ldots, d\},
+</md>
+where <m>x_1, \ldots, x_N</m> are distinct evaluation points, <m>w_1, \ldots, w_N</m> are their associated weights and 
+<md number="yes" xml:id="eqn-cases">
+    \label{eqn:cases}
+    c_k = Ix^k = \begin{cases}
+        \frac{2}{k+1} \quad &amp;k \text{ even}\\
+        0 \quad &amp;k \text{ odd}.
+    \end{cases}
+</md>
+Writing <xref ref="eqn-quad-sys-1"/> explicitly, we have
+<md number="yes" xml:id="eqn-quad-sys-2">
+    \label{eqn:quad-sys-2}
+    \begin{aligned}
+        w_1 + w_2 + \cdots + w_N &amp;= c_0, \\
+        w_1 x_1 + w_2 x_2 + \cdots + w_N x_N &amp;= c_1, \\
+        w_1 x_1^2 + w_2 x_2^2 + \cdots + w_N x_N^2 &amp;= c_2, \\
+        &amp;\vdots \\
+        w_1 x_1^{d} + w_2 x_2^{d} + \cdots + w_N x_N^{d} &amp;= c_d .
+    \end{aligned}
+</md>
+The task of constructing a quadrature rule with DoP <m>d</m> is to solve this system for <m>N</m> evaluation points and weights.
+</p>
+
+    </subsubsection>
+
+<subsubsection xml:id="subsubsec-fixed-nodes">
+    <title>Fixed Nodes</title>
+    
+<p>We first consider fixed evaluation points. Setting <m>N=d+1</m> results in an exactly-determined linear system in the weights <m>w_1, \ldots, w_N</m>, as in <xref ref="eqn-quad-sys-1"/>. This results in a quadrature rule of DoP <m>d</m> with <m>N=d+1</m> nodes.
+</p><p>
+A special case arises through considering an odd number of symmetric evaluation points. Suppose we have <m>2N+1</m> points <m>x_{-N}, \ldots, x_0, \ldots, x_N</m>, with <m>x_0 = 0</m> and <m>x_{-n} = -x_{n}</m> for all <m>n\in\{1, \ldots, N\}</m>. The system becomes
+<md number="yes" xml:id="eqn-special-fixed-quad">
+    \label{eqn:special-fixed-quad}
+    Qx^k = \sum_{n=-N}^{N} w_n x_n^k = c_k
+    \qquad \forall k \in \{0, \ldots, 2N\}.
+</md>
+By further imposing symmetric weights <m>w_{-n} = w_n</m>, the odd-power equations are automatically satisfied, since <m>w_{-n}x_{-n}^{2k+1} = -w_{n}x_{n}^{2k+1}</m> and <m>w_0x_0^{2k+1} = 0</m>, consistent with <xref ref="eqn-cases"/>. The even-power equations reduce to 
+<md number="yes" xml:id="eqn-special-fixed-quad-2">
+    \label{eqn:special-fixed-quad-2}
+    Qx^{2k} = w_0x_0^{2k} + \sum_{n=1}^{N} 2w_n x_n^{2k} = c_{2k}
+    \qquad \forall k \in \{0, \ldots, N\},
+</md>
+where the <m>N+1</m> unknowns <m>w_0, \ldots, w_N</m> can be determined exactly from <m>N+1</m> linear equations. Thus, the derived weights <m>w_{-N}, \ldots, w_N</m> solve <xref ref="eqn-special-fixed-quad"/> with DoP <m>2N</m>. Moreover, as all odd-power integrands zero out, the rule in fact achieves DoP <m>2N+1</m>.</p>
+
+<p>Thus, for <m>2N+1</m> evaluation points, enforcing weight symmetry achieves DoP <m>2N+1</m>. In the case of equidistant points, this derives Newton-Cotes quadrature rule, while for Chebyshev points, this gives us the Clenshaw-Curtis quadrature rule \cite{clenshaw1960method}.
+</p>
+</subsubsection>
+
+
+<subsubsection xml:id="subsubsec-free-nodes">
+    <title>Free Nodes</title>
+    <p>
+We return to the momentum equations <xref ref="eqn-quad-sys-2"/> and consider the case where both nodes and weights are free parameters. We show that the nodes can be chosen as roots of a suitable polynomial, which underpins the construction of Gaussian quadrature rules~\cite{engels1980numerical}.</p>
+<p>
+We want to find <m>2N</m> unknowns: nodes <m>x_1,\ldots,x_N</m> and weights <m>w_1,\ldots,w_N</m>. Let <m>q(x)</m> be the unique monic polynomial of degree <m>N</m> with roots <m>x_1, \ldots, x_N</m>: 
+<md number="yes">
+    q(x) = \beta_0 + \beta_1 x + \beta_2 x^2 + \cdots + \beta_{N-1} x^{N-1} + x^N .
+</md>
+Multiplying the <m>k</m>th momentum equation in <xref ref="eqn-quad-sys-2"/> by <m>\beta_k</m> for each <m>k\in\{0,\ldots,N\}</m> gives us
+<md number="yes">
+    \beta_k w_1 x_1^k + \cdots + \beta_k w_N x_N^k = \beta_k c_k, 
+    \qquad k\in\{0,\ldots,N\}.    
+</md>
+Adding these equations together for all <m>k\in\{0,\ldots,N\}</m>, we have
+<md number="yes">
+    \begin{aligned}
+        &amp; w_1 \bigl( \beta_0 + \beta_1 x_1 + \cdots + \beta_{N-1}x_1^{N-1} + x_1^N \bigr) \\
+        &amp;\quad + w_2 \bigl( \beta_0 + \beta_1 x_2 + \cdots + x_2^N \bigr) \\
+        &amp;\quad \vdots \\
+        &amp;\quad + w_N \bigl( \beta_0 + \beta_1 x_N + \cdots  + x_N^N \bigr)
+        = \beta_0 c_0 + \cdots + \beta_{N-1} c_{N-1} + c_N .
+    \end{aligned}
+</md>
+Since <m>q(x_i)=0</m> for all <m>i</m>, the left-hand side vanishes, arriving at
+<md number="yes">
+    0 = \beta_0 c_0 + \cdots + \beta_{N-1} c_{N-1} + c_N .
+</md></p>
+<p>
+Repeating this argument for shifts <m>j = 0, 1, \ldots, N-1</m> - multiplying the <m>k+j</m>th momentum equation by <m>\beta_k</m> and summing - we arrive at the linear system
+<md number="yes">
+    \begin{aligned}
+        \beta_0 c_0 + \cdots + \beta_{N-1} c_{N-1} + c_N &amp;= 0, \\
+        \beta_0 c_1 + \cdots + \beta_{N-1} c_N + c_{N+1} &amp;= 0, \\
+        &amp;\vdots \\
+        \beta_0 c_{N-1} + \cdots + \beta_{N-1} c_{2N-2} + c_{2N-1} &amp;= 0 ,
+    \end{aligned}
+</md>
+or in matrix form,
+<md number="yes">
+    \begin{pmatrix}
+        c_0 &amp; \cdots &amp; c_{N-1} \\
+        \vdots &amp; \ddots &amp; \vdots \\
+        c_{N-1} &amp; \cdots &amp; c_{2N-2}
+    \end{pmatrix}
+    \begin{pmatrix}
+        \beta_0 \\
+        \vdots \\
+        \beta_{N-1}
+    \end{pmatrix}
+    =
+    -
+    \begin{pmatrix}
+        c_N \\
+        \vdots \\
+        c_{2N-1}    
+    \end{pmatrix}.
+</md>
+This determines the unique set of coefficients <m>\beta_0, \ldots, \beta_{N-1}</m>, from which the roots <m>x_1, \ldots, x_N</m> of <m>q(x)</m> are found. With the nodes determined, the weights follow from previous argument for <xref ref="eqn-quad-sys-2"/> with fixed nodes.
+</p><p>
+The above process constructs Gauss-Legendre quadrature, with nodes <m>x_1, \ldots, x_N</m> found to be roots of <m>N^{\text{th}}</m> degree Legendre polynomial~\cite{engels1980numerical}. More generally, introducing a weight function <m>\omega(x)</m> into the integrand leads to other Gaussian quadrature rules, with nodes given by roots of the corresponding polynomials. This includes Gauss-Chebyshev (Chebyshev polynomials), Gauss-Jacobi, Gauss-Laguerre, and Gauss-Hermite quadrature~\cite{engels1980numerical}.
+</p>
+</subsubsection>
+
+</subsection>
+
+<subsection xml:id="subsec-cubature">
+    <title>Cubature in 2D</title>
+    
+<p>
+We now consider cubature rules for domains <m>\Omega\subset\mathbb{R}^2</m>. Constructing efficient cubature rules in 2D is significantly more challenging than in 1D and remains an active area of research~\cite{bauman2020compressed}.
+We demonstrate this with the example of the "plus" domain, composed of unit squares (<xref ref="fig-triangle"/>).</p>
+
+
+<figure xml:id="fig-triangle">
+
+  <caption>Diagram of simple 2D quadrature of DoP 1 on the plus domain.</caption>
+
+  <image xml:id="tikz-1">
+    <latex-image>
+
+    <!-- CDATA prevents certain LaTeX code from being interpreted as xml -->
+
+  \tikzset{%
+    block/.style    = {draw, thick, rectangle, minimum height = 3em,
+      minimum width = 3em},
+    sum/.style      = {draw, circle, node distance = 2cm}, % Adder
+    input/.style    = {coordinate}, % Input
+    output/.style   = {coordinate} % Output
+  }
+  % Defining string as labels of certain blocks.<!--
+  \newcommand{\suma}{\Large$+$}
+  \newcommand{\inte}{$\displaystyle \int$}
+  \newcommand{\derv}{\huge$\frac{d}{dt}$}-->
+  
+
+    \begin{tikzpicture}[scale=1.2]
+
+    % ---------- left square ----------
+    \draw (0,1) -- (1,1) -- (1,0) -- (0,0) -- cycle;
+    \draw (0,0) -- (1,1);
+
+    \node[above left]  at (0,1) {$c$};
+    \node[below left] at (0,0) {$b_1$};
+
+    % ---------- center square ----------
+    \draw (1,1) -- (2,1) -- (2,0) -- (1,0) -- cycle;
+    \draw (1,0) -- (2,1);
+
+    \node[above left] at (1,1) {$b_3$};
+    \node[below left] at (1,0) {$b_2$};
+
+    % ---------- right square ----------
+    \draw (2,1) -- (3,1) -- (3,0) -- (2,0) -- cycle;
+    \draw (2,0) -- (3,1);
+
+    \node[above right] at (2,1) {$b_2$};
+    \node[above right] at (3,1) {$b_1$};
+    \node[below right] at (3,0) {$c$};
+
+    % ---------- top square ----------
+    \draw (1,2) -- (2,2) -- (2,1) -- (1,1) -- cycle;
+    \draw (1,1) -- (2,2);
+
+    \node[above left] at (1,2) {$c$};
+    \node[above right] at (2,2) {$b_1$};
+
+    % ---------- bottom square ----------
+    \draw (1,-1) -- (2,-1) -- (2,0) -- (1,0) -- cycle;
+    \draw (1,-1) -- (2,0);
+
+    \node[below left] at (1,-1) {$b_1$};
+    \node[below right] at (2,0) {$b_3$};
+    \node[below right] at (2,-1) {$c$};
+
+    % ---------- nodes as dots ----------
+    \foreach \x/\y in {
+    0/0,0/1,1/0,1/1,2/0,2/1,3/0,3/1,1/2,2/2,1/-1,2/-1}
+    {
+    \fill (\x,\y) circle (1.5pt);
+    }
+
+    \end{tikzpicture}
+    </latex-image>
+
+  </image>
+
+</figure><p>
+A natural starting point is geometric construction~\cite{engels1980numerical}. In <xref ref="fig-triangle"/> the plus domain is tessellated with 10 identical triangles, and a quadrature rule is constructed by assigning each vertex a weight proportional to the total area of incident triangles. Vertices labelled <m>c</m> are incident to one triangle, <m>b_1</m> to two, <m>b_2</m> to 4 and <m>b_3</m> to five, giving
+<md number="yes">
+    Qf = \frac{|\Omega|}{10} \cdot \frac{1}{3} \cdot 
+    \left(\sum_{\mathbf{x_c}\in c} f(\mathbf{x_c}) + 
+    2\sum_{\mathbf{x}_{b_1}\in b_1} f(\mathbf{x}_{b_1}) + 
+    4\sum_{\mathbf{x}_{b_2}\in b_2} f(\mathbf{x}_{b_2}) + 
+    5\sum_{\mathbf{x}_{b_3}\in b_3} f(\mathbf{x}_{b_3})\right).
+</md>
+Here, <m>|\Omega|/10</m> is the area of each triangle, and each triangle contributes the average of <m>f</m> at its three vertices. This rule has DoP 1 by construction, integrating linear functions exactly, but not quadratics.</p>
+<p>
+This is a far cry from the efficiency of quadrature rules in 1D. In Gaussian quadrature, <m>N</m> nodes yield DoP <m>2N-1</m>, whereas here 12 nodes achieve only DoP 1.
+Treating these as fixed nodes, 12 weights can satisfy 12 momentum equations. Since DoP <m>d</m> requires <m>(d+1)(d+2)/2</m> momentum equations, this corresponds to at most DoP 3.
+</p><p>
+However, the difficulty of constructing efficient cubature rules in 2D is due to the potential complexity of the domain. Unlike a line segment, momentum integrals
+<m>c_{\alpha\beta} = \int_\Omega x^\alpha y^\beta \mathrm{d}x\mathrm{d}y</m>
+over a general <m>\Omega\subset\mathbb{R}^2</m> may be difficult or impossible to evaluate analytically, making it impractical to assemble the momentum equations <xref ref="eqn-quad-sys-2"/> needed to find suitable nodes and weights.
+</p>
+<p>
+For rectangular domains, higher DoP can be achieved by extending 1D quadrature rules along each axis via Cartesian products~\cite{tchernychova2016caratheodory} (also called tensor products~\cite{trefethen2017cubature}). For a Gaussian quadrature rule <m>Q</m> with DoP <m>d \ge \max\{k_1, k_2\}</m>, we have that
+<md number="yes">
+    \begin{aligned}
+        \int_a^b\int_u^v x^{k_1}y^{k_2} \mathrm{d}x\mathrm{d}y &amp;= \int_a^b x^{k_1} \mathrm{d}x \int_u^v y^{k_2} \mathrm{d}y \\
+        &amp;= Qx^{k_1} Qy^{k_2} \\
+        &amp;= \sum_{n=1}^{N}\sum_{m=1}^{N} w_n w_m x_n^{k_1}  y_m^{k_2} =: \tilde{Q}x^{k_1}y^{k_2}.
+    \end{aligned}
+</md>
+This yields a cubature rule <m>\tilde{Q}</m> with DoP <m>2N-1</m> on the rectangular domain <m>[a,b]\times[u,v]</m> using <m>N^2</m> nodes. We will refer to this as Gaussian cubature. </p>
+
+<p>One option for complex domains is to tessellate with rectangles and apply Gaussian cubature to each, giving a patchwork of cubature rules, as illustrated in <xref ref="fig-gaussian"/>. Although it has been shown that Gaussian cubature rules can be constructed directly for any polygonal domain~\cite{sommariva2007product}, tessellation remains a practical approach for non-polygonal, irregular or disconnected domains.
+</p>
+<figure xml:id="fig-gaussian">
+
+  <caption>Diagram of a 2D Gaussian cubature rule of DoP 3 on the plus domain.</caption>
+
+  <image xml:id="tikz-2">
+    <latex-image>
+
+    <!-- CDATA prevents certain LaTeX code from being interpreted as xml -->
+
+  \tikzset{%
+    block/.style    = {draw, thick, rectangle, minimum height = 3em,
+      minimum width = 3em},
+    sum/.style      = {draw, circle, node distance = 2cm}, % Adder
+    input/.style    = {coordinate}, % Input
+    output/.style   = {coordinate} % Output
+  }<!--
+  % Defining string as labels of certain blocks.
+  \newcommand{\suma}{\Large$+$}
+  \newcommand{\inte}{$\displaystyle \int$}
+  \newcommand{\derv}{\huge$\frac{d}{dt}$}-->
+  
+
+    \begin{tikzpicture}[scale=1.2]
+
+    % ---------- left square ----------
+    \draw (0,1) -- (1,1) -- (1,0) -- (0,0) -- cycle;
+
+
+    % ---------- center square ----------
+    \draw (1,1) -- (2,1) -- (2,0) -- (1,0) -- cycle;
+
+
+    % ---------- right square ----------
+    \draw (2,1) -- (3,1) -- (3,0) -- (2,0) -- cycle;
+
+
+    % ---------- top square ----------
+    \draw (1,2) -- (2,2) -- (2,1) -- (1,1) -- cycle;
+
+
+    % ---------- bottom square ----------
+    \draw (1,-1) -- (2,-1) -- (2,0) -- (1,0) -- cycle;
+
+
+    % ---------- nodes as dots ----------
+    \foreach \x/\y in {
+    0.21/0.21, 0.21/0.79, 0.79/0.21, 0.79/0.79,
+    1.21/0.21, 1.21/0.79, 1.79/0.21, 1.79/0.79,
+    1.21/1.21, 1.21/1.79, 1.79/1.21, 1.79/1.79,
+    1.21/-0.21, 1.21/-0.79, 1.79/-0.21, 1.79/-0.79,
+    2.21/0.21, 2.21/0.79, 2.79/0.21, 2.79/0.79
+    }
+    {
+    \fill (\x,\y) circle (1.5pt);
+    }
+
+    \end{tikzpicture}
+    </latex-image>
+
+  </image>
+
+</figure>
+
+<remark>
+    <title>Higher Dimensions</title>
+    
+    
+    <p>     
+We briefly discuss cubature in higher dimensions. For rectangular domains, a Cartesian-product Gauss-Legendre rule achieves DoP <m>d</m> in <m>s</m> dimensions using 
+<m>\ceil{(d+1)/2}^s</m> nodes.
+However, this count grows exponentially with <m>s</m>, making it impractical for high dimensions and motivating the use of recombination to compress such rules, as discussed in Section~3.4.</p>
+
+<p>Alternative approaches include sparse grids and Monte Carlo methods~\cite{trefethen2017cubature}. Sparse grids use a hierarchical construction to reduce the node count, but the exponential scaling persists in the worst case. Monte Carlo methods achieve a convergence rate independent of dimension, at the cost of stochastic noise and potentially many samples for high accuracy.
+</p>
+</remark>
+
+</subsection>
+
+</section>
+
+<section xml:id="sec-num-int-rec">
+    <title>Applying Recombination</title>
+    
+    <subsection>
+        <title>Introduction</title>
+        
+<p>
+The <c>recombine</c> algorithm in <c>baryx</c> takes a weighted point cloud in <m>\mathbb{R}^d</m> and returns a reweighted set of at most <m>d+1</m> points with the same barycentre (centre of mass) as the original set.
+Additional properties of the dataset can be preserved by extending the dimensions of the data to include its moments.
+For example, sample variance can be preserved by appending <m>(x_1^2, \ldots, x_d^2)^\top</m> to each point <m>(x_1, \ldots, x_d)^\top</m>. This embeds the data in <m>\mathbb{R}^{2d}</m>, after which recombination produces a reweighted set of at most <m>2d+1</m> points. The first <m>d</m> components of these points then form a mean- and variance-preserving coreset of the original point cloud.</p>
+<p>
+In the context of numerical integration, recombination compresses quadrature rules by viewing the right-hand side of the momentum equations <xref ref="eqn-quad-sys-2"/> as a barycentre preserved under reweighted downsampling. In this work, recombination is not used to construct or extend the degree of precision: the resulting rule can be at most as expressive as the original quadrature rule provided to it.</p>
+
+<p>In this section, we develop a general framework for compressing quadrature rules using recombination and demonstrate its application to two-dimensional quadrature on simple and more complex domains. We derive an upper bound on the number of nodes produced by recombination in terms of the target DoP, and provide an alternative framework which improves this bound for odd DoP on domains invariant under reflection through the origin. Finally, we extend the first result to higher-dimensional domains.
+</p>
+</subsection>
+
+
+<subsection xml:id="subsec-framework">
+    <title>General Framework for Recombination on Cubature</title>
+
+<p>Suppose we are given a cubature rule with DoP <m>\hat{d}</m> on <m>\Omega\subset\mathbb{R}^s</m>, with nodes <m>\{\mathbf{x}_i\}_{i=1}^N</m> and weights <m>\{w_i\}_{i=1}^N</m>. The aim is to compress the rule - that is, reduce the number of nodes - while achieving a target DoP <m>d\leq\hat{d}</m>.
+</p><p>
+Let <m>\mathbb{P}_s^d</m> denote the space of polynomials of degree at most <m>d</m> on <m>\mathbb{R}^s</m> .
+We take <m>\{p_1, \ldots, p_M\}</m> to be a basis for <m>\mathbb{P}_s^d</m>, where
+<md number="yes" xml:id="eqn-poly-dim">
+    \label{eqn:poly-dim}
+    M = \mathrm{dim}(\mathbb{P}_s^d) = \binom{s + d}{d} .
+</md>
+We construct a set of vectors in <m>\mathbb{R}^M</m> given by
+<md number="yes">
+    \{ \ \left(p_1(\mathbf{x}_i), \ldots, p_M(\mathbf{x}_i)\right)^T: \quad i = 1, \ldots, N \},
+</md>
+equipped with the original weights <m>\{w_i\}_{i=1}^N</m>.</p>
+
+<p>We then apply recombination to this set, obtaining a coreset of at most <m>M+1</m> reweighted vectors. This subset preserves the barycentre of the original data. In particular, for each <m>j \in \{1, \ldots, M\}</m>,
+<md number="yes" xml:id="eqn-rec-1">
+    \label{eqn:rec-1}
+    \sum_{k=1}^{M+1} \tilde{w}_k p_j(\tilde{\mathbf{x}}_k)
+    = \sum_{i=1}^{N} w_i p_j(\mathbf{x}_i)
+    = \int_\Omega p_j(\mathbf{x}) \mathrm{d}\mathbf{x},
+</md>
+% where <m>c_j</m> is the 
+where the final equality follows from the definition of the original quadrature rule. Thus, all momentum equations required for DoP <m>d</m> are satisfied by the new quadrature rule, comprising nodes <m>\{\tilde{\mathbf{x}}_i\}_{i=1}^{M+1}</m> and weights <m>\{\tilde{w}_i\}_{i=1}^{M+1}</m>.</p>
+
+<p>
+We highlight two caveats for practical implementation. First, in <c>baryx</c>, the size of the recombined coreset is observed to be <m>M</m>, rather than <m>M+1</m>. 
+Although the internal procedures of <c>baryx</c> are beyond the scope of this report, this behaviour is motivated by considering <xref ref="eqn-rec-1"/> as a linear system of weights with fixed nodes <m>\tilde{\mathbf{x}}_k</m>. Moreover, \cite{tchernychova2016caratheodory} shows that Carath\'eodory cubature - the cubature found by recombination - has cardinality (number of nodes) bounded above by <m>M</m>.
+</p>
+<p>Second, recombination requires a sufficiently accurate, pre-existing cubature rule to be simplified. Univariate quadrature rules can be extended to higher dimensional rectangular domains through Cartesian products, while retaining their degree of precision \cite{tchernychova2016caratheodory}. In two dimensions, Gaussian cubature can be found for all polygons \cite{sommariva2007product}. This leads us to the approach later employed in experiments: tessellating a more complicated domain with simpler shapes before applying recombination to a patchwork of cubature rules.
+</p>
+
+
+</subsection>
+
+
+
+
+<subsection xml:id="subsec-sq-domains">
+    <title>Square Domains</title>
+    <p>
+We begin with the simple case of applying recombination on the domain <m>[0,1]^2</m>. <xref ref="fig-compression"/> shows Gauss-Legendre cubature compressed to a triangular number of nodes, corresponding to the number of momentum equations that must be satisfied. Indeed, from <xref ref="eqn-poly-dim"/> with <m>s=2</m>, the number of nodes produced after recombination is
+<md number="yes">
+    M = \binom{d+2}{d} = (d+1)(d+2)/2,
+</md>
+where <m>d</m> is the target degree of precision.</p>
+
+<p>A closer inspection of <xref ref="fig-compression"/> shows that, in this domain, recombined cubature cannot compete with standard Gauss-Legendre cubature. In the middle column, we see that a recombined cubature of degree 2 requires 6 nodes, while the left column shows Gauss-Legendre cubature achieves degree 3 using only four nodes.
+</p><p>
+In general, a two-dimensional Gauss-Legendre cubature of <m>N^2</m> nodes has degree of precision <m>d = 2N-1</m>. That is, achieving degree of precision <m>d</m> on <m>[0,1]^2</m> requires only
+<md number="yes" xml:id="eqn-gauss-eff">
+    \label{eqn:gauss-eff}
+    N = \left\lceil \frac{d+1}{2} \right\rceil^2
+</md>
+nodes. Thus, <m>N\lt M</m> for all <m>d\in\mathbb{N}</m> and there is no guaranteed improvement from recombination.</p>
+
+<figure xml:id="fig-compression">
+    <caption>Gauss-Legendre cubature recombined on the unit square. The left column shows a degree 3 cubature compressed to degree 1. The middle column shows a degree 5 cubature compressed to degree 2. The right column shows a degree 17 cubature compressed to degree 5.</caption>
+    <sidebyside widths="30% 30% 30%">
+        <image source="images/square-gauss-dop3.png">
+        </image>
+        <image source="images/square-gauss-dop5.png">
+        </image>
+        <image source="images/square-gauss-dop17.png">
+        </image>
+    </sidebyside>
+</figure>
+<figure xml:id="fig-compression-2">
+    <caption>Gauss-Legendre cubature recombined on the unit square. The left column shows a degree 3 cubature compressed to degree 1. The middle column shows a degree 5 cubature compressed to degree 2. The right column shows a degree 17 cubature compressed to degree 5.</caption>
+    <sidebyside widths="30% 30% 30%">
+        <image source="images/square-rec-gauss-dop3.png">
+        </image>
+        <image source="images/square-rec-gauss-dop5.png">
+        </image>
+        <image source="images/square-rec-gauss-dop17.png">
+        </image>
+    </sidebyside>
+</figure>
+
+<p>
+For odd <m>d</m>, certain modifications to our framework can improve the efficiency of the resulting cubature.
+We consider the domain <m>[-1,1]^2</m>, which has the advantage that all odd-order polynomials integrate to zero (a property of any domain invariant under reflection through the origin \cite{stroud1971approximate}).</p>
+<p>
+Contrary to our previous framework, we consider a basis <m>p_1, ..., p_{M'}</m> of only the even-order polynomials of degree <m>\leq d</m>.
+Thus, we have
+<md number="yes">
+    M' = 1 + 3 + 5 + \cdots + \left(2\left\lceil \frac{d-1}{2} \right\rceil + 1\right) = \left\lceil \frac{d+1}{2} \right\rceil^2.
+</md>
+</p>
+<p>
+The resulting <m>M'</m> nodes are then reflected through the origin, attributing the same weights to their reflections. We then halve all of the weights. 
+This produces a quadrature rule with
+<md number="yes">
+    M^\dagger = 2\left\lceil \frac{d+1}{2} \right\rceil^2
+</md> 
+nodes; an example for <m>d=5</m> is shown in <xref ref="fig-reflected"/>. For odd <m>d</m>, this improves upon the original recombined cubature by reducing the node count from <m>M</m> to <m>M^\dagger = M - (d+1)</m>. However, the resulting rule still requires double the nodes as Gauss-Legendre cubature, while the node count for even <m>d</m> increases to <m>M^\dagger = M+(d+1)</m>.</p>
+
+<p>While recombination is uncompetitive on simple rectangular domains, it becomes valuable for complex 2D geometries and high-dimensional hypercubes. These settings are explored in the following two sections.
+</p>
+
+<figure xml:id="fig-reflected">
+    <caption>Compression from degree-<m>17</m> to degree-<m>5</m> polynomials using <m>18</m> points, compared with <m>21</m> points in <xref ref="fig-compression"/>. The blue points are obtained by recombination on the space of even-degree polynomials of degree at most <m>5</m>, and the orange points are their reflections through the origin. Weights are shared between a blue point and its reflected orange counterpart, and normalised.</caption>
+    <sidebyside widths="40% 40%">
+        <image source="images/square-gauss-dop17-ref.png">
+        </image>
+        <image source="images/square-rec-gauss-dop7-ref.png">
+        </image>
+    </sidebyside>
+</figure>
+
+
+
+</subsection>
+
+
+<subsection xml:id="subsec-tess">
+    <title>Tessellation and General 2D Domains</title>
+    
+
+<p>We now consider more complex domains in <m>\mathbb{R}^2</m>. As noted previously, exact momentum integrals may be unavailable for general domains, so constructing cubature rules directly from momentum equations is often infeasible. Furthermore, tensor-product quadrature rules no longer apply on non-rectangular domains, though Gaussian cubature rules for polygons have been developed \cite{sommariva2007product}.
+</p>
+<p>Our approach is to instead tessellate a domain <m>\Omega</m> into simpler subdomains, producing a patchwork of local cubature rules. Applying recombination to this patchwork yields a single cubature rule with the same degree of precision and significantly fewer nodes. 
+</p>
+
+<figure xml:id="fig-plus">
+    <caption>Compression on the "plus", "lattice" and France domains, with selected nodes shown in orange. In each example, a patchwork of DoP 3 cubature is compressed to 10 nodes through recombination.</caption>
+
+    <sidebyside widths="30% 30% 30%">
+        <image source = "images/plus-gauss-dop3.png">            
+        </image>
+        <image source = "images/lattice-gauss-dop3.png">            
+        </image>
+        <image source = "images/france-gauss-dop3.png">            
+        </image>
+    </sidebyside>
+</figure>
+
+<p>To illustrate this approach, we present three examples of increasing geometric complexity, each tessellated using DoP 3 Gauss-Legendre cubature, shown in <xref ref="fig-plus"/>.
+</p>
+<p>We first consider the “plus” domain introduced previously in <xref ref="fig-gaussian"/>. Recombination compresses the resulting <m>20</m>-node quadrature rule to <m>10</m> nodes, as predicted by <xref ref="eqn-poly-dim"/>. We then apply the same procedure to a lattice domain inspired by geometries arising in microwave shielding simulations \cite{samoh2021simulation}. Again, recombination reduces the <m>320</m>-node patchwork cubature to a <m>10</m>-node rule.
+</p>
+<p>Finally, we tessellate mainland France using subdomains of area <m>400\,\mathrm{km}^2</m>. The coastline is approximated by selecting grid cells that intersect the domain. Recombination again produces a degree-<m>3</m> cubature rule with only <m>10</m> nodes, this time compressing an initial rule consisting of <m>5016</m> nodes.
+</p>
+</subsection>
+<subsection xml:id="subsec-higher-dim">
+    <title>Higher Dimensions</title>
+    
+
+<p>For one- and two-dimensional domains, we have seen that recombination fails to compress Gauss-Legendre quadrature on intervals and its Cartesian-product cubature extensions on rectangles. We conclude with the observation that this behaviour does not persist in higher dimensions.
+</p>
+<p>Indeed, on the domain <m>[0,1]^s</m> with target degree of precision <m>d</m>, recombination compresses a cubature rule to <m>M = \binom{s + d}{d}</m> nodes. By contrast, the Cartesian-product extension of Gauss--Legendre quadrature yields a cubature rule with <m>N = \left\lceil\frac{d+1}{2}\right\rceil^s</m> nodes. For <m>s=3</m>, the same behaviour as in the cases <m>s=1,2</m> persists: Gauss-Legendre cubature is not compressible via recombination, since
+<md number="yes">
+    M = \frac{1}{6}(d+1)(d+2)(d+3) > \left\lceil\frac{d+1}{2}\right\rceil^3 = N.
+</md>
+However, for <m>s \geq 4</m>, this inequality reverses for sufficiently large <m>d</m>. At leading order,
+<md number="yes">
+    N \sim \frac{d^s}{2^s}, \qquad M \sim \frac{d^s}{s!},
+</md>
+as <m>d\rightarrow\infty</m>, so <m>N/M \rightarrow s!/2^s</m>. Since <m>s!/2^s \gt 1</m> for <m>s \geq 4</m>, we have that <m>M\lt N</m> asymptotically, and recombination can compress Gauss-Legendre cubature on hypercubes in four or more dimensions. 
+In fact, the crossover happens early: for <m>s=4</m>, <m>M\lt N</m> for all even <m>d</m> and for odd <m>d\geq 13</m>, with the crossover occuring at lower <m>d</m> for higher <m>s</m>.
+</p>
+
+
+</subsection>
+
+</section>
+<section xml:id="sec-num-int-conc">
+    <title>Conclusion and future work</title>
+    <p>
+Recombination compresses quadrature rules effectively in settings where standard constructions are unavailable or inefficient - namely complex 2D domains and hypercubes in four or more dimensions. We have developed a general framework for applying recombination to quadrature rules and demonstrated it on simple and complex two-dimensional domains.
+For a target DoP <m>d</m> on an <m>s</m>-dimensional domain, recombination produces a quadrature rule with at most <m>M = \binom{s + d}{d}</m> nodes. For the case of odd <m>d</m> on two-dimensional domains invariant under reflection through the origin, we have shown that this can be improved to <m>M^\dagger = 2\left\lceil \frac{d+1}{2} \right\rceil^2</m>. </p>
+<p>
+For intervals and rectangular domains in one, two, and three dimensions, recombination does not improve upon Gauss-Legendre quadrature or its tensor-product extensions. However, in four or more dimensions, recombination can compress tensor-product Gauss-Legendre cubature rules, reducing the node count while preserving the DoP. In lower dimensions, recombination also compresses patchwork cubature rules on complex geometries, as demonstrated on the "plus", "lattice", and France domains.</p>
+
+<p>Future work includes deriving error bounds for general integrands, extending polygonal Gaussian rules and higher-dimensional domains to the current framework, and generalising the reflection symmetry analysis to obtain bounds in higher dimensions. A natural extension would also be to evaluate recombined cubature rules against alternative approaches to high-dimensional integration, such as sparse grids, low-rank compression, and Monte Carlo methods~\cite{trefethen2017cubature}.
+</p>
+<p>Another area of interest is to improve our implementation to construct an appropriate mesh for the domain, rather than relying on grid intersections. To further avoid dominating geometry errors, future work could also implement cubature rules for curved domains.
+</p>
+<p>In the context of the wider group's work on <c>baryx</c>, further directions include variance reduction for Monte Carlo integration via recombination-based subsampling, and the investigation of cubature rules for kernels arising in Fourier features~\cite{hayakawa2022positively} - used in our work on feature preservation.
+</p>
+</section>
+
+</chapter>
