@@ -581,7 +581,7 @@ In fact, the crossover happens early: for <m>s=4</m>, <m>M\lt N</m> for all even
 
 </section>
 <section xml:id="sec-num-int-conc">
-    <title>Conclusion and future work</title>
+    <title>Conclusion</title>
     <p>
 Recombination compresses quadrature rules effectively in settings where standard constructions are unavailable or inefficient - namely complex 2D domains and hypercubes in four or more dimensions. We have developed a general framework for applying recombination to quadrature rules and demonstrated it on simple and complex two-dimensional domains.
 For a target DoP <m>d</m> on an <m>s</m>-dimensional domain, recombination produces a quadrature rule with at most <m>M = \binom{s + d}{d}</m> nodes. For the case of odd <m>d</m> on two-dimensional domains invariant under reflection through the origin, we have shown that this can be improved to <m>M^\dagger = 2\left\lceil \frac{d+1}{2} \right\rceil^2</m>. </p>
