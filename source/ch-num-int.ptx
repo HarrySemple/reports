@@ -471,7 +471,7 @@ In general, a two-dimensional Gauss-Legendre cubature of <m>N^2</m> nodes has de
 nodes. Thus, <m>N\lt M</m> for all <m>d\in\mathbb{N}</m> and there is no guaranteed improvement from recombination.</p>
 
 <figure xml:id="fig-compression">
-    <caption>Gauss-Legendre cubature recombined on the unit square. The left column shows a degree 3 cubature compressed to degree 1. The middle column shows a degree 5 cubature compressed to degree 2. The right column shows a degree 17 cubature compressed to degree 5.</caption>
+    <caption></caption>
     <sidebyside widths="30% 30% 30%">
         <image source="images/square-gauss-dop3.png">
         </image>
