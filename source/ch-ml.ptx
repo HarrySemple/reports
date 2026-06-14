@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<chapter xml:id="ch-ml" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <title>Demystifying Machine Learning for Weather Forecasting</title>
+
+  <introduction>
+    <p> This report is based on Based on Kossaifi et al. (2026). </p>
+  </introduction>
+
+
+
+
+<section><title>Introduction</title>
+<!--% \emph{Background: does not have to be a review. }
+% With the advent of neural operators and graph neural networks, machine learning approaches became competitive in the task of medium-range weather forecasting. -->
+
+<p>Recent advances in machine learning have significantly reshaped the landscape of medium-range weather forecasting. In particular, neural operator methods, graph neural networks, and large-scale generative models have demonstrated competitive performance compared to traditional numerical weather prediction systems.
+Once trained, machine learning models can generate forecasts orders of magnitude faster than classical physics-based solvers, a key aspect which has effectively democratised access to high quality weather prediction \cite{kossaifi2026demystifying}.</p>
+
+<p>Despite this progress, the current literature remains fragmented. A wide variety of architectures, training strategies, and probabilistic formulations have emerged, often developed in isolation and evaluated under inconsistent experimental settings. While many models report improvements over established baselines such as the Integrated Forecasting System (IFS), differences in evaluation metrics and implementation details make systematic comparison challenging. Furthermore, the increasing architectural complexity of state-of-the-art systems introduces significant engineering overhead, which can hinder reproducibility and scalable deployment.</p>
+
+<p>In response to this, Kossaifi et al. (2026) propose ATLAS (Atmospheric Transformer in Latent Space), a conceptual design framework for medium-range weather prediction. This pipeline is constituted by three conceptual components: (i) a latent space representation of high-resolution atmospheric fields, (ii) a probabilistic model governing temporal evolution in latent space, and (iii) a decoder that reconstructs full-resolution physical predictions. This decomposition provides architectural flexibility and conceptual clarity, while demonstrating state-of-the-art performance, superseding classical numerical weather prediction.
+</p>
+<p>This report aims to communicate the underlying mechanisms of the ATLAS framework by presenting an example end-to-end implementation. We motivate the principal design choices and discuss appropriate metrics for evaluating and comparing such models in future research.
+</p>
+
+
+</section><section><title>Problem Formulation</title>
+<p>Consider a <m>d</m>-dimensional, discrete stochastic process <m>\{x_j\}_{j\in\mathbb{Z}}\subset \mathbb{R}^d</m>, where <m>d</m> is the number of physical quantites relating to the state of the system.
+</p><p>
+Our problem is to find <m>\rho_c(x_{j+1}|x_j)</m> from a single realisation of <m>x_j</m>. 
+Assuming stationarity of <m>\{x_j\}_{j\in\mathbb{Z}}</m>, we have
+<md number="yes" xml:id="eqn-by-stationarity-1">
+  \rho_c(x_{j+1}|x_j) = \rho_c(x_1|x_0).
+</md>
+That is, the conditional probability <m>\rho_c</m> is independent of time.
+This reduces the task to learning a model for <m>\rho_c(x_1|x_0)</m>, with training data in the form of <m>N</m> (stationary) realisations of the distribution <m>\rho_c(x_1, x_0)</m>,
+<md number="yes" xml:id="eqn-by-stationarity-2">
+  \{x^\dagger_{j+1}, x^\dagger_j\} \sim \rho_c(x_1|x_0).
+</md>
+Equipped with such a model, we may generate an interate <m>\hat{x}_1</m> from an initial measurement <m>x^\dagger_0</m>, as an approximate sample from the distribution
+<md number="yes">
+  \hat{x}_1 \sim \rho_c(x_1|x_0).
+</md>
+Taking <m>\hat{x}_1</m> as the inital measurement again we generate <m>\hat{x}_2 \sim \rho_c(x_1|\hat{x}_1)</m>. Repeating this gives us an "unrolled" forecast <m>\hat{x}_1, \hat{x}_2, ...</m> for the initial measurement <m>x^\dagger_0</m>.
+</p>
+<p>We note two important caveats to this formulation. First, <m>\hat{x}_1</m> is only approximately distributed according to <m>\rho_c(x_1|x_0)</m>, introduciing a distributional shift at each unrolling step. A would-be concern of this characteristic is the compounding of errors at each time step, however, the architectures discussed are sufficiently robust to distribution shift to produce stable forecasts up to 15 days.
+</p><p>
+Second, the assumption of stationarity is not strictly valid for atmospheric data. Weather variability exhibits pronounced diurnal and seasonal cycles, leading to time-dependent dynamics. This mismatch is mitigated by conditioning the model on physically meaningful covariates that encode temporal information, such as the cosine of the solar zenith angle.
+Spatial non-stationarity is addressed similarly, through the inclusion of variables such as surface geopotential and land–sea masks in the projection mapping.</p>
+
+
+
+</section><section><title>Populating the ATLAS Framework</title>
+    <subsection>
+        <title>Introduction</title>
+        
+<p>Kossaifi et al. establish a general framework for approximating the condtional distribution <m>\rho_c(x_1|x_0)</m> using diffusion transformer models, entitled ATLAS (Atmospheric Transformer in Latent Space). 
+Rather than specifying a single architecture,
+ATLAS is comprised of three conceptual blocks, each of which are compatible to
+a variety of design choices. </p>
+
+<p>These blocks correspond to the choice of the latent space, the probabilistic model defined within that space, and the decoder used to reconstruct full-resolution predictions. 
+In this section, we traverse an example structure with design choices motivated by conceptual reasoning and empirical performance.
+</p>
+    </subsection>
+
+<subsection><title>Block 1: Choice of Latent Space</title>
+<p>For most models, the input data is in the form of ECMWF's ERA5 dataset, a time series of historical observations re-assimilated using IFS. 
+This data has a quarter-degree precision, with 75 measurements attributed to each gridpoint. 
+On a global grid (721<m>\times</m>1440), this brings us to an input dimensionality of <m>d = 75\times721\times1440 > 77</m> million. Handling this size of input directly would be computationally prohibitive.
+</p><p>
+We look instead towards a latent space approach, which has proven effective for high-dimensional data in computer vision and natural language processing \cite{kossaifi2026demystifying}. 
+In image analysis tasks, this approach is often implemented using variational autoencoders (VAEs)
+where an encoder-decoder pair - often in the form of a convolutional U-Net - is trained in tandem to map inputs to a suitable low-dimensional latent space. 
+However, standard VAEs mix infomation across all channels when passing to the latent space.
+</p><p>
+This poses a challenge for geophysical data. Important structure may be lost if temporally adjacent states are mapped far apart in latent space, while projecting heterogeneous variables into a shared representation can further disrupt physical dependencies \cite{kossaifi2026demystifying}.
+</p>
+<!--% On VAEs - what they do to variables, why this may cause instability, leaving the encoder out will save on compute power that can instead be attributed to decoder-->
+
+
+<!--% Bilinear interpolation - and further motivation-->
+<p>Rather than a learned encoder, Kossaifi et al. propose a simple direct downsampling of the data
+in the form of bilinear interpolation over the spatial fields.
+This averages measurements taken across 4 neighbouring points, reducing the spatial resolution from quarter-degree to single-degree. The resulting latent representation has dimension <m>75\times181\times360</m>, corresponding to an (almost) 16<m>\times</m> compression.</p>
+
+<p>This resolution aligns suitably with ATLAS's 6-hour timestep. On this timescale, spatial features smaller than <m>70</m>km are known to be deterministically unpredictable \cite{kossaifi2026demystifying}. 
+Consequently, the information lost through this interpolation pertains only to small-scale dynamics, which are only predictable under shorter time scales. </p>
+
+
+<!--% adding to Notation
+% empirical tests show that residuals are better
+% and that including more history improves performance, so we condition on <m>z_{-1}</m> as well as <m>z_0</m>.
+%\emph{empirical results}it is found that directly downsampling the spatial infomation achieves better results (better behaved latent space, no cross talk).-->
+<p>
+Further, Kossaifi et al. provide empirical evidence supporting this design choice. Holding all other components of the framework fixed, it is shown that a VAE trained to minimise reconstruction error produces less accurate forcasts than a downsample-decoder pair of the same parameter budget. We note that 
+an inherent advatage of the downsample-decoder pair is that the number of parameters saved in the absence of a learned encoder effectively doubles the computational resource for the decoder. </p>
+
+
+
+</subsection><subsection><title>Block 2: The Probabilistic Model</title>
+<p>
+Before introducing the probabilistic model, Kassaifi et al. outline several design choices motivated by experimental results, slightly modifying the problem as formulated in the previous section. 
+In particular, it is found that performance improves when the model predicts residual updates rather than full states, as well as with the inclusion of one additional historical state.</p>
+
+<p>For a given sampling operator <m>\mathcal{B}</m>, we will write a latent representation as <m>z_j = \mathcal{B}(x_j)</m> and the residual as <m>r_{j+1} = \mathcal{B}(x_{j+1} - x_j)</m>. Incorporating the experimentally motivated conisderations, the task of the probabilistic model is to sample from a suitable approximation of
+<m>\rho_c(r_{j+1}|z_j, z_{j-1}).</m>
+Assuming that <m>\mathcal{B}</m> preserves stationarity, the target distribution simplifies to
+<m>\rho_c(r_{1}|z_0, z_{-1}).</m></p>
+
+
+<p>We present the stochastic interpolant (SI) approach \cite{chen2024probabilistic} to estimate the conditional distribution.
+In this formulation, the target distribution is given by the solution of a neural stochastic differential equation (SDE), where the drift term is parametised by a neural network.
+This implementation provides a natural interpretation of the learning task: the model seeks to estimate the expected dynamical trend of the latent system.</p>
+
+
+<p>
+We define the stochastic process
+<md number="yes">
+  I_t = \alpha(t) z_0 + \beta(t) r_1 + \sigma(t) W_t, \qquad 0 \le t \le 1.
+</md>
+where <m>(z_0,r_1)\sim \rho(z_0,r_1)</m>, <m>W_t</m> is an independent <m>\mathbb{R}^d</m>-valued Wiener process and <m>\alpha, \beta, \sigma \in C^1([0,1];\mathbb{R}_{\ge 0})</m> are positive continuous functions. 
+Futher, we have the boundary conditions <m>\alpha(0) = 1</m>, <m>\beta(0) = 0</m>, <m>\sigma(0) = 0</m>, <m>\alpha(1) = 0</m>, <m>\beta(1) = 1</m>, and <m>\sigma(1) = 0</m>. 
+This imposes <m>I_0 = z_0</m> and <m>I_1 = r_1</m>, in particular so that <m>I_t|z_0</m> is a bridge between the point mass distribution <m>\delta_{z_0}</m> and <m>\rho(r_1|z_0)</m>.</p>
+<p>
+It is shown in \cite{chen2024probabilistic} (Theorem 3.1) that the distribution of <m>I_t|z_0</m> is related to the following the SDE,
+<md number="yes">
+  dX_t = b\!\left(X_t, z_0, t\right)\,dt + \sigma(t)\,dW_t, 
+  \qquad X_0 = z_0,
+</md>
+where the drift term <m>b: \mathbb{R}\times \mathbb{R}^d \times [0,1] \to \mathbb{R}</m> is given by the minimiser of
+<md number="yes" xml:id = "eqn-loss">
+  \mathcal{L}
+  = \int_0^1 \mathbb{E}\!\left[
+  \left\lvert
+  b\!\left(I_t, z_0, t\right)
+  - \dot{\alpha}(t) z_0
+  - \dot{\beta}(t) r_1
+  - \dot{\sigma}(t) W_t
+  \right\rvert^2
+  \right] dt.
+</md>
+In fact, we have that <m>\text{Law}(X_t) = \text{Law}(I_t|z_0)</m> for all <m>(t, z_0)\in[0,1]\times\mathbb{R}^d</m>. In particular, <m>X_1 \sim \rho_c(r_1|z_0)</m>, allowing us to sample from this distribution by solving the SDE.</p>
+
+<p>Our aim is to estimate <m>b(X_t, z_0, t)</m> using a neural network <m>\hat{b}(X_t, z_0, z_{-1}, t)</m> - conditioned on an additional historical state as motivated by empirical results. 
+We refer to <m>\hat{b}</m> as the \emph{prediction network} and discuss its architecture in the next section.
+To define an appropriate loss function, we approximate the expectation in \ref{eqn:loss} using samples <m>(z_j^\dagger, r_{j+1}^\dagger)\sim \rho(z_0, r_1)</m>.
+<md number="yes">
+  \hat{\mathcal{L}}
+  = \frac{1}{N} \sum_{j=0}^{N-1}
+  \mathbb{E}_{t \sim U(0,1),\, \xi \sim \mathcal{N}(0,I)}
+  \!\left[
+  \left\lvert
+  \hat{b}\!\left(\hat{I}_{t_j}^{\dagger}, z_j^{\dagger}, z_{j-1}^{\dagger}, t\right)
+  - \dot{\alpha}(t)\, z_j^{\dagger}
+  - \dot{\beta}(t)\, r_{j+1}^{\dagger}
+  - \dot{\sigma}(t)\, \sqrt{t}\, \xi
+  \right\rvert^{2}
+  \right],
+</md>
+where <m>\hat{I}_{t_j}^{\dagger} = \alpha(t) z_j^\dagger + \beta(t) r_{j+1}^\dagger + \sigma(t) \sqrt{t} \xi</m>.
+</p><p>
+Equipped with an estimate <m>\hat{b}</m>, we have the following approximate model for <m>\rho_c(r_1|z_0)</m>. For an initial measurement <m>z_0</m>, we solve the SDE
+<md number="yes">
+  d\hat{X}_t
+  = \hat{b}\!\left(\hat{X}_t, z_0, z_{-1}, t\right)\,dt 
+  + \sigma(t)\,dW_t,
+  \qquad 
+  \hat{X}_0 = z_0.
+</md>
+and expect that <m>\hat{X}_1</m> is an approximate sample from <m>\rho_c(r_1|z_0)</m>, since <m>\hat{b}\approx b</m>. In practice, Kassaifi at al. solve this SDE using a first-order stochastic Runge-Kutta method scheme attributed to \cite{roberts2012modify}.
+</p><p>
+In further practical considerations, Kassaifi et al. note that inputs to the prediction network <m>\hat{b}</m> are re-parametrised to have zero mean and unit variance, and that a linear schedule is used for <m>\alpha, \beta, \sigma</m>. 
+The prediction network itself uses the same architecture as the decoder. We provide further details and a discussion in the next section.
+</p>
+
+
+
+</subsection><subsection><title>Block 3: Decoder and Architecture</title>
+
+
+<p>The final component of the ATLAS framework concerns the architectures used for the prediction network <m>\hat{b}</m> and the decoder responsible for reconstructing full-resolution predictions.
+Motivated by recent success in imaging, both the prediction and decoder networks are implemented using a diffusion transformer (DiT) architecture \cite{peebles2023scalable}.
+</p><p>
+This however contrasts with common practice in computer vision applications, where latent diffusion models often combine a transformer generative model with 
+a convolutional U-Net decoder.
+As discussed previously in the context of latent space design, Kassaifi et al. report that a fully transformer-based upsampling decoder yields significantly better performance.
+In fact, the reconstruction error introduced from the decoder was found to be an order of magnitude smaller than that of the probabilistic model: implying no loss in performance when mapping from the latent space back to full resolution.</p>
+
+<p>Before detailing the architectures of each model, we note several design choices motivated by empirical results.
+Kassaifi et al. find that retaining the previous full-resolution state <m>x_0</m> as an additional input for the decoder, i.e. <m>\mathcal{D}(r_1, x_0)</m>, significantly improves reconstruction accuracy.
+In addition, four auxiliary channels are appended to <m>x_0</m>: the land-sea mask,
+the sea surface temperature mask,
+the surface geopotential
+and the (date-dependent) cosine-zenith angle, each normalised to the range <m>[-1,1]</m>. These variables are introduced to mitigate effects of non-stationarity: the first three address the spatial domain, while the cosine-zenith angle accounts for temporal non-stationarity.</p>
+
+<p>Moreover, due to their origins in diffusion modelling, DiT blocks naturally admit a time-conditioning parameter <m>t</m> that varies the scale and shift of their outputs. Although the parameter is redundant in the context of a constant 6-hour timestep, it is whimsically found that fixing <m>t=1</m> results in better performance than removing it entirely. 
+</p>
+
+<p>We summarise the action of the decoder with the following formulation,
+<md number="yes">
+  \mathcal{D}: \mathbb{R}^{75\times181\times360}\times \mathbb{R}^{79\times721\times1440} \rightarrow \mathbb{R}^{75\times721\times1440}: (r_1, x_0) \mapsto x_1 - x_0.
+</md></p>
+
+<p>Underneath this representation, we begin by appling a strided convolution to <m>x_0</m>
+to align the spatial resolutions of <m>x_0</m> and <m>r_1</m>.
+This patches the spatial dimensions to <m>181\times360</m> tokens while projecting the 79 channels to an embedding dimension <m>e_0\in\mathbb{N}</m>. 
+Channels of <m>r_1</m> are similarly expanded to an embedding dimension <m>e_1\in\mathbb{N}</m> via a <m>1\times 1</m> non-strided convolution.
+The resulting representations are then concatenated into a single object with spatial dimensions <m>181\times360</m> and <m>e = e_0 + e_1</m> channels.
+To attribute spatial information, a sine-cosine postional encoding is appended to this field before <m>l_\text{D}\in\mathbb{N}</m> DiT blocks are applied to it.
+Each DiT block is modified to use local attention \cite{hassani2023neighborhood} in a <m>3\times3</m> window, with minimal spherically consistant padding applied beforehand.
+Following the final DiT block, a local linear layer maps the resulting <m>e\times181\times360</m> field back to the full resolution <m>75\times721\times1440</m>.</p>
+
+<p>We note that Kassaifi et al. do not specify how the four additional channels are treated when it comes to unrolling a forecast. From the dimensionality of the model outputs, we infer that these variables are assumed to remain constant over a 15-day forecast. One minor tweak may be to update the cosine-zenith angle according to the date of the forecast (its slow change most likely renders this effect negligible). For implementations on finer grids, the model may benefit from updating with seasonal or tidal changes to land-sea masks, and will require source updates nonetheless with climate change.
+</p>
+
+
+<p>We turn our attention to the architecture of the prediction network, <m>\hat{b}</m>. 
+The network takes as input the noisy field <m>X_t</m> together with the historical states <m>z_0</m> and <m>z_{-1}</m>, all of which are <m>75\times181\times360</m>. 
+The channels of the historical states are concatenated to become <m>150\times181\times360</m>, then the two objects each have a distinct strided <m>2\times3</m> convolution applied. (the size of these kernels is motivated by known results that such patches provide quasi-isotropic fields, desirable for acting on infomation from anisotropic longitude-latitude grids \cite{gettelman2021machine}).</p>
+
+<p>Analogous to the decoder, the resulting representations are concatenated along their channel dimensions (<m>e = e_0 + e_1</m>) and a sine-cosine encoding is appended, all before <m>l_\text{P}\in\mathbb{N}</m> DiT blocks are applied - each of which are conditioned on the time <m>t</m> passed to <m>\hat{b}</m>. Again, a final linear layer projects the resulting <m>e\times91\times120</m> representation to the latent resolution <m>75\times181\times360</m>.
+</p>
+<p>However, a key distinction of the prediction architecture is the use of global attention, in contrast to the local attention employed in the decoder. This design is motivated by the need to capture long-range dependencies in the latent space. Indeed, Kassaifi et al. report that restricting the prediction model to local attention leads to a significant degradation in performance.
+</p>
+
+</subsection>
+
+</section><section><title>Performance, Metrics and Evaluation</title>
+  <subsection>
+    <title>Introduction</title>
+
+<p>Kassaifi et al. compare the accuracy of this implementation of ATLAS against GenCast and IFS, demonstrating strong, consistant success for ATLAS.
+Two main classes of evaluation are considered: qualitative assessments of spatial coherence, and statistical tests of headline score metrics.
+It is shown that ATLAS outperforms GenCast and IFS across these benchmarks. 
+In addition, a spectral analysis of the kinetic energy associated with Storm Dennis shows good agreement between ATLAS and ERA5 over a 5-day forecast horizon.</p>
+
+<p>In this section, we contextualise these results by examining the evaluation metrics employed, discuss alternative measures, and present recommendations for future testing. Each evaluation of statistical significance is based on the paired <m>t</m>-test, for which we provide a background in the appendix.
+</p>
+</subsection>
+<subsection><title>Presented Metrics</title>
+  <subsubsection><title>Introduction</title>
+  <p>
+Here we discuss the metrics Kassaifi et al. present in their analysis. We would like to highlight that all of them contain typos in the current form of the paper.</p>
+
+<p>
+In the following, we denote spatial locations (grid cells) by the index <m>p</m>, with corresponding area weights <m>w_p</m> and initialisation times by <m>t = 1, ..., T</m>.
+The ground truth at time <m>t</m> and location <m>p</m> is denoted by <m>x_{t,p}</m>, while the prediction of ensemble member <m>m</m> is given by <m>\hat{x}_{t,p}^m</m>. The ensemble mean denoted by <m>\bar{x}_{t,p}</m>.</p>
+</subsubsection>
+
+
+<subsubsection><title>"Fair" Continuous-Ranked Probability Score (CRPS)</title>
+
+<p>Kassaifi et al. use the "fair" version of CRPS, which provides an unbiased estimator of the score in the limit of infinite ensemble size, regardless of the sample size, <m>M</m>, used in experiments \cite{zamo2018estimation}. This provides an insightful pointwise score of distibution fit: promoting accuracy in expected value in the first term, while penalising underdispersion in the second.
+<md number="yes">
+  \mathrm{CRPS}
+  = \frac{1}{T} \sum_{t} \sum_{p} w_p
+  \left(
+  \frac{1}{M} \sum_{m} \lvert \hat{x}_{t,p}^{(m)} - x_{t,p} \rvert
+  - \frac{1}{2M(M-1)} \sum_{m,m'} \lvert \hat{x}_{t,p}^{(m)} - \hat{x}_{t,p}^{(m')} \rvert
+  \right)
+</md>
+(in Kassaifi et al., the number 2 is missing from the denominator of the second term in the sum, compare with e.g. \cite{zamo2018estimation}).
+However, for GenCast, ensembles are generated from a finite set of perturbations derived from the ERA5 Ensemble of Data Assimilations \cite{price2023gencast}. As a result, the assumption underlying the fair CRPS is not strictly satisfied, as arbitrarily many independent samples cannot be drawn. Scaling the ensemble size involves reusing members from the EDA, introducing dependencies that are not accounted for by the fair CRPS.
+</p>
+
+</subsubsection><subsubsection><title>Ensemble-Mean RMSE (ERMSE)</title>
+<p>
+Unlike CRPS, ERMSE promotes only accuracy in expected value and is biased for finite sample size.
+<md number="yes">
+  \mathrm{ERMSE}
+  = \sqrt{
+  \frac{1}{T}
+  \sum_{t} \sum_{p} w_p
+  \left(
+  \frac{1}{M} \sum_{m}
+  \bigl(\hat{x}_{t,p}^{(m)} - x_{t,p}\bigr)^2
+  \right)
+  }
+</md>
+(in Kassaifi et al., <m>\bar{x}_{t,p}^{(m)}</m> is mistakenly written in place of <m>\hat{x}_{t,p}^{(m)}</m>).</p>
+
+
+
+
+</subsubsection><subsubsection><title>Spread-Skill ratio (SSR)</title>
+  <p>
+This provides us with a direct metric for dispersion in the ensemble: for a model well-fitted to the distribution, we expect to see <m>\mathrm{SSR}\approx 1</m>, while over- or underestimates correspond pleasingly to over- or underdispersion, respectively.
+<md number="yes">
+  \mathrm{SSR}
+  = \sqrt{\frac{M+1}{M}}\,\frac{\mathrm{Spread}}{\mathrm{ERMSE}},
+  \quad
+  \text{and}
+  \quad
+  \mathrm{Spread}
+  = \sqrt{
+  \frac{1}{T}
+  \sum_{t} \sum_{p} w_p
+  \left(
+  \frac{1}{M-1} \sum_{m}
+  \bigl(\hat{x}_{t,p}^{(m)} - \bar{x}_{t,p}\bigr)^2
+  \right)
+  }
+</md>
+(in Kassaifi et al., an erroneous bracket appears in the innermost sum of Spread).
+
+</p>
+
+<p>Both ERMSE and CRPS provide useful headline metrics for statistical evaluation. In visualisations, SSR serves as a useful complementary diagnostic to ERMSE, offering insight into the calibration of the predictive distribution that is not apparent from RMSE alone. By contrast, CRPS aggregates multiple sources of error, making its individual contributions more difficult to interpret directly.
+</p>
+<p>Finally, we note that other possible metrics for consideration include Brier skill scores, rank histograms but especially Relative Economic Value (REV) \cite{price2023gencast}. For extreme weather events, REV provides and aggregate value of the forecast from a range of stakeholders who would act on certain predictions. In future assessments, this may prove an interesting and relevant metric for the comparison of models, especially as massive ensembles compete for better predictions of such extreme events as cyclones.
+</p>
+</subsubsection>
+
+</subsection>
+
+</section><section><title>Conclusion</title>
+<p>This report examined the ATLAS framework proposed by Kossaifi et al. as a generalist approach to medium-range weather forecasting using diffusion transformer architectures. By decomposing the forecasting pipeline into a latent space representation, a stochastic probabilistic model, and a high-resolution decoder, ATLAS provides a modular and conceptually coherent alternative to traditional numerical weather prediction systems and earlier machine learning-based approaches.
+</p>
+<p>Moreover, the stochastic interpolant formulation adopted in this report establishes a direct connection between the probability distribution objective and the solution of a neural SDE, interpreting the learning task as the estimation of drift-like dynamics governing the evolution of latent weather representations. Future extensions of this approach may consider recent developments in neural SDE training efficiency, including deterministic Wiener-space cubature methods in place of explicit Brownian motion simulation \cite{snow2025efficient}.
+</p>
+<p>Overall, ATLAS represents a step towards more general, scalable, and interpretable machine learning systems for weather prediction. The use of direct bilinear downsampling, transformer-based prediction in latent space, and a fully transformer-based decoder demonstrates that state-of-the-art forecasting performance can be achieved without heavily engineered or overly complex architectural designs. Although Kossaifi et al. present multiple metrics that provide useful headline statistical evaluations, a challenge for future work is the quantitative assessment of ATLAS's ensemble predictions for extreme events. For instance, the implementation measures such as the Relative Economic Value (REV) score \cite{richardson2000skill} applied to cyclone path prediction.
+</p>
+
+
+</section>
+
+<section>
+  <title>Appendix</title>
+  <subsection><title>Statistical Test: Paired t-Test</title>
+
+<p>Suppose we have the sample outputs at lead time <m>\tau</m> of two models, <m>A</m> and <m>B</m>, initialised at a range of times times <m>j = 1,...,J</m>. 
+Let <m>S_A(j,\tau), S_B(j,\tau)</m> denote the metric scores (ERMSE or CRPS) of each model at this lead time. We define paired score differences
+<md number="yes">
+  d_j(\tau) = S_A(t,\tau) - S_B(t,\tau), \qquad j = 1, ..., J.
+</md>
+At each lead time <m>\tau</m>, we test the statistical significance of score difference by accepting or rejecting the null hypothesis <m>H_0: \mathbb{E}[d_j(\tau)] = 0</m>, via a paired <m>t</m>-test. The test statistic is given by
+<md number="yes">
+  t(\tau) = \frac{\bar{d}(\tau)}{s_d(\tau)/\sqrt{J}},
+</md>
+where <m>\bar{d}(\tau)</m> is the empirical mean and <m>s_d</m> is given by
+<md number="yes">
+  s_d(\tau) = \sqrt{\frac{1}{T-1} \sum_{t=1}^{T} \left(d_t(\tau) - \bar{d}(\tau)\right)^2 }.
+</md>
+Under the null hypothesis, the statistic <m>t(\tau)</m> is assumed to follow a Student's <m>t</m>-distribution with <m>T-1</m>
+degrees of freedom. Statistical significance is evaluated via the corresponding two-sided <m>p</m>-value,
+\[
+p(\tau) = 2 \left[ 1 - F_{T-1}\bigl(|t(\tau)|\bigr) \right],
+\]
+where <m>F_{T-1}(\cdot)</m> denotes the cumulative distribution function of the Student-<m>t</m> distribution with <m>T-1</m> degrees of freedom.
+A result is deemed statistically significant if <m>p(\tau) \lt 0.05</m>.
+</p>
+
+</subsection>
+
+</section>
+  
+
+</chapter>
