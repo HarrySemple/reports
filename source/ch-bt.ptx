@@ -1,0 +1,646 @@
+\documentclass[11pt]{report}
+\usepackage{graphicx} % Required for inserting images
+
+%\usepackage[a4paper, total={6in, 8in}]{geometry}
+\usepackage[a4paper, margin=2cm]{geometry}
+
+% \usepackage[utf8]{inputenc} % allow utf-8 input
+% \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+% \usepackage{hyperref}       % hyperlinks
+% \usepackage{url}            % simple URL typesetting
+% \usepackage{booktabs}       % professional-quality tables
+% \usepackage{amsfonts}       % blackboard math symbols
+% \usepackage{nicefrac}       % compact symbols for 1/2, etc.
+% \usepackage{microtype}      % microtypography
+
+\usepackage{paralist,multirow,graphicx,amsmath,amsfonts,amssymb,epstopdf,color,epsfig,ragged2e,array,standalone,booktabs,subfigure}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+
+
+\usepackage{hyperref}
+
+\usepackage[
+backend=biber,
+style=numeric,
+maxnames=3,
+sorting=none,
+giveninits=true
+]{biblatex}
+\addbibresource{ref.bib}
+
+%\newcommand{\argmin}{\underset{\by}{\operatorname{argmin}}}
+
+\title{ITT23 Report: Identifying Reflection Clusters from the H-matrix}
+\author{H. Semple\thanks{Report author.}, A. Doan, A. Roberts, V. Raffetto, M. Ehrhardt with M. Murray\\
+\\
+Department of Mathematical Sciences\\
+University of Bath}
+\date{February 2026}
+
+
+\begin{document}
+
+\maketitle
+
+\section*{Introduction}
+
+In modern wireless communication systems, signal transmission is complicated by environmental effects that alter the received signal. These effects not only include perturbation by additive noise, but also introduce reflections and scattering through objects in the environment, creating multiple signal paths between the transmitter and receiver. This phenomenon is known as multipath propagation, with typical observations of clusters of strong signals from specific reflection paths, especially in urban areas.
+
+For BT's own research into development of future systems, finding methods for estimating the number and properties of these clusters is of great interest. Specifically, this may allow for improved signal preconditioning, helping the recovery of the ground truth signals and increasing channel capacity. 
+
+In this report, we make a preliminary assessment of whether these properties can be retrieved from data already available in such a system. Our study 
+focuses on a simplified model, using the measurements of the signals at multiple receivers to identify clusters. We propose a method that estimates the angular distribution of signals incident a receiver array, thereby identifying clusters as peaks in this distribution. Two variants of this approach are compared against two existing direction-of-arrival (DOA) algorithms, which are limited to estimating specific angles of incoming waves.
+
+We structure the report as follows. We first present our interpretation of the problem, motivating a simplified two dimensional model of multipath propagation. We then provide further context with an introduction to two existing algorithms for estimating direction-of-arrival (DOA): Prony's method \cite{ouibrahim1986generalized} and ESPRIT \cite{roy2002esprit}. In \emph{Methodology, Approaches and Preliminary Results}, we introduce the discretised horizon method for approximating the angular distribution of sources and evaluate its performance alongside Prony's method and ESPRIT. We then propose objectives for future research and conclude with a discussion of the challenges and importance of continued research in this area.
+
+
+%We first provide a background on the problem of identifying clusters from the H-matrix, and introduce our interpretation of the problem and the toy model created in the work of the ITT. We then introduce two existing methods for finding DoA's: Prony's method and ESPRIT.
+
+
+% \newpage
+\section*{Problem Formulation and Background}
+
+% \subsection{Context}
+
+
+%In modern wireless communication, the problem of recovering the original message is an inverse problem, with the forward operator formulated as a linear transformation, subject to noise.
+
+In modern wireless communication, an array of transmitters send signals to an array of receivers, subject to perturbations through the environment. The problem of recovering the original message is an inverse problem, with the forward operator formulated as a linear transformation, subject to additive noise.
+%The channel gain is modelled as a linear transform subject to addititive noise,
+A single instance of this process can be modelled as
+\begin{equation}
+    \label{eqn:forward-model}
+    \mathbf{y} = H\mathbf{x} + \mathbf{n},
+\end{equation}
+where $\mathbf{y}\in\mathbb{C}^M$ is the measurement at an array of $M$ receivers, $\mathbf{x}\in\mathbb{C}^{N}$ is the original message sent by the transmitter array, $H\in\mathbb{C}^{M \times N}$ is the channel gain matrix and $\mathbf{n}\in\mathbb{C}^N$ is the noise.\\
+
+The channel gain matrix is estimated frequently through protocols which send known signals to the receiver for comparison.
+This allows the receiver to approximate the original message. In addition, the transmitter uses this information to precondition the message for easier reconstruction at the receiver. This process occurs frequently, with higher rates when the user is traversing/changing environment.\\
+
+Knowing the characteristics of reflections in the channel are of keen interest, and may allow better preconditioning in future systems (citation). 
+
+% introduce MIMO
+%
+%A transmitter sends an array of signals
+% introduce H-matrix 
+
+    % Mathematical model of envirionment
+    %     We model the signal received at the antenna in terms of the last reflections of each path.
+    %     Complex field description
+    %     Probability measure for horizon signal strength 
+% Following the introduciton of MIMO, we have the following forward model of a wireless communication between an array of $N_t$ tranmitters and $N_r$ receivers
+% $$\mathbf{y} = H\mathbf{x} + \mathbf{\eta},$$
+% where $\mathbf{y}, \mathbf{\eta} \in \mathbb{C}^{N_r}$,
+%  $\mathbf{x} \in \mathbb{C}^{N_t}$ 
+%  and $H\in\mathbb{C}^{N_t \times N_r}$.\\
+
+
+\subsection*{Interpretation and Toy Model}
+%We now introduce our interpretation of the problem and the toy model created in the work of the ITT. 
+Here we present a toy model abstraction of the problem. 
+%We make the following assumptions:
+% uniform linear array
+
+We represent the forward operation as a combination of two mappings (see Figure \ref{fig:scattering_model}). Firstly, a one-to many map from the transmitters to the last reflection points, followed by a many-to-one map from the last reflection points to the receivers. We initially propose the following formulation
+\begin{equation}
+    \label{eqn:two-maps}
+    \mathbf{y} = F_2(F_1(\mathbf{x}) + \mathbf{n}_1) + \mathbf{n}_2
+\end{equation}
+where $F_1$ represents the scattering of the original signals prior to their last bounces and $F_2$ represents the dependency of the received signals on the last bounces.
+
+%We are interested in the properties of clusters of signals 
+We are interested in the properties of the last bounces, and how they impinge on the receiver array. Thus, we focus on the second mapping
+\begin{equation}
+    \mathbf{y} = F_2(\mathbf{z}) + \mathbf{n},
+\end{equation}
+where $\mathbf{z}$ is a vector of scattered signals.
+
+
+
+\begin{figure}[h]%[htbp]
+    \centering
+    \begin{tikzpicture}[
+        tx/.style={circle,fill=black,inner sep=2pt},
+        rx/.style={circle,draw,inner sep=2pt},
+        scatter/.style={circle,fill=black,inner sep=1.5pt},
+        >=Stealth
+    ]
+
+    % Transmitter line
+    \draw (-4,0.9) -- (-4,-0.9);
+    \node[tx] at (-4,0.6) {};
+    \node[tx] at (-4,0.3) {};
+    \node[tx] at (-4,0) {};
+    \node[tx] at (-4,-0.3) {};
+    \node[tx] at (-4,-0.6) {};
+
+    \node[left] at (-4,1.5) {Transmitters};
+    \node[below] at (-4,-1.3) {$\mathbf{x}$};
+
+    % Scatter region (bounces)
+    \draw[thick] (-1.5,1.8) 
+    .. controls (-2.2,1) and (-1.8,0.2) .. (-2, -0.6)
+    .. controls (-1.7,-1.5) and (-0.8,-1.6) .. (-0.3,-0.8)
+    .. controls (0.1,-0.2) and (0.1,1.2) .. (-0.7,1.8)
+    .. controls (-1.1,2.1) .. (-1.5,1.8);
+
+    \node at (-1,0.3) {Bounces};
+
+    % Scatter points
+    \node[scatter] (z1) at (0.1,-0.5) {};
+    \node[scatter] (z2) at (-0.1,1.6) {};
+    \node[scatter] (z3) at (-0.2,-1.2) {};
+
+    %\node[below] at (0,-1.4) {$\mathbf{z}$};
+    \node[below] at (0,-1.3) {Last reflections};
+
+    % Receiver line
+    \draw (3,0.9) -- (3,-0.9);
+    \node[rx] at (3,0.6) {};
+    \node[rx] at (3,0.3) {};
+    \node[rx] at (3,0) {};
+    \node[rx] at (3,-0.3) {};
+    \node[rx] at (3,-0.6) {};
+
+    \node[right] at (3,1.5) {Receivers};
+    \node[below] at (3,-1.3) {$\mathbf{y}$};
+
+    % Arrows from transmitters to scatter region
+    \draw[->] (-3.8,0) -- (-2.1,0);
+
+    % Arrows from scatter points to receivers
+    \draw[->] (z1) -- (2.4,-0.1);
+    \draw[->] (z2) -- (2.4,0.45);
+    \draw[->] (z3) -- (2.4,-0.4);
+
+    \end{tikzpicture}
+    \caption{An abstract interpretation of multipath propagation: signals from transmitters $\mathbf{x}$ are scattered, effectively producing phantom sources from the last reflection points before being measured by receivers $\mathbf{y}$.}
+    \label{fig:scattering_model}
+\end{figure}
+
+
+% We begin from the position that the whole transmission can be modelled as
+% $$\mathbf{y} = H\mathbf{x} + \mathbf{n}$$
+% but, in order to find reflection clusters incident onto the receiver, we need to isolate the last paths taken by the signals (see figure).
+
+% This motivates viewing the model as
+% $$\mathbf{y} = F_2(F_1(\mathbf{x}) + \mathbf{n}_1) + \mathbf{n}_2$$
+% where $F_1$ represents the scattering of the original signals prior to their last bounces and $F_2$ represents the dependency of the received signals on the last bounces.
+
+% We focus on the second mapping
+% $$\mathbf{y} = F_2(\mathbf{z}) + \mathbf{n}.$$
+
+% Now, we treat the last bounces as phantom sources, with their distance from the receivers large enough to assume they sit in the far field with respect to the width of the array. This assumption allows us to consider only planar waves in our model, with interference effects given by linear combinations (superposition).
+
+Now, we treat the last bounces as an array of phantom sources with the assumption that they sit in the far field with respect to the width of the array.
+This gives rise to a model of measured data $\mathbf{y}$ as a superposition of planar waves with additive noise. That is, we formulate each $y_m$, $m=1,...,M$ as
+\begin{equation}
+    \label{eqn:scalar-model-0}
+    y_m = \sum_{i=1}^{\tilde{N}} z_i \exp\big\{j(m-1)\sin(\theta_i)\big\} + n_m, \qquad m = 1,...,M,
+    % what is A what is z
+\end{equation}
+where $j = \sqrt{-1}$, $\tilde{N}$ is the number of phantom sources, with $\theta_i$ and $z_i\in\mathbb{C}$ the direction of arrival and complex envelope of the signal from the $i^\text{th}$ phantom source, respectively.
+The full measurement across the receivers can be written as a linear operation with an $M \times \tilde{N}$ complex Vandermonde matrix,% $B$,
+\begin{equation}
+    \label{eqn:lin-op}
+    \mathbf{y} = B\mathbf{z} + \mathbf{n}
+\end{equation}
+where $B_{mi} = \exp\{j(m-1)\sin(\theta_i)\}$.
+%In the following, we typically expand 
+Moreover, we can write (\ref{eqn:scalar-model-0}) explicitly in terms of real and imaginary components by expanding the complex envelope $z_i = A_i e^{j\phi_i}$, 
+\begin{equation}
+    \label{eqn:scalar-model-1}
+    y_m = \sum_{i=1}^{\tilde{N}} A_i \exp\big\{j(m-1)(\phi_i+\sin(\theta_i))\big\} + n_m, \qquad m = 1,...,M.
+    % what is A what is z
+\end{equation}
+In this paradigm, the clusters of reflections can be identified by finding $\{\theta_i\}_{i=1}^{\tilde{N}}$. In the literature, this is known as a direction of arrival (DOA) or angle of arrival estimation problem. In the remainder of this section, we outline two existing algorithms used for DOA estimation. 
+
+In the following section, we will introduce an alternative method (the discretised horizon approach) which aims to identify clusters by instead estimating the distribution of DOAs across the horizon.
+
+% Finding the position of these clusters is thus a direction of arrival (DOA) problem.
+
+% In the remainder of this section, we outline two existing algorithms for the computation of this problem
+
+% Alternatively, (\ref{eqn:scalar-model-0}) is commmonly written as a linear operation 
+% \begin{equation}
+%     \label{eqn:lin-op}
+%     \mathbf{y} = B\mathbf{z} + \mathbf{n}
+% \end{equation}
+% where $B\in\mathbb{C}^{M\times \tilde{N}}$ is a Vanderbond matrix, with
+% $B_{mi} = \exp\{j(m-1)\sin(\theta_i)\}$
+
+%signals impinge on the array as a superposition of planar waves.
+% Thus, we arrive at the following forward model for the measurement at each receiver $y_m$, $m=1,...,M$.
+% %and assume that the measurement at each $y_m$ is a superposition of planar waves with sources at these locations. 
+% \begin{equation}
+%     \label{"eqn:scalar-model-1"}
+%     y_m = \sum_{n=1}^N A_n \exp\big\{j(\phi_n+\sin(\theta_n)(m-1))\big\} + n, \qquad m = 1,...,M
+%     % what is A what is z
+% % \end{equation}
+% where $\theta_n$ is the direction of arrival,
+% $A_n$ is the amplitude,
+% $\phi_n$ is the phase shift
+% $n$ is (white) noise (homogenous)...% what is white noice
+
+% We write the full system as
+% $$\mathbf{y} = A\mathbf{z} + \mathbf{n}$$% rename A
+% where
+% $$A=$$
+
+% Finding the position of these clusters is thus a direction of arrival (DOA) problem.
+
+% In the remainder of this section, we outline two existing algorithms for the computation of this problem
+%we focus on a few existing methods before introducing our own
+
+\subsection*{Prony's Method}
+For $M$ receivers and $N$ signals, we have
+\begin{equation}
+    \label{"eqn:scalar-model"}
+    y_m = \sum_{n=1}^N A_n \exp\big\{j(\phi_n+\sin(\theta_n)(m-1))\big\}, \qquad m = 1,...,M.
+\end{equation}
+Firstly, we note that we require $M\ge N$ in order for us to determine $N$ unknowns, $\{\theta_n\}_{n=1}^N$, from $M$ equations.\\
+We reformulate (\ref{"eqn:scalar-model"}) for Prony's method by separating constituent signals into their complex envelope, $s_n = A_n e^{j\phi_n}$ and carrier exponent, $z_n = j\sin(\theta_n)$.
+\begin{align*}
+    y_m &= \sum_{n=1}^N A_n e^{j\phi_n}e^{j\sin(\theta_n)(m-1)}
+    = \sum_{n=1}^N s_n e^{z_n (m-1)}
+\end{align*}
+Expanding this expression, we arrive at the system of equations
+\begin{equation}
+    \label{"eqn:system-1"}
+    \begin{aligned}
+        y_1 &= s_1 + s_2 + \cdots + s_N\\
+        y_2 &= s_1z_1 + s_2z_2 + \cdots + s_N z_N\\
+        &\vdots\\
+        y_M &= s_1z_1^{M-1} + s_2z_2^{M-1}\cdots + s_N z_N^{M-1}
+    \end{aligned}
+\end{equation}
+Now, suppose $z_1, ..., z_N$ are roots of 
+\begin{equation}
+    \label{eqn:polynomial}
+    \beta_1  + \beta_2 z + \cdots + \beta_{N+1} z^N = 0,
+\end{equation}
+where $(\beta_i)_{i=1}^N$ are unknown coefficients.
+
+We take $\beta_{N+1} = 1$. If we are able to find the coefficients $\beta_1,...,\beta_N$, it only remains to compute roots of this polynomial to retrieve $z_n$, and hence $\theta_n$.
+
+Using these coefficients, we are able to manipulate the problem into a constant coefficient linear difference equation\cite{ouibrahim1986generalized}. We start by multiplying the first $N+1$ equations in (\ref{"eqn:system-1"}) by the corresponding coefficients,
+
+\begin{equation}
+    \begin{aligned}
+        \beta_1 y_1 &= \beta_1 s_1 + \cdots + \beta_1 s_N \\
+        \beta_2 y_2 &= \beta_2 s_1 z_1 + \cdots + \beta_2 s_N z_N\\
+        &\vdots \\
+        \beta_N y_N &= \beta_N s_1 z_1^{N-1} + \cdots + \beta_N s_N z_N^{N-1}\\
+        y_{N+1} &=  s_1 z_1^N+ \cdots +  s_N z_N^N.
+    \end{aligned}
+\end{equation}
+Adding these equations together, we get
+\begin{equation}
+    \begin{aligned}
+        \beta_1 y_1 + \cdots + \beta_N y_N\quad =\quad &s_1 \big(\beta_1 + \beta_2z_1 + \cdots \beta_N z_1^N + z_1^{N+1} \big) \\
+        +&s_2 \big(\beta_1 + \beta_2z_2 + \cdots \beta_N z_2^N + z_2^{N+1} \big) \\
+        &\vdots \\
+        +&s_2 \big(\beta_1 + \beta_2z_2 + \cdots \beta_N z_2^N + z_2^{N+1} \big)
+    \end{aligned}
+\end{equation}
+due to $\{z_n\}_{n=1}^N$ being roots of the polynomial in (\ref{eqn:polynomial}), we arrive at the identity
+\begin{equation}
+    \beta_1 y_1 + \cdots + \beta_N y_N + y_{N+1} = 0.
+\end{equation}  
+This is a constant coefficient linear difference equation, and we can repeat this process for the next $M-N-1$ equations to arrive at the system
+\begin{equation}
+    \label{eqn:system-2}
+    \begin{aligned}
+        \beta_1 y_1 + \cdots + \beta_N y_N &= - y_{N+1}\\
+        \beta_1 y_2 + \cdots + \beta_N y_{N+1} &= -y_{N+2} \\
+        &\vdots\\
+        \beta_1 y_{M-N} + \cdots + \beta_N y_{M-1} &= -y_M.
+    \end{aligned}
+\end{equation}
+Writing this system in matrix form, we have
+\begin{equation}
+    \begin{bmatrix}
+        y_1 & y_2 & \cdots & y_{N}\\
+        y_2 & y_3 & \cdots & y_{N+1}\\
+        \vdots & \vdots & \ddots & \vdots\\
+        y_{M-N} & y_{M-N+1} & \cdots & y_{M-1}
+    \end{bmatrix}
+    \begin{bmatrix}
+        \beta_1\\
+        \beta_2\\
+        \vdots\\
+        \beta_N
+    \end{bmatrix}
+    = - \begin{bmatrix}
+        y_{N+1}\\
+        y_{N+2}\\
+        \vdots\\
+        y_{M}
+    \end{bmatrix}
+\end{equation}
+which is an $(M-N)\times N$ system of equations. Thus, we require $M\ge 2N$ for this system to not be underdetermined. We solve for $\beta_1,...,\beta_N$ using linear least squares.
+
+
+% \newpage
+
+
+\subsection*{ESPRIT}
+The Estimation of Signal Parameters via Rotational Invariance Techniques (ESPRIT) algorithm provides another method for approximating DOAs based on subspace techniques and principle component analysis \cite{ouibrahim1986generalized} (a brief introduction to subspace techniques is provided in the appendix). Historically, ESPRIT was developed for frequency estimation with measurements taken at $M$ pairs of receivers ("doublets") which are separated by a known constant displacement vector. To implement ESPRIT on a uniform linear array, ESPRIT makes use two "offset by one" subsets: $\{y_i\}_{i=1}^{M-1}$ and $\{y_i\}_{i=2}^{M}$. Finally, for relevance to our later experiments, we introduce time dependency in our measurements and signals $\mathbf{y}(t), \mathbf{z}(t)$, $t=1,...,T$. To apply ESPRIT, we assume $T>>M$.
+
+Define
+\begin{equation}
+    Y = \big[\mathbf{y}(1) \cdots \mathbf{y}(T)\big],
+\  Z = \big[\mathbf{z}(1) \cdots \mathbf{z}(T)\big]\in \mathbb{C}^{M \times T}.
+\end{equation}
+Analogous to (\ref{eqn:lin-op}), we have 
+\begin{equation}
+    \label{eqn:lin-op-time}
+    Y = BZ + N
+\end{equation}
+where $N\in \mathbb{C}^{M\times T}$ is the matrix of noise vectors.
+The singular value decomposition (SVD) of $Y$ given by
+\begin{equation}
+    Y = U\big[\Lambda \quad 0\big]V^\dagger
+\end{equation}
+where $U\in\mathbb{C}^{M\times M}$, $V\in\mathbb{C}^{T\times T}$ are unitary matrices and $\Lambda \in\mathbb{C}^{M\times M}$ is a diagonal matrix of singular values.
+As outlined in the previous section, we assume that the $\tilde{N}$ largest singular values in our measured $Y$ correspond to the signals.
+We write
+\begin{equation}
+    U = \big[U_\text{signal}\quad U_\text{noise}\big], 
+    \quad \Lambda = 
+    \begin{bmatrix}
+        \Lambda_\text{signal} & 0\\
+        0 & \Lambda_\text{noise}
+    \end{bmatrix}, 
+    \quad V = \big[V_\text{signal}\quad V_\text{noise} \quad V_0\big],
+\end{equation}
+we have that the SVD can be written as 
+\begin{equation}
+    \label{eqn:two-svd}
+    Y = U_\text{signal}\Lambda_\text{signal}V_\text{signal}^\dagger + U_\text{noise}\Lambda_\text{noise}V_\text{noise}^\dagger.
+    %= BZ + N
+\end{equation}
+Thus, we recover the signal subspace as the first $\tilde{N}$ columns of $U$ and $V$ and the corresponding singular values in $\Lambda$.
+Combining (\ref{eqn:lin-op-time}) and (\ref{eqn:two-svd}), we have
+\begin{equation}
+    \label{eqn:u-signal}
+    U_\text{signal} = BF = BZV_\text{signal}\Lambda_\text{signal}^{-1}.
+\end{equation}
+Now we use the properties of the uniform linear array - specifically, that the steering matrix $B$ is a Vandermonde matrix.
+Define $\Phi = \text{diag}\big[e^{j\sin(\theta_1)},..., e^{j\sin(\theta_k)}\big]$. By definition of $B$, we have
+\begin{equation}
+    \label{eqn:vandermonde-prop}
+    \big[0 \quad I_{M-1}\big]B = \big[I_{M-1} \quad 0\big]B\Phi.
+\end{equation}
+Combining the expressions (\ref{eqn:u-signal}) and (\ref{eqn:vandermonde-prop}), we have
+% \begin{equation}
+\begin{align}
+    \big[0 \quad I_{M-1}\big]U_\text{signal}F^{-1} &= \big[I_{M-1} \quad 0\big]U_\text{signal}F^{-1}\Phi\\
+    \implies \big[0 \quad I_{M-1}\big]U_\text{signal} &= \big[I_{M-1} \quad 0\big]U_\text{signal}F^{-1}\Phi F.
+\end{align}
+% \end{equation}
+We thus have a relation between the two truncated signal spaces
+\begin{equation}
+    \bigg(\big[0 \quad I_{M-1}\big]U_\text{signal}\bigg) = \bigg(\big[I_{M-1} \quad 0\big]U_\text{signal}\bigg)P,
+\end{equation}
+where $P=F^{-1}\Phi F$.
+
+That is, solving the relation between the two truncated signal subspaces gives us a matrix $P$. From its eigenvalue decomposition $F^{-1}\Phi F$ (and by definition of $\Phi$), we retrieve the DOAs $\{\theta_i\}_{i=1}^{\tilde{N}}$ with the relation
+\begin{equation}
+    \theta_i = \arcsin(\arg\lambda_i),
+\end{equation} 
+where $\arg\lambda_i$ denotes the phase of the $i^\text{th}$ eigenvalue.
+
+
+
+
+% \newpage
+\section*{Methodology, Approaches and Preliminary Results}
+% \begin{itemize}
+%     \item Data generation
+%     \item Validation on Prony's Method and ESPRIT
+%     \begin{itemize}
+%         \item Formulation/Scheme
+%         \item Results
+%     \end{itemize}
+%     \item Discretised Horizon approach
+%     \begin{itemize}
+%         \item Formulation
+%         \item Optimisation
+%         \item Numerical experiments
+%     \end{itemize}
+% \end{itemize}
+
+
+\subsection*{Motivation for a Discretised Horizon Method}
+% In Prony and ESPRIT, we have so far seen DOA-finding methods which can  produce specific directions towards last reflection points. However, we are interested estimating clusters of reflection points, not necessarily the specific location of individual paths. Moreover, the effectiveness of methods are constricted by the number of receivers and require an otherwise-determined guess at the number of paths. This motivates us to instead consider finding the distribution of DOA, rather than individual points. 
+
+In Prony and ESPRIT, we have so far examined DOA-finding methods that estimate specific directions corresponding to the last reflection points. However, our primary interest is to identify clusters of reflection points, rather than precise locations of individual phantom sources. Moreover, these methods are constrained by the number of receivers and require an otherwise-determined guess at the number of paths. This motivates us to instead consider recovering the full distribution of DOAs rather than individual point estimates.
+
+Assuming incident waves are sampled from a distribution $z(t)\sim\nu(\theta)$, we have
+% mike formulation
+\begin{equation}
+    y_m(t) = \int_{-\pi}^\pi z(\theta,t)\exp\big\{j\sin(\theta)(m-1)\big\}d\theta + n_m(t)
+\end{equation}
+In the case of $\nu(\theta)$ being a sum of dirac deltas, this reduces to the sum seen in (\ref{eqn:scalar-model-0}).
+
+However, assuming $z(\theta, t)$ instead follows a continuous distribution, we are motivated to find a histogram approximation to this distribution. With this objective, we proposed the following discretised horizon method in the ITT - which additionally has no systematic constraint on the minimum number of receivers.
+
+
+
+% In order to capture the density (other properties?) of clusters, we are interested in producing a distribution over the horizon of incoming signals.
+
+% In working towards this aim during the ITT, we came up with the following scheme.
+
+\subsection*{Discretised Horizon Approach used in the ITT}
+To build our histogram, we discretise the horizon $[-\pi/2, \pi/2]$ into $K$ bins, centred at
+\begin{equation}
+    \theta_k = \bigg(\frac{k-1}{K-1}-\frac{1}{2}\bigg)\pi, \qquad k=1,...,K.
+\end{equation}
+Let $\mathbf{u} \in \mathbb{R}^K$ be a vector of amplitudes in each bin. We have the following forward problem
+\begin{equation}
+    \label{eqn:disc-1}
+    \mathbf{y} = A(\boldsymbol{\theta})\mathbf{u} + \mathbf{n}
+\end{equation}
+where $\boldsymbol{\theta} = (\theta_1,..., \theta_K)^T$ and $A(\boldsymbol{\theta})$ is an $M\times K$ complex matrix with 
+\begin{equation}
+    a_{mk}(\theta_k) = \exp\big\{j \sin(\theta_k) (m-1)\big\}, \quad m=1,...,M, \ k = 1,...,K. 
+\end{equation}
+That is, the $k^\text{th}$ column of $A(\boldsymbol{\theta})$ represents the receiver measurements from unit source at angle $\theta_k$, with phase adjusted to be zero at $y_0$.
+
+All that remains is to solve the inverse problem of finding the histogram $\mathbf{u}$ from measurements $\mathbf{y}$ and the forward model in (\ref{eqn:disc-1}). A linear least squares (LS) approach finds $\mathbf{u}$ such that
+\begin{equation}
+    \underset{\mathbf{u}\in\mathbb{C}^K}{\text{argmin}} ||A(\boldsymbol{\theta})\mathbf{u}-\mathbf{y}||.
+\end{equation}
+An alternative compressed sensing (CS) approach minimises
+\begin{equation}
+    \underset{\mathbf{u}\in\mathbb{C}^K}{\text{argmin}} ||A(\boldsymbol{\theta})\mathbf{u}-\mathbf{y}|| + \lambda||\mathbf{u}||.
+\end{equation}
+% Finally, we retrieve an estimate of the histogram $\mathbf{u}$ by solving the inverse problem in (\ref{eqn:disc-1}).
+
+% \subsubsection{Inverse Problem}
+% % solving eqn:disc-1
+% We address the inverse problem of finding the histogram $\mathbf{u}$ from measurements $\mathbf{y}$ and the forward model in (\ref{eqn:disc-1}).
+
+% Our objective is to find the histogram $\mathbf{u} \in \mathbb{R}^K$, given measurements $\mathbf{y}\in\mathbb{C}^M$. We do so by solving (\ref{eqn:disc-1}) as an inverse problem.
+
+% We compare two solutions: linear least squares and compressed sensing.
+
+% In the more rudimentary linear least squares, we solve
+% $$\text{argmin}\underset{\mathbf{u}} ||A\mathbf{u}-\mathbf{y}||$$
+
+% In compressed sensing, we include a regularisation term
+% $$\text{argmin}\underset{\mathbf{u}} ||A\mathbf{u}-\mathbf{y}|| + \lambda||\mathbf{u}||$$
+
+
+\subsection*{Numerical Experiments}
+Here we present preliminary results found in the ITT for the discretised horizon method, Prony's method and ESPRIT. We generate synthetic noiseless data according to our toy model in (\ref{eqn:scalar-model-0}) with various sampling methods used.
+
+\subsubsection{Prony's Method and ESPRIT}
+\begin{figure}[h]
+    \centering
+    % \includegraphics[width=0.3\linewidth]{3_sources_prony.png}
+    \includegraphics[width=0.4\linewidth]{7_sources_prony_v2.png}
+    \includegraphics[width=0.4\linewidth]{plot_esprit.png}
+    \caption{Reconstructions for Prony's method with 16 receivers and 8 sources, and ESPRIT for 8 receivers and 4 sources with $T=1000$.}
+    \label{fig:prony}
+\end{figure}
+
+In figure \ref{fig:prony}, see that Prony's method roughly approximates the correct range of angles (the true values are sampled at random), and has some success in matching amplitudes (also sampled at random) of the incoming waves. However, the angle estimates clearly do not line up exactly. A likely factor towards this poor performance to the root finding component of Prony's method, which may become numerically unstable for many sources.
+
+On the other hand, ESPRIT shows much more promising angle recovery, even when those angles are perturbed by noise over time. Although, we must attribute part of the comparative success of ESPRIT to the lower number of sources to be dealt with.
+
+
+\subsubsection{Discretised Horizon}
+
+\begin{figure}[h]
+    \centering
+    % \includegraphics[width=0.4\linewidth]{reconstruction_comparison40.png}
+    \includegraphics[width=0.4\linewidth]{reconstruction_comparison20.png}
+    % \includegraphics[width=0.4\linewidth]{reconstruction_comparison15.png}
+    \includegraphics[width=0.4\linewidth]{reconstruction_comparison10.png}
+    \caption{Reconstructions for discretised horizon method with 20 bins and 2 sources. Left: 20 receivers, right: 10 receivers.}
+    \label{fig:disc}
+\end{figure}
+
+To test the discretised horizon method in a similar manner to Prony's method and ESPRIT, we first consider the problem of DOA estimation with 2 sources. We generate noiseless data according to (\ref{eqn:scalar-model-0}) with $\theta_1 = -11\pi/38$, $\theta_2 = 9\pi/38$ and amplitudes 2 and 3, respectively. We then apply the discretised horizon method with 20 bins, comparing the results for 20 receivers and 10 receivers in figure \ref{fig:disc}.
+
+We see that, for 20 receivers, the discretised horizon method performs adequately in identifying two clusters. The compressed sensing version of the algorithm also produces a closer estimate, affirming our expectations for the regularising term to promote sparsity in the solution. However, in each case there are overestimates for surrounding points and the LS solution even mistakenly increases at the tails of the estimated distribution. This motivates further examination of the method with stronger regularisation terms.
+
+Moreover, it is worth considering the coarseness in the recovered distribution of amplitude, particularly for LS. Without sufficient regularisation, we expect that further sources may be absorbed into other peaks. This may not be such an issue for the task of identifying clusters, but marks the discretised horizon method as inherently lower resolution than ESPRIT and Prony's method.
+
+As for the case of 10 receivers, results are much less promising. LS completely fails to capture the correct shape of the distribution and although CS is closer, it mistakenly troughs at the exact angle of the second source and exhibits spurious peaks at the tails. This again shows stronger regularisation is needed, although this may not make up for errors expected from solving the underdetermined system, such as the underestimate for the second source.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{reconstruction_20.png}
+    \caption{Reconstruction of a distribution of sources with LS discretised horizon: 20 bins, 20 receivers and 100 sources. The true distribution is given by two added Gaussians.}
+    \label{fig:disc-2}
+\end{figure}
+
+In figure \ref{fig:disc-2}, we test the LS discretised horizon method on a continuous distribution of sources, where the true angular distribution is given by the sum of two Gaussian curves. Although the method captures the basic qualitative structure of two dominant peaks or clusters, it also produces erroneous fluctuations across the horizon and significantly overestimates the intensity of the second peak relative to the first. This behaviour highlights the numerical instability of the LS solution, and we defer a investigation into the effectiveness of regularisation in this context to future work.
+
+
+\section*{Future Work} % research goals
+% \begin{itemize}
+%     \item Literature search on discretised horizon, or maybe just ask Anvar
+%     \item how many bins are possible
+%     \item To what extent can the discretised horizon overcome the "double the receivers as sources" threshold
+%     \item How can we quantitatively compare these methods
+% \end{itemize}
+
+We propose four main objectives for future work.
+% \begin{enumerate}
+%     \item Search for other methods for finding horizonal distribution
+%     \item Search for algorithms for finding number of DOA's
+%     \item Extension to the H-matrix data
+%     \item Review state-of-the-art, ensure relevancy to BT
+% \end{enumerate}
+
+\textbf{1. Search for other methods for finding the angular distribution.}
+Many existing DOA algorithms, such as Prony's method, ESPRIT, MUSIC, and Pisarenko's algorithm, estimate specific angles corresponding to phantom sources \cite{ouibrahim1986generalized}. In continuing our aim of approximating an angular distribution of sources, future work should investigate whether these algorithms can be modified to instead output a distribution. For instance, if the current DOA estimates are interpreted as Dirac delta functions, it may be possible to incorporate a suitable convolution within the algorithm to obtain a smoothed distribution.
+
+\textbf{2. Search for algorithms for finding number of DOAs.} 
+One of the more prominent constraints of Prony's method and ESPRIT is their reliance on user input for the number of directions. In future work, these algorithms would become much more relevant to the problem of identifying clusters if they were coupled with methods for estimating the number of directions.
+
+\textbf{3. Extension to the H-matrix data.} 
+A key drawback of our study so far has been the exclusion of H-matrix data, which was originally proposed as the primary source of data for the challenge. Several DOA algorithms operate directly on H-matrix data, a prominent example being MUSIC \cite{schmidt1982signal}. Further numerical experiments with MUSIC and its modern extensions—such as Gradient-MUSIC \cite{fannjiang2025optimality} and DeepMUSIC \cite{elbir2020deepmusic}—would therefore be desirable.
+
+Moreover, further analytical work is needed to extend the discretised horizon method to take in H-matrix data as input. This extension is not straightforward and it may instead be necessary to modify existing H-matrix-based algorithms to produce a histogram output, as in point 1.
+
+\textbf{4. Review state-of-the-art, ensure relevancy to BT.}
+It is difficult to establish within the context of a short ITT the scope of already available methods and the specific gap in application most relevant to an industry partner. Therefore, the most immediate future work will be focused on a reviewing state-of-the-art methods for direction finding. Through continued active communication with BT, we aim to identify the most relevant approaches with the precise application in mind.
+
+
+% \subsection{Other methods for finding horizonal distribution}
+% We believe it would be pertenant to conduct a literature review on the litany of DOA algorithms, and worth investigating whether convolutions can be added to convert dirac delta outputs to a continuous distribution.
+
+% \subsection{Algorithms for finding number of DoA's}
+% A notable weakness of Prony's method and ESPRIT is the need for user input in number of sources.
+
+% One possible algorithm is provided in
+
+% \subsection{Review State-of-the-art, ensure relevancy to BT}
+% Identify the gap: for such a field, it is difficult to establish within a week what is/isn't available.
+
+
+\section*{Discussion}
+We conclude this report with three final points on research in this area.
+
+\textbf{1. Challenges of future research in this area.}
+Reflecting on our suggestions on future work, perhaps the main challenge in continuing this line of research is developing a broad review of relevant methods and the contextual challenges of a real-world wireless communications system. Once this context is established, we expect the work of this report to be quickly superseded with more complex numerical experiments, investigating more relevant methods. Our aim will be to study approaches that directly operate on the H-matrix, taking into account its stochastic properties and the limitations of physical equipment.
+
+\textbf{2. Points for clarification.}
+In future, close collaboration with BT will be required for an accurate assessment of these challenges, the behaviour of physical equipment and the research goals most pertinent to BT's interest. Considering the poor performance of these algorithms in cases with few receivers, we would be interested in whether future work could take advantage of multiple phones in the same vicinity collaborating.
+
+\textbf{3. Drawbacks from experiments.}
+We expect future work to also superseded the present approach in comparing discretised horizon, Prony's method and ESPRIT. The experiments conducted are not consistent in their data generation, and only serve to showcase example implementations and their systematic constraints, rather than quantitatively compare performance.
+
+
+
+\printbibliography
+
+\section*{Statement on Generative AI}
+Generative AI (ChatGPT) was used for asthetic purposes (generating initial TikZ code for the diagram in figure \ref{fig:scattering_model}, formatting figures and grammar assistance) and did not influence the ideas or mathematics presented.
+
+
+\chapter*{Appendix}
+
+\subsection*{Notes on Subspace Based Methods}
+We give a brief introduction to subspace based methods for DOA estimation - a class of algorithms ESPRIT belongs to alongside MUSIC.
+These aim of these algorithms is to recover DOAs from the eigenstructure of the spatial covariance matrix, given by
+\begin{equation}
+    \label{eqn:spatial-cov}
+    R = \mathbf{y}\mathbf{y}^\dagger = BZB^\dagger + \sigma^2 I \in \mathbb{C}^{M \times M}
+\end{equation}
+where $Z = \mathbf{z}\mathbf{z}^\dagger \in\mathbb{C}^{\tilde{N}\times\tilde{N}}$ is the covariance matrix of signals, $\sigma$ is the noise power and $B$ is the Vandermonde matrix given in (\ref{eqn:lin-op}). We assume $\tilde{N} < M$.
+
+It can be shown that (see \cite{ouibrahim1986generalized}):
+\begin{itemize}
+    \item The minimum eigenvalue of $R$ is $\sigma^2$ with multiplicity $M-\tilde{N}$.
+    \item The corresponding $M-\tilde{N}$ eigenvectors are orthogonal to the columns of $B$.
+\end{itemize}
+
+Thus, once this noise space is determined (as the span of these eigenvectors), we can acquire DOAs by finding the eigenvectors of $R$ orthogonal to the noise subspace.
+
+\subsubsection{ESPRIT as a subspace method}
+As an alternative to (\ref{eqn:u-signal}), we can retrieve $U_\text{signal}$ from $R$, as done in the previous section. For time-dependent measurements, we write $R$ as its expected value
+\begin{equation}
+    R = \mathbb{E}[\mathbf{y}(t)\mathbf{y}(t)^\dagger] \approx 
+    \frac{1}{T}YY^\dagger =
+    % \frac{1}{T}U\big[\Lambda \quad 0\big]V V^\dagger \big[\Lambda \quad 0\big]^\dagger U^\dagger = 
+    \frac{1}{T}U\Lambda^2 U^\dagger
+    = \frac{1}{T}U_\text{signal}\Lambda_\text{signal}^2 U_\text{signal}^\dagger + \frac{1}{T}U_\text{noise}\Lambda_\text{noise}^2 U_\text{noise}^\dagger.
+\end{equation}
+
+Comparing with (\ref{eqn:spatial-cov}), we identify
+\begin{equation}
+    U_\text{signal}\Lambda_\text{signal}^2 U_\text{signal}^\dagger = BZB^\dagger, \qquad U_\text{noise}\Lambda_\text{noise}^2 U_\text{noise}^\dagger = \sigma^2 I.
+\end{equation}
+i.e., the columns of $U_\text{signal}$ span the same subspace as the steering matrix $B$.
+
+
+
+\end{document}
