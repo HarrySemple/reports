@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+<!--******************************************-->
+<!--*  Authored with PreTeXt                 *-->
+<!--*  pretextbook.org                       *-->
+<!--*  Theme: default-modern                 *-->
+<!--*  Palette:                              *-->
+<!--******************************************-->
+
+<!--********************************************-->
+<!--*       Generated from PreTeXt source      *-->
+<!--*                                          *-->
+<!--*         https://pretextbook.org          *-->
+<!--*                                          *-->
+<!--********************************************-->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body class="ignore-math">
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-strong-simple.html ./knowl/xref/eqn-strong-simple.html ./knowl/xref/eqn-a.html ./knowl/xref/eqn-l.html ./knowl/xref/eqn-strong-simple.html">
+\begin{equation}
+a(u,v) :=
+\overbrace{
+\int_{\Omega} (\boldsymbol{b}\cdot\nabla u)\, v \, \mathrm{d}x
+}^{\text{Advection term}} +
+\overbrace{
+\int_{\Omega} \sigma u v \, \mathrm{d}x
+}^{\text{Reaction term}} -
+\overbrace{
+\int_{\Gamma_-} (\boldsymbol{b}\cdot \boldsymbol{n})\, u v \, \mathrm{d}S
+}^{\text{Boundary inflow term}} 
++
+\underbrace{
+\sum_{K \in \mathscr{T}_h}
+\int_K
+\delta_K \, (\boldsymbol{b}\cdot\nabla u + \sigma u)\,
+(\boldsymbol{b}\cdot\nabla v)\, \mathrm{d}x
+}_{\text{SUPG stabilisation term}}.\tag{1.4.5}
+\end{equation}
+</div>
+<span class="incontext"><a class="internal" href="sec-fem-mc-variation.html#eqn-a">In Context</a></span>
+</body>
+</html>

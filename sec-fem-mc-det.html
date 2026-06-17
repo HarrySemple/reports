@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<!--********************************************-->
+<!--*       Generated from PreTeXt source      *-->
+<!--*                                          *-->
+<!--*         https://pretextbook.org          *-->
+<!--*                                          *-->
+<!--********************************************-->
+<html lang="en-US" dir="ltr">
+<!--******************************************-->
+<!--*  Authored with PreTeXt                 *-->
+<!--*  pretextbook.org                       *-->
+<!--*  Theme: default-modern                 *-->
+<!--*  Palette:                              *-->
+<!--******************************************-->
+<head xmlns:og="http://ogp.me/ns#" xmlns:book="https://ogp.me/ns/book#">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Deterministic Analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+<link href="_static/pretext/css/theme.css" rel="stylesheet" type="text/css">
+<script type="module">import { startMathJax } from './_static/pretext/js/mathjax_startup.js';
+startMathJax({
+hasWebworkReps: false,
+hasSage: false,
+isReact: false,
+htmlPresentation: false,
+});
+</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script><meta name="Keywords" content="Authored in PreTeXt">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:type" content="book">
+<meta property="book:title" content="SAMBa 25/26">
+<meta property="book:author" content="Harry Semple">
+<script src="_static/pretext/js/jquery.min.js"></script><script src="_static/pretext/js/pretext.js"></script><script src="_static/pretext/js/pretext_add_on.js?x=1"></script><!--** eBookCongig is necessary to configure interactive       **-->
+<!--** Runestone components to run locally in reader's browser **-->
+<!--** No external communication:                              **-->
+<!--**     log level is 0, Runestone Services are disabled     **-->
+<script type="text/javascript">
+eBookConfig = {};
+eBookConfig.useRunestoneServices = false;
+eBookConfig.host = 'http://127.0.0.1:8000';
+eBookConfig.course = 'PTX_Course_Title_Here';
+eBookConfig.basecourse = 'PTX_Base_Course';
+eBookConfig.isLoggedIn = false;
+eBookConfig.email = '';
+eBookConfig.isInstructor = false;
+eBookConfig.logLevel = 0;
+eBookConfig.username = '';
+eBookConfig.readings = null;
+eBookConfig.activities = null;
+eBookConfig.downloadsEnabled = false;
+eBookConfig.allow_pairs = false;
+eBookConfig.enableScratchAC = false;
+eBookConfig.build_info = "";
+eBookConfig.python3 = null;
+eBookConfig.runestone_version = '8.1.2';
+eBookConfig.jobehost = '';
+eBookConfig.proxyuri_runs = '';
+eBookConfig.proxyuri_files = '';
+eBookConfig.enable_chatcodes =  false;
+</script>
+<!--*** Runestone Services ***-->
+<script src="_static/prefix-runtime.d0616b3d72ab3b06.bundle.js"></script><script src="_static/prefix-713.de0ab26248766350.bundle.js"></script><script src="_static/prefix-runestone.af9055d29ed602c4.bundle.js"></script><link rel="stylesheet" type="text/css" href="_static/prefix-713.f43ced6a6134ea74.css">
+<link rel="stylesheet" type="text/css" href="_static/prefix-runestone.87414d180ebeebd6.css">
+<script src="_static/pretext/js/lti_iframe_resizer.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js" integrity="sha512-4xUl/d6D6THrAnXAwGajXkoWaeMNwEKK4iNfq5DotEbLPAfk6FSxSP3ydNxqDgCw1c/0Z1Jg6L8h2j+++9BZmg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><script src="lunr-pretext-search-index.js" async=""></script><script src="_static/pretext/js/pretext_search.js"></script><script src="_static/pretext/js/knowl.js"></script><!--knowl.js code controls Sage Cells within knowls--><script>sagecellEvalName='Evaluate (Sage)';
+</script>
+</head>
+<body id="reports" class="pretext book ignore-math">
+<a class="assistive" href="#ptx-content">Skip to main content</a><header id="ptx-masthead" class="ptx-masthead"><div class="ptx-banner"><div class="title-container">
+<h1 class="heading"><a href="portfolio.html"><span class="title">SAMBa 25/26</span> <span class="subtitle">A collection of reports</span></a></h1>
+<p class="byline">Harry Semple</p>
+</div></div></header><nav id="ptx-navbar" class="ptx-navbar navbar"><div class="ptx-navbar-contents">
+<button class="toc-toggle button" title="Contents"><span class="icon material-symbols-outlined" aria-hidden="true">&#xe5d2;</span><span class="name">Contents</span></button><div class="searchbox">
+<div class="searchwidget"><button id="searchbutton" class="searchbutton button" type="button" title="Search book"><span class="icon material-symbols-outlined" aria-hidden="true">&#xe8b6;</span><span class="name">Search Book</span></button></div>
+<div id="searchresultsplaceholder" class="searchresultsplaceholder" style="display: none">
+<div class="search-results-controls">
+<input aria-label="Search term" id="ptxsearch" class="ptxsearch" type="text" name="terms" placeholder="Search term"><button title="Close search" id="closesearchresults" class="closesearchresults"><span class="material-symbols-outlined">close</span></button>
+</div>
+<h2 class="search-results-heading">Search Results: </h2>
+<div id="searchempty" class="searchempty"><span>No results.</span></div>
+<ol id="searchresults" class="searchresults"></ol>
+</div>
+</div>
+<span class="nav-other-controls"><button id="light-dark-button" class="light-dark-button button" title="Dark Mode"><span class="icon material-symbols-outlined" aria-hidden="true">&#xe51c;</span><span class="name">Dark Mode</span></button></span><span class="treebuttons"><a class="previous-button button" href="sec-fem-mc-variation.html" title="Previous"><span class="icon material-symbols-outlined" aria-hidden="true">&#xe5cb;</span><span class="name">Prev</span></a><a class="up-button button" href="ch-fem-mc.html" title="Up"><span class="icon material-symbols-outlined" aria-hidden="true">&#xe5ce;</span><span class="name">Up</span></a><a class="next-button button" href="sec-fem-mc-sto.html" title="Next"><span class="name">Next</span><span class="icon material-symbols-outlined" aria-hidden="true">&#xe5cc;</span></a></span>
+</div></nav><div id="latex-macros" class="hidden-content process-math" style="display:none"><span class="process-math">\(\newcommand{\N}{\mathbb N} \newcommand{\Z}{\mathbb Z} \newcommand{\Q}{\mathbb Q} \newcommand{\R}{\mathbb R} \newcommand{\enorm}[1]{\lvert\!\lvert\!\lvert #1 \rvert\!\rvert\!\rvert} \newcommand{\snorm}[1]{\lvert\!\lvert\!\lvert #1 \rvert\!\rvert\!\rvert_*} \newcommand{\ltwo}[1]{\left\| #1 \right\|_{L^2(\Omega)}} \newcommand{\ldouble}[1]{\left\| #1 \right\|_{L^2(\Omega\times\Omega)}} \newcommand{\ltwok}[1]{\left\| #1 \right\|_{L^2(K)}} \newcommand{\linf}[1]{\left\| #1 \right\|_{L^\infty(\Omega)}} \newcommand{\gplus}[1]{\left\| #1 \right\|_{\Gamma_+}}
+\newcommand{\lt}{&lt;}
+\newcommand{\gt}{&gt;}
+\newcommand{\amp}{&amp;}
+\definecolor{fillinmathshade}{gray}{0.9}
+\newcommand{\fillinmath}[1]{\mathchoice{\colorbox{fillinmathshade}{$\displaystyle     \phantom{\,#1\,}$}}{\colorbox{fillinmathshade}{$\textstyle        \phantom{\,#1\,}$}}{\colorbox{fillinmathshade}{$\scriptstyle      \phantom{\,#1\,}$}}{\colorbox{fillinmathshade}{$\scriptscriptstyle\phantom{\,#1\,}$}}}
+\)</span></div>
+<div class="ptx-page">
+<div id="ptx-sidebar" class="ptx-sidebar"><nav id="ptx-toc" class="ptx-toc depth2 focused" data-preexpanded-levels="0" data-max-levels="2"><ul class="structural toc-item-list contains-active">
+<li class="toc-item toc-frontmatter"><div class="toc-title-box"><a href="frontmatter.html" class="internal"><span class="title">Front Matter</span></a></div></li>
+<li class="toc-item toc-chapter contains-active">
+<div class="toc-title-box"><a href="ch-fem-mc.html" class="internal"><span class="codenumber">1</span> <span class="title">Hybrid FE-MC</span></a></div>
+<ul class="structural toc-item-list contains-active">
+<li class="toc-item toc-section"><div class="toc-title-box"><a href="sec-fem-mc-intro.html" class="internal"><span class="codenumber">1.1</span> <span class="title">Introduction</span></a></div></li>
+<li class="toc-item toc-section"><div class="toc-title-box"><a href="sec-fem-mc-model.html" class="internal"><span class="codenumber">1.2</span> <span class="title">Model Formulation</span></a></div></li>
+<li class="toc-item toc-section">
+<div class="toc-title-box"><a href="sec-fem-mc-prelim.html" class="internal"><span class="codenumber">1.3</span> <span class="title">Preliminaries</span></a></div>
+<ul class="structural toc-item-list">
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-fem-mc-prelim.html#subsec-fem" class="internal"><span class="codenumber">1.3.1</span> <span class="title">Finite Element Methods</span></a></div></li>
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-fem-mc-prelim.html#subsec-supg-prelim" class="internal"><span class="codenumber">1.3.2</span> <span class="title">SUPG Stabilisation</span></a></div></li>
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-fem-mc-prelim.html#subsec-mc" class="internal"><span class="codenumber">1.3.3</span> <span class="title">Monte Carlo Integration</span></a></div></li>
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-fem-mc-prelim.html#subsec-identities" class="internal"><span class="codenumber">1.3.4</span> <span class="title">Useful Identities</span></a></div></li>
+</ul>
+</li>
+<li class="toc-item toc-section">
+<div class="toc-title-box"><a href="sec-fem-mc-variation.html" class="internal"><span class="codenumber">1.4</span> <span class="title">Outline of Analysis</span></a></div>
+<ul class="structural toc-item-list">
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-fem-mc-variation.html#sec-fem-mc-variation-2" class="internal"><span class="codenumber">1.4.1</span> <span class="title">Introduction</span></a></div></li>
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-fem-mc-variation.html#subsec-reform-strong-form" class="internal"><span class="codenumber">1.4.2</span> <span class="title">Reformulation of the Strong Form</span></a></div></li>
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-fem-mc-variation.html#subsec-supg" class="internal"><span class="codenumber">1.4.3</span> <span class="title">SUPG Variational Form</span></a></div></li>
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-fem-mc-variation.html#subsec-outline-of-analysis" class="internal"><span class="codenumber">1.4.4</span> <span class="title">Outline of Analysis</span></a></div></li>
+</ul>
+</li>
+<li class="toc-item toc-section contains-active">
+<div class="toc-title-box"><a href="sec-fem-mc-det.html" class="internal"><span class="codenumber">1.5</span> <span class="title">Deterministic Analysis</span></a></div>
+<ul class="structural toc-item-list active">
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-fem-mc-det.html#sec-fem-mc-det-2" class="internal"><span class="codenumber">1.5.1</span> <span class="title">Introduction</span></a></div></li>
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-fem-mc-det.html#sec-fem-mc-det-3" class="internal"><span class="codenumber">1.5.2</span> <span class="title">Norms</span></a></div></li>
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-fem-mc-det.html#sec-fem-mc-det-4" class="internal"><span class="codenumber">1.5.3</span> <span class="title">Well-Posedness and Key Properties</span></a></div></li>
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-fem-mc-det.html#sec-fem-mc-fe-det" class="internal"><span class="codenumber">1.5.4</span> <span class="title">Finite Element Error</span></a></div></li>
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-fem-mc-det.html#sec-fem-mc-iter-det" class="internal"><span class="codenumber">1.5.5</span> <span class="title">Fixed Point Error</span></a></div></li>
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-fem-mc-det.html#sec-fem-mc-combined-det" class="internal"><span class="codenumber">1.5.6</span> <span class="title">Combined Error Estimate</span></a></div></li>
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-fem-mc-det.html#sec-fem-mc-det-8" class="internal"><span class="codenumber">1.5.7</span> <span class="title">Discussion</span></a></div></li>
+</ul>
+</li>
+<li class="toc-item toc-section">
+<div class="toc-title-box"><a href="sec-fem-mc-sto.html" class="internal"><span class="codenumber">1.6</span> <span class="title">Stochastic Analysis</span></a></div>
+<ul class="structural toc-item-list">
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-fem-mc-sto.html#sec-fem-mc-sto-2" class="internal"><span class="codenumber">1.6.1</span> <span class="title">Introduction</span></a></div></li>
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-fem-mc-sto.html#subsec-fe-sto" class="internal"><span class="codenumber">1.6.2</span> <span class="title">FE Steady State Error</span></a></div></li>
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-fem-mc-sto.html#subsec-iter-sto" class="internal"><span class="codenumber">1.6.3</span> <span class="title">FE Source Iteration Error</span></a></div></li>
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-fem-mc-sto.html#subsec-combined-sto" class="internal"><span class="codenumber">1.6.4</span> <span class="title">Combined Error Estimate</span></a></div></li>
+</ul>
+</li>
+<li class="toc-item toc-section">
+<div class="toc-title-box"><a href="sec-fem-mc-numerics.html" class="internal"><span class="codenumber">1.7</span> <span class="title">Numerical Experiments</span></a></div>
+<ul class="structural toc-item-list">
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-fem-mc-numerics.html#sec-fem-mc-numerics-2" class="internal"><span class="codenumber">1.7.1</span> <span class="title">Introduction</span></a></div></li>
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-fem-mc-numerics.html#sec-fem-mc-numerics-3" class="internal"><span class="codenumber">1.7.2</span> <span class="title">Deterministic Case</span></a></div></li>
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-fem-mc-numerics.html#sec-fem-mc-numerics-4" class="internal"><span class="codenumber">1.7.3</span> <span class="title">Stochastic Case</span></a></div></li>
+</ul>
+</li>
+<li class="toc-item toc-section"><div class="toc-title-box"><a href="sec-fem-mc-conclusion.html" class="internal"><span class="codenumber">1.8</span> <span class="title">Conclusion</span></a></div></li>
+</ul>
+</li>
+<li class="toc-item toc-chapter">
+<div class="toc-title-box"><a href="ch-num-int.html" class="internal"><span class="codenumber">2</span> <span class="title">Recombination for Numerical Integration</span></a></div>
+<ul class="structural toc-item-list">
+<li class="toc-item toc-section">
+<div class="toc-title-box"><a href="sec-num-int-intro.html" class="internal"><span class="codenumber">2.1</span> <span class="title">Introduction to Recombination</span></a></div>
+<ul class="structural toc-item-list">
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-num-int-intro.html#subsec-" class="internal"><span class="codenumber">2.1.1</span> <span class="title"></span></a></div></li>
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-num-int-intro.html#subsec-num-int" class="internal"><span class="codenumber">2.1.2</span> <span class="title">Numerical Integration</span></a></div></li>
+</ul>
+</li>
+<li class="toc-item toc-section">
+<div class="toc-title-box"><a href="sec-num-int-prelim.html" class="internal"><span class="codenumber">2.2</span> <span class="title">Preliminaries</span></a></div>
+<ul class="structural toc-item-list">
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-num-int-prelim.html#subsec-Introduction" class="internal"><span class="codenumber">2.2.1</span> <span class="title">Introduction</span></a></div></li>
+<li class="toc-item toc-subsection">
+<div class="toc-title-box"><a href="sec-num-int-prelim.html#subsec-quad" class="internal"><span class="codenumber">2.2.2</span> <span class="title">Quadrature in 1D</span></a></div>
+<ul class="structural toc-item-list">
+<li class="toc-item toc-subsubsection"><div class="toc-title-box"><a href="sec-num-int-prelim.html#subsec-quad-2" class="internal"><span class="codenumber">2.2.2.1</span> <span class="title">Introduction</span></a></div></li>
+<li class="toc-item toc-subsubsection"><div class="toc-title-box"><a href="sec-num-int-prelim.html#subsubsec-fixed-nodes" class="internal"><span class="codenumber">2.2.2.2</span> <span class="title">Fixed Nodes</span></a></div></li>
+<li class="toc-item toc-subsubsection"><div class="toc-title-box"><a href="sec-num-int-prelim.html#subsubsec-free-nodes" class="internal"><span class="codenumber">2.2.2.3</span> <span class="title">Free Nodes</span></a></div></li>
+</ul>
+</li>
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-num-int-prelim.html#subsec-cubature" class="internal"><span class="codenumber">2.2.3</span> <span class="title">Cubature in 2D</span></a></div></li>
+</ul>
+</li>
+<li class="toc-item toc-section">
+<div class="toc-title-box"><a href="sec-num-int-rec.html" class="internal"><span class="codenumber">2.3</span> <span class="title">Applying Recombination</span></a></div>
+<ul class="structural toc-item-list">
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-num-int-rec.html#sec-num-int-rec-2" class="internal"><span class="codenumber">2.3.1</span> <span class="title">Introduction</span></a></div></li>
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-num-int-rec.html#subsec-framework" class="internal"><span class="codenumber">2.3.2</span> <span class="title">General Framework for Recombination on Cubature</span></a></div></li>
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-num-int-rec.html#subsec-sq-domains" class="internal"><span class="codenumber">2.3.3</span> <span class="title">Square Domains</span></a></div></li>
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-num-int-rec.html#subsec-tess" class="internal"><span class="codenumber">2.3.4</span> <span class="title">Tessellation and General 2D Domains</span></a></div></li>
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="sec-num-int-rec.html#subsec-higher-dim" class="internal"><span class="codenumber">2.3.5</span> <span class="title">Higher Dimensions</span></a></div></li>
+</ul>
+</li>
+<li class="toc-item toc-section"><div class="toc-title-box"><a href="sec-num-int-conc.html" class="internal"><span class="codenumber">2.4</span> <span class="title">Conclusion</span></a></div></li>
+</ul>
+</li>
+<li class="toc-item toc-chapter">
+<div class="toc-title-box"><a href="ch-ml.html" class="internal"><span class="codenumber">3</span> <span class="title">Demystifying Machine Learning for Weather Forecasting</span></a></div>
+<ul class="structural toc-item-list">
+<li class="toc-item toc-section"><div class="toc-title-box"><a href="ch-ml-3.html" class="internal"><span class="codenumber">3.1</span> <span class="title">Introduction</span></a></div></li>
+<li class="toc-item toc-section"><div class="toc-title-box"><a href="ch-ml-4.html" class="internal"><span class="codenumber">3.2</span> <span class="title">Problem Formulation</span></a></div></li>
+<li class="toc-item toc-section">
+<div class="toc-title-box"><a href="ch-ml-5.html" class="internal"><span class="codenumber">3.3</span> <span class="title">Populating the ATLAS Framework</span></a></div>
+<ul class="structural toc-item-list">
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="ch-ml-5.html#ch-ml-5-2" class="internal"><span class="codenumber">3.3.1</span> <span class="title">Introduction</span></a></div></li>
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="ch-ml-5.html#ch-ml-5-3" class="internal"><span class="codenumber">3.3.2</span> <span class="title">Block 1: Choice of Latent Space</span></a></div></li>
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="ch-ml-5.html#ch-ml-5-4" class="internal"><span class="codenumber">3.3.3</span> <span class="title">Block 2: The Probabilistic Model</span></a></div></li>
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="ch-ml-5.html#ch-ml-5-5" class="internal"><span class="codenumber">3.3.4</span> <span class="title">Block 3: Decoder and Architecture</span></a></div></li>
+</ul>
+</li>
+<li class="toc-item toc-section">
+<div class="toc-title-box"><a href="ch-ml-6.html" class="internal"><span class="codenumber">3.4</span> <span class="title">Performance, Metrics and Evaluation</span></a></div>
+<ul class="structural toc-item-list">
+<li class="toc-item toc-subsection"><div class="toc-title-box"><a href="ch-ml-6.html#ch-ml-6-2" class="internal"><span class="codenumber">3.4.1</span> <span class="title">Introduction</span></a></div></li>
+<li class="toc-item toc-subsection">
+<div class="toc-title-box"><a href="ch-ml-6.html#ch-ml-6-3" class="internal"><span class="codenumber">3.4.2</span> <span class="title">Presented Metrics</span></a></div>
+<ul class="structural toc-item-list">
+<li class="toc-item toc-subsubsection"><div class="toc-title-box"><a href="ch-ml-6.html#ch-ml-6-3-2" class="internal"><span class="codenumber">3.4.2.1</span> <span class="title">Introduction</span></a></div></li>
+<li class="toc-item toc-subsubsection"><div class="toc-title-box"><a href="ch-ml-6.html#ch-ml-6-3-3" class="internal"><span class="codenumber">3.4.2.2</span> <span class="title">"Fair" Continuous-Ranked Probability Score (CRPS)</span></a></div></li>
+<li class="toc-item toc-subsubsection"><div class="toc-title-box"><a href="ch-ml-6.html#ch-ml-6-3-4" class="internal"><span class="codenumber">3.4.2.3</span> <span class="title">Ensemble-Mean RMSE (ERMSE)</span></a></div></li>
+<li class="toc-item toc-subsubsection"><div class="toc-title-box"><a href="ch-ml-6.html#ch-ml-6-3-5" class="internal"><span class="codenumber">3.4.2.4</span> <span class="title">Spread-Skill ratio (SSR)</span></a></div></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-item toc-section"><div class="toc-title-box"><a href="ch-ml-7.html" class="internal"><span class="codenumber">3.5</span> <span class="title">Conclusion</span></a></div></li>
+<li class="toc-item toc-section">
+<div class="toc-title-box"><a href="ch-ml-8.html" class="internal"><span class="codenumber">3.6</span> <span class="title">Appendix</span></a></div>
+<ul class="structural toc-item-list"><li class="toc-item toc-subsection"><div class="toc-title-box"><a href="ch-ml-8.html#ch-ml-8-2" class="internal"><span class="codenumber">3.6.1</span> <span class="title">Statistical Test: Paired t-Test</span></a></div></li></ul>
+</li>
+</ul>
+</li>
+<li class="toc-item toc-backmatter"><div class="toc-title-box"><a href="backmatter.html" class="internal"><span class="title">Backmatter</span></a></div></li>
+</ul></nav></div>
+<main class="ptx-main"><div id="ptx-content" class="ptx-content">
+<section class="section" id="sec-fem-mc-det">
+<h2 class="heading hide-type">
+<span class="type">Section</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="codenumber">1.5</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="title">Deterministic Analysis</span>
+</h2>
+<section class="subsection" id="sec-fem-mc-det-2">
+<h3 class="heading hide-type">
+<span class="type">Subsection</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="codenumber">1.5.1</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="title">Introduction</span>
+</h3>
+<div class="para" id="sec-fem-mc-det-2-2">In this section, we present a preliminary error analysis under the simplifying assumption that <span class="process-math">\(\mathcal{S}\)</span> is computed exactly. We define the norms used throughout, before establishing well-posedness through verifying the conditions for the Lax-Milgram theorem. We then derive separate bounds for the discretisation error <span class="process-math">\(\enorm{u-u_h}\)</span> and the iteration error <span class="process-math">\(\enorm{u_h-u_h^{(n)}}\text{,}\)</span> which combine via the triangle inequality to give the main deterministic estimate. For simplicity, we take <span class="process-math">\(g=0\)</span> (meaning <span class="process-math">\(u\in H_0^1\)</span>) from this section onwards - an extension to nonhomogenous inflow data is left to future work.<div class="autopermalink" data-description="Paragraph"><a href="#sec-fem-mc-det-2-2" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Subsection 1.5.1: Introduction"><a href="#sec-fem-mc-det-2" title="Copy heading and permalink for Subsection 1.5.1: Introduction" aria-label="Copy heading and permalink for Subsection 1.5.1: Introduction">🔗</a></div>
+</section>
+<section class="subsection" id="sec-fem-mc-det-3">
+<h3 class="heading hide-type">
+<span class="type">Subsection</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="codenumber">1.5.2</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="title">Norms</span>
+</h3>
+<div class="para logical" id="sec-fem-mc-det-3-2">
+<div class="para">We equip <span class="process-math">\(V_h\)</span> with the SUPG norm, defined as</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-positivity.html" id="eqn-supg-norm">
+\begin{equation}
+\label{eqn:supg-norm}
+\enorm{v}^2 := \mu\ltwo{v}^2 
++ \sum_{K\in\mathscr{T}_h} \delta_K \ltwok{\mathbf{b}\cdot\nabla v}^2
++ \int_{\partial\Omega} |\mathbf{b}\cdot\mathbf{n}| v^2 \, \mathrm{d}S,\tag{1.5.1}
+\end{equation}
+</div>
+<div class="para">where <span class="process-math">\(\mu\)</span> is the positivity constant defined in<a href="sec-fem-mc-model.html#eqn-positivity" class="xref" data-knowl="./knowl/xref/eqn-positivity.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.2.5">(1.2.5)</a> and <span class="process-math">\(\delta_K\)</span> is the element-wise stabilisation parameter. This immediately results in the following relation of norms, used frequently in later analysis</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-positivity.html" id="eqn-rel-norms">
+\begin{equation}
+\label{eqn:rel-norms}
+\enorm{v}^2 \geq \mu\ltwo{v}^2 \qquad \forall v\in V_h.\tag{1.5.2}
+\end{equation}
+</div>
+<div class="para">For continuity estimates, we also require the stronger star-SUPG norm, given by</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-positivity.html" id="eqn-star-supg-norm">
+\begin{equation}
+\label{eqn:star-supg-norm}
+\snorm{v}^2 = \enorm{v}^2 + \sum_{K\in\mathscr{T}} \delta_K^{-1} \ltwok{v}^2.\tag{1.5.3}
+\end{equation}
+</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#sec-fem-mc-det-3-2" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Subsection 1.5.2: Norms"><a href="#sec-fem-mc-det-3" title="Copy heading and permalink for Subsection 1.5.2: Norms" aria-label="Copy heading and permalink for Subsection 1.5.2: Norms">🔗</a></div>
+</section>
+<section class="subsection" id="sec-fem-mc-det-4">
+<h3 class="heading hide-type">
+<span class="type">Subsection</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="codenumber">1.5.3</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="title">Well-Posedness and Key Properties</span>
+</h3>
+<div class="para" id="sec-fem-mc-det-4-2">We now present key properties of the bilinear and linear forms defined in<a href="sec-fem-mc-variation.html#eqn-a" class="xref" data-knowl="./knowl/xref/eqn-a.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.4.5">(1.4.5)</a>,<a href="sec-fem-mc-variation.html#eqn-s" class="xref" data-knowl="./knowl/xref/eqn-s.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.4.6">(1.4.6)</a> and<a href="sec-fem-mc-variation.html#eqn-l" class="xref" data-knowl="./knowl/xref/eqn-l.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.4.7">(1.4.7)</a>. This will show that the variational problem<a href="sec-fem-mc-variation.html#eqn-fe-problem" class="xref" data-knowl="./knowl/xref/eqn-fe-problem.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.4.8">(1.4.8)</a> is well-posed, and provide the necessary results for error analysis.<div class="autopermalink" data-description="Paragraph"><a href="#sec-fem-mc-det-4-2" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<article class="lemma theorem-like" id="lem-well-posed"><h4 class="heading">
+<span class="type">Lemma</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="codenumber">1.5.1</span><span class="period heading-divison-mark heading-divison-mark__period">.</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="title">Consistency of the SUPG Method.</span>
+</h4>
+<div class="para logical" id="lem-well-posed-2-1">
+<div class="para">Let <span class="process-math">\(u\)</span> be the true solution of<a href="sec-fem-mc-variation.html#eqn-strong-simple" class="xref" data-knowl="./knowl/xref/eqn-strong-simple.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.4.1">(1.4.1)</a>. Then for all <span class="process-math">\(v\in V_h\)</span> we have</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-strong-simple.html" id="lem-well-posed-2-1-4">
+\begin{equation}
+a(u,v) = s(u,v) + l(v).\tag{1.5.4}
+\end{equation}
+</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#lem-well-posed-2-1" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Lemma 1.5.1: Consistency of the SUPG Method"><a href="#lem-well-posed" title="Copy heading and permalink for Lemma 1.5.1: Consistency of the SUPG Method" aria-label="Copy heading and permalink for Lemma 1.5.1: Consistency of the SUPG Method">🔗</a></div>
+</article>
+<details id="sec-fem-mc-det-4-4" class="hiddenproof born-hidden-knowl"><summary class="knowl__link"><h4 class="heading"><span class="type">Proof<span class="period heading-divison-mark heading-divison-mark__period">.</span></span></h4></summary>
+<article class="hiddenproof knowl__content">
+<div class="para logical" id="sec-fem-mc-det-4-4-1">
+<div class="para">We have</div>
+<div class="displaymath process-math" id="sec-fem-mc-det-4-4-1-1">
+\begin{align}
+a(u,v) - s(u,v) - l(v) &amp;
+\int_{\Omega} (\mathbf{b}\cdot\nabla u + \sigma u - \mathcal{S}u - q) v \, \mathrm{d}x\tag{1.5.5}\\
+&amp;+ \sum_{K\in\mathscr{T}_h} \int_K \delta_K (\mathbf{b}\cdot\nabla u + \sigma u - \mathcal{S}u - q)(\mathbf{b}\cdot\nabla v) \, \mathrm{d}x\tag{1.5.6}\\
+&amp;- \int_{\Gamma_-} (\mathbf{b}\cdot\mathbf{n})(u-g)v\, ds\tag{1.5.7}\\
+=&amp; 0.\tag{1.5.8}
+\end{align}
+</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#sec-fem-mc-det-4-4-1" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Proof 1.5.3.1"><a href="#sec-fem-mc-det-4-4" title="Copy heading and permalink for Proof 1.5.3.1" aria-label="Copy heading and permalink for Proof 1.5.3.1">🔗</a></div>
+</article></details>
+<article class="lemma theorem-like" id="lem-a-coer"><h4 class="heading">
+<span class="type">Lemma</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="codenumber">1.5.2</span><span class="period heading-divison-mark heading-divison-mark__period">.</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="title">Coercivity of <span class="process-math">\(a(\cdot,\cdot)\)</span>.</span>
+</h4>
+<div class="para logical" id="lem-a-coer-2-1">
+<div class="para">For all <span class="process-math">\(v\in V_h\)</span> we have</div>
+<div class="displaymath process-math" id="lem-a-coer-2-1-2">
+\begin{equation}
+a(v,v) \geq \frac{1}{2}\enorm{v}^2.\tag{1.5.9}
+\end{equation}
+</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#lem-a-coer-2-1" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Lemma 1.5.2: Coercivity of a(\cdot,\cdot)"><a href="#lem-a-coer" title="Copy heading and permalink for Lemma 1.5.2: Coercivity of a(\cdot,\cdot)" aria-label="Copy heading and permalink for Lemma 1.5.2: Coercivity of a(\cdot,\cdot)">🔗</a></div>
+</article>
+<details id="sec-fem-mc-det-4-6" class="hiddenproof born-hidden-knowl"><summary class="knowl__link"><h4 class="heading"><span class="type">Proof<span class="period heading-divison-mark heading-divison-mark__period">.</span></span></h4></summary>
+<article class="hiddenproof knowl__content">
+<div class="para logical" id="sec-fem-mc-det-4-6-1">
+<div class="para">We treat each term in<a href="sec-fem-mc-variation.html#eqn-a" class="xref" data-knowl="./knowl/xref/eqn-a.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.4.5">(1.4.5)</a> separately. For the convection term, by Green’s formula<a href="sec-fem-mc-prelim.html#eqn-greens" class="xref" data-knowl="./knowl/xref/eqn-greens.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.3.5">(1.3.5)</a> we have</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-a.html ./knowl/xref/eqn-greens.html ./knowl/xref/eqn-strong-bcs.html ./knowl/xref/eqn-youngs.html ./knowl/xref/eqn-delta-bound.html ./knowl/xref/eqn-coer-a-1.html ./knowl/xref/eqn-coer-a-3.html" id="sec-fem-mc-det-4-6-1-3">
+\begin{align}
+\int_{\Omega} (\mathbf{b} \cdot \nabla v)\, v \, \mathrm{d}x 
+&amp;= \frac{1}{2} \int_{\Omega} \mathbf{b} \cdot \nabla (v^2)\, \mathrm{d}x\tag{1.5.10}\\
+&amp;= \frac{1}{2} \int_{\partial \Omega} (\mathbf{b} \cdot \mathbf{n})\, v^2 \, \mathrm{d}S .\tag{1.5.11}
+\end{align}
+</div>
+<div class="para">We combine this with the boundary inflow term. Let <span class="process-math">\(\Gamma_+ = \partial\Omega\setminus\Gamma_-\text{.}\)</span> We have</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-a.html ./knowl/xref/eqn-greens.html ./knowl/xref/eqn-strong-bcs.html ./knowl/xref/eqn-youngs.html ./knowl/xref/eqn-delta-bound.html ./knowl/xref/eqn-coer-a-1.html ./knowl/xref/eqn-coer-a-3.html" id="sec-fem-mc-det-4-6-1-5">
+\begin{align}
+\frac{1}{2} \int_{\partial \Omega} (\mathbf{b} \cdot \mathbf{n})\, v^2 \, \mathrm{d}S 
+- \int_{\Gamma_-} (\mathbf{b} &amp;\cdot \mathbf{n})\, v^2 \, \mathrm{d}S \tag{1.5.12}\\
+&amp;= \frac{1}{2}\int_{\Gamma_+} (\mathbf{b} \cdot \mathbf{n})\, v^2 \, \mathrm{d}S 
+- \frac{1}{2}\int_{\Gamma_-} (\mathbf{b} \cdot \mathbf{n})\, v^2 \, \mathrm{d}S \tag{1.5.13}\\
+&amp;= \frac{1}{2}\int_{\partial\Omega} |\mathbf{b} \cdot \mathbf{n}|\, v^2 \, \mathrm{d}S,\tag{1.5.14}
+\end{align}
+</div>
+<div class="para">where the last equality follows from definition of <span class="process-math">\(\Gamma_-\)</span> in<a href="sec-fem-mc-model.html#eqn-strong-bcs" class="xref" data-knowl="./knowl/xref/eqn-strong-bcs.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.2.2">(1.2.2)</a>. Combined with the reaction term, we have</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-a.html ./knowl/xref/eqn-greens.html ./knowl/xref/eqn-strong-bcs.html ./knowl/xref/eqn-youngs.html ./knowl/xref/eqn-delta-bound.html ./knowl/xref/eqn-coer-a-1.html ./knowl/xref/eqn-coer-a-3.html" id="sec-fem-mc-det-4-6-1-8">
+\begin{align}
+\int_{\Omega} (\mathbf{b} \cdot \nabla v)\, v + \sigma v^2\, \mathrm{d}x 
+- \int_{\Gamma_-} (\mathbf{b} &amp;\cdot \mathbf{n})\, v^2 \, \mathrm{d}S\tag{1.5.15}\\
+&amp;= \int_{\Omega} \sigma v^2\, \mathrm{d}x 
++ \frac{1}{2}\int_{\partial\Omega} |\mathbf{b} \cdot \mathbf{n}|\, v^2 \, \mathrm{d}S\tag{1.5.16}\\
+&amp;\geq \mu\ltwo{v}^2 + \frac{1}{2}\int_{\partial\Omega} |\mathbf{b} \cdot \mathbf{n}|\, v^2 \, \mathrm{d}S.\tag{1.5.17}
+\end{align}
+</div>
+<div class="para">Now, we turn to the SUPG term. We have</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-a.html ./knowl/xref/eqn-greens.html ./knowl/xref/eqn-strong-bcs.html ./knowl/xref/eqn-youngs.html ./knowl/xref/eqn-delta-bound.html ./knowl/xref/eqn-coer-a-1.html ./knowl/xref/eqn-coer-a-3.html" id="sec-fem-mc-det-4-6-1-9">
+\begin{align}
+\sum_{K \in \mathscr{T}_h}
+\int_K
+\delta_K \, (\boldsymbol{b}\cdot\nabla v &amp;+ \sigma v)\,
+(\boldsymbol{b}\cdot\nabla v)\, \mathrm{d}x\tag{1.5.18}\\
+&amp;=
+\sum_{K \in \mathscr{T}_h} 
+\int_K
+\delta_K \, |\boldsymbol{b}\cdot\nabla v |^2\, \mathrm{d}x
++ \sum_{K \in \mathscr{T}_h} \int_K \delta_K \sigma v\, (\mathbf{b} \cdot \nabla v)\, dx\tag{1.5.19}\\
+&amp;=
+\sum_{K \in \mathscr{T}_h} \delta_K \|\mathbf{b} \cdot \nabla v\|_{L^2(K)}^2
++ \sum_{K \in \mathscr{T}_h} \int_K \delta_K \sigma v\, (\mathbf{b} \cdot \nabla v)\, dx\tag{1.5.20}
+\end{align}
+</div>
+<div class="para">The second term is indefinite, and we bound its contribution with Young’s inequality<a href="sec-fem-mc-prelim.html#eqn-youngs" class="xref" data-knowl="./knowl/xref/eqn-youngs.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.3.6">(1.3.6)</a>
+</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-a.html ./knowl/xref/eqn-greens.html ./knowl/xref/eqn-strong-bcs.html ./knowl/xref/eqn-youngs.html ./knowl/xref/eqn-delta-bound.html ./knowl/xref/eqn-coer-a-1.html ./knowl/xref/eqn-coer-a-3.html" id="sec-fem-mc-det-4-6-1-11">
+\begin{equation}
+\left| \int_K \delta_K \sigma v\, (\mathbf{b} \cdot \nabla v)\, dx\right|
+\leq
+\frac{1}{2}\,\delta_K \|\mathbf{b} \cdot \nabla v\|_{L^2(K)}^2
++ \frac{1}{2}\,\delta_K \linf{\sigma}^2 \|v\|_{L^2(K)}^2.\tag{1.5.21}
+\end{equation}
+</div>
+<div class="para">Thus, the SUPG Term is bounded below by</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-a.html ./knowl/xref/eqn-greens.html ./knowl/xref/eqn-strong-bcs.html ./knowl/xref/eqn-youngs.html ./knowl/xref/eqn-delta-bound.html ./knowl/xref/eqn-coer-a-1.html ./knowl/xref/eqn-coer-a-3.html" id="sec-fem-mc-det-4-6-1-12">
+\begin{align}
+\sum_{K \in \mathscr{T}_h}
+\int_K
+\delta_K \, (\boldsymbol{b}\cdot\nabla v &amp;+ \sigma v)\,
+(\boldsymbol{b}\cdot\nabla v)\, \mathrm{d}x\tag{1.5.22}\\
+&amp;\geq 
+\sum_{K \in \mathscr{T}_h} \delta_K \|\mathbf{b} \cdot \nabla v\|_{L^2(K)}^2
+-
+\sum_{K \in \mathscr{T}_h}
+\frac{1}{2}\,\delta_K \|\mathbf{b} \cdot \nabla v\|_{L^2(K)}^2\tag{1.5.23}\\
+&amp;\qquad \qquad - 
+\sum_{K \in \mathscr{T}_h}
+\frac{1}{2}\,\delta_K \linf{\sigma}^2 \|v\|_{L^2(K)}^2\tag{1.5.24}\\
+&amp;=
+\frac{1}{2}
+\sum_{K \in \mathscr{T}_h}
+\delta_K \|\mathbf{b} \cdot \nabla v\|_{L^2(K)}^2 
+- 
+\frac{1}{2}
+\sum_{K \in \mathscr{T}_h}
+\delta_K \linf{\sigma}^2 \|v\|_{L^2(K)}^2.\tag{1.5.25}
+\end{align}
+</div>
+<div class="para">By<a href="sec-fem-mc-variation.html#eqn-delta-bound" class="xref" data-knowl="./knowl/xref/eqn-delta-bound.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.4.4">(1.4.4)</a>, we have <span class="process-math">\(\delta_K \leq \mu/\linf{\sigma}^2\text{.}\)</span> Thus,</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-a.html ./knowl/xref/eqn-greens.html ./knowl/xref/eqn-strong-bcs.html ./knowl/xref/eqn-youngs.html ./knowl/xref/eqn-delta-bound.html ./knowl/xref/eqn-coer-a-1.html ./knowl/xref/eqn-coer-a-3.html" id="sec-fem-mc-det-4-6-1-15">
+\begin{align}
+\sum_{K \in \mathscr{T}_h}
+\int_K
+\delta_K \, (\boldsymbol{b}\cdot\nabla v &amp;+ \sigma v)\,
+(\boldsymbol{b}\cdot\nabla v)\, \mathrm{d}x\tag{1.5.26}\\
+&amp;\geq 
+\frac{1}{2}
+\sum_{K \in \mathscr{T}_h}
+\delta_K \|\mathbf{b} \cdot \nabla v\|_{L^2(K)}^2 
+- 
+\frac{\mu}{2}\ltwo{v}^2\tag{1.5.27}
+\end{align}
+</div>
+<div class="para">Adding<a href="sec-fem-mc-det.html#sec-fem-mc-det-4-6-1-8" class="xref" data-knowl="./knowl/xref/eqn-coer-a-1.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.5.17">(1.5.17)</a> and<a href="sec-fem-mc-det.html#sec-fem-mc-det-4-6-1-15" class="xref" data-knowl="./knowl/xref/eqn-coer-a-3.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.5.27">(1.5.27)</a>, we have</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-a.html ./knowl/xref/eqn-greens.html ./knowl/xref/eqn-strong-bcs.html ./knowl/xref/eqn-youngs.html ./knowl/xref/eqn-delta-bound.html ./knowl/xref/eqn-coer-a-1.html ./knowl/xref/eqn-coer-a-3.html" id="sec-fem-mc-det-4-6-1-18">
+\begin{align}
+a(v, v) 
+&amp;\geq \frac{\mu}{2} \|v\|_{L^2(\Omega)}^2
++ \frac{1}{2} \sum_K \delta_K \|\mathbf{b} \cdot \nabla v\|_{L^2(K)}^2
++ \frac{1}{2} \| |\mathbf{b} \cdot \mathbf{n}|^{1/2} v\|_{L^2(\partial\Omega)}^2\tag{1.5.28}\\
+&amp;\geq \frac{1}{2} \enorm{v}^2.\tag{1.5.29}
+\end{align}
+</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#sec-fem-mc-det-4-6-1" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Proof 1.5.3.2"><a href="#sec-fem-mc-det-4-6" title="Copy heading and permalink for Proof 1.5.3.2" aria-label="Copy heading and permalink for Proof 1.5.3.2">🔗</a></div>
+</article></details>
+<article class="lemma theorem-like" id="lem-a-cont"><h4 class="heading">
+<span class="type">Lemma</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="codenumber">1.5.3</span><span class="period heading-divison-mark heading-divison-mark__period">.</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="title">Continuity of <span class="process-math">\(a(\cdot,\cdot)\)</span>.</span>
+</h4>
+<div class="para logical" id="lem-a-cont-2-1">
+<div class="para">For all <span class="process-math">\(w,v\in V_h\)</span> we have that</div>
+<div class="displaymath process-math" id="eqn-a-cont">
+\begin{equation}
+a(w,v) \leq C_a \snorm{w} \enorm{v},\tag{1.5.30}
+\end{equation}
+</div>
+<div class="para">where <span class="process-math">\(C_a = 5 + \linf{\sigma}/\mu\text{.}\)</span>
+</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#lem-a-cont-2-1" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Lemma 1.5.3: Continuity of a(\cdot,\cdot)"><a href="#lem-a-cont" title="Copy heading and permalink for Lemma 1.5.3: Continuity of a(\cdot,\cdot)" aria-label="Copy heading and permalink for Lemma 1.5.3: Continuity of a(\cdot,\cdot)">🔗</a></div>
+</article>
+<details id="sec-fem-mc-det-4-8" class="hiddenproof born-hidden-knowl"><summary class="knowl__link"><h4 class="heading"><span class="type">Proof<span class="period heading-divison-mark heading-divison-mark__period">.</span></span></h4></summary>
+<article class="hiddenproof knowl__content">
+<div class="para logical" id="sec-fem-mc-det-4-8-1">
+<div class="para">We bound every term of<a href="sec-fem-mc-variation.html#eqn-a" class="xref" data-knowl="./knowl/xref/eqn-a.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.4.5">(1.4.5)</a> in the form of<a href="sec-fem-mc-det.html#eqn-a-cont" class="xref" data-knowl="./knowl/xref/eqn-a-cont.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.5.30">(1.5.30)</a>. Beginning with the convection term, we apply Green’s formula</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-a.html ./knowl/xref/eqn-a-cont.html ./knowl/xref/eqn-a-cont-01.html ./knowl/xref/eqn-a-cont-01.html ./knowl/xref/eqn-supg-continuity.html ./knowl/xref/eqn-supg-continuity.html ./knowl/xref/eqn-a-cont-1.html ./knowl/xref/eqn-a-cont-2.html ./knowl/xref/eqn-a-cont-3.html ./knowl/xref/eqn-a-cont-4.html ./knowl/xref/eqn-a-cont-5.html" id="eqn-a-cont-01">
+\begin{equation}
+\int_\Omega (\mathbf{b}\cdot \nabla w)\,v\,\mathrm{d}x
+=
+\int_{\partial\Omega} (\mathbf{b}\cdot\mathbf{n})\,wv\,\mathrm{d}S
+-
+\int_\Omega (\mathbf{b}\cdot \nabla v)\,w\,\mathrm{d}x.\tag{1.5.31}
+\end{equation}
+</div>
+<div class="para">We bound the first term in<a href="sec-fem-mc-det.html#eqn-a-cont-01" class="xref" data-knowl="./knowl/xref/eqn-a-cont-01.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.5.31">(1.5.31)</a> as</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-a.html ./knowl/xref/eqn-a-cont.html ./knowl/xref/eqn-a-cont-01.html ./knowl/xref/eqn-a-cont-01.html ./knowl/xref/eqn-supg-continuity.html ./knowl/xref/eqn-supg-continuity.html ./knowl/xref/eqn-a-cont-1.html ./knowl/xref/eqn-a-cont-2.html ./knowl/xref/eqn-a-cont-3.html ./knowl/xref/eqn-a-cont-4.html ./knowl/xref/eqn-a-cont-5.html" id="sec-fem-mc-det-4-8-1-5">
+\begin{align}
+\left|
+\int_{\partial\Omega} (\mathbf{b}\cdot\mathbf{n})\,wv\,\mathrm{d}S
+\right|
+&amp;\leq
+\int_{\partial\Omega} 
+|\mathbf{b}\cdot\mathbf{n}|\,|w||v|\,
+\mathrm{d}S\\tag{1.5.32}\\
+&amp;\leq
+\left|\int_{\partial\Omega} 
+|\mathbf{b}\cdot\mathbf{n}|
+\,w^2\,\mathrm{d}S\right|^{1/2}
+\left|\int_{\partial\Omega} 
+|\mathbf{b}\cdot\mathbf{n}|
+\,v^2\,\mathrm{d}S\right|^{1/2}\tag{1.5.33}\\
+&amp;\leq
+\enorm{w}
+\enorm{v}\tag{1.5.34}\\
+&amp;\leq
+\snorm{w}
+\enorm{v}.\tag{1.5.35}
+\end{align}
+</div>
+<div class="para">The second term in<a href="sec-fem-mc-det.html#eqn-a-cont-01" class="xref" data-knowl="./knowl/xref/eqn-a-cont-01.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.5.31">(1.5.31)</a> is bounded as</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-a.html ./knowl/xref/eqn-a-cont.html ./knowl/xref/eqn-a-cont-01.html ./knowl/xref/eqn-a-cont-01.html ./knowl/xref/eqn-supg-continuity.html ./knowl/xref/eqn-supg-continuity.html ./knowl/xref/eqn-a-cont-1.html ./knowl/xref/eqn-a-cont-2.html ./knowl/xref/eqn-a-cont-3.html ./knowl/xref/eqn-a-cont-4.html ./knowl/xref/eqn-a-cont-5.html" id="sec-fem-mc-det-4-8-1-7">
+\begin{align}
+\left|
+\int_\Omega (\mathbf{b}\cdot \nabla v)\,w\,\mathrm{d}x
+\right|
+&amp;\leq
+\sum_{K \in \mathscr{T}_h}
+\left|\int_K (\mathbf{b}\cdot \nabla v)\,w\,\mathrm{d}x\right|\tag{1.5.36}\\
+&amp;\leq
+\sum_{K \in \mathscr{T}_h}
+\ltwok{\mathbf{b}\cdot \nabla v} \ltwok{w}\tag{1.5.37}\\
+&amp;\leq            
+\sum_{K \in \mathscr{T}_h}
+\delta_K^{1/2}\ltwok{\mathbf{b}\cdot \nabla v} 
+\delta_K^{-1/2}\ltwok{w}\tag{1.5.38}\\
+&amp;\leq
+\left(\sum_{K \in \mathscr{T}_h}
+\delta_K \ltwok{\mathbf{b}\cdot \nabla v}^2 \right)^{1/2}
+\left(\sum_{K \in \mathscr{T}_h}
+\delta_K^{-1} \ltwok{w}^2\right)^{1/2}\tag{1.5.39}\\
+&amp;\leq
+\enorm{v}\snorm{w}.\tag{1.5.40}
+\end{align}
+</div>
+<div class="para">Thus, the convection term is bounded as</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-a.html ./knowl/xref/eqn-a-cont.html ./knowl/xref/eqn-a-cont-01.html ./knowl/xref/eqn-a-cont-01.html ./knowl/xref/eqn-supg-continuity.html ./knowl/xref/eqn-supg-continuity.html ./knowl/xref/eqn-a-cont-1.html ./knowl/xref/eqn-a-cont-2.html ./knowl/xref/eqn-a-cont-3.html ./knowl/xref/eqn-a-cont-4.html ./knowl/xref/eqn-a-cont-5.html" id="eqn-a-cont-1">
+\begin{equation}
+\left|\int_\Omega (\mathbf{b}\cdot \nabla w)\,v\,\mathrm{d}x\right|
+\leq
+2\snorm{w}\enorm{v}.\tag{1.5.41}
+\end{equation}
+</div>
+<div class="para">The reaction term is bounded by</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-a.html ./knowl/xref/eqn-a-cont.html ./knowl/xref/eqn-a-cont-01.html ./knowl/xref/eqn-a-cont-01.html ./knowl/xref/eqn-supg-continuity.html ./knowl/xref/eqn-supg-continuity.html ./knowl/xref/eqn-a-cont-1.html ./knowl/xref/eqn-a-cont-2.html ./knowl/xref/eqn-a-cont-3.html ./knowl/xref/eqn-a-cont-4.html ./knowl/xref/eqn-a-cont-5.html" id="sec-fem-mc-det-4-8-1-9">
+\begin{align}
+\label{eqn:a-cont-2}
+\left| \int_{\Omega} \sigma v w \, dx \right|
+&amp;\leq \linf{\sigma} \|w\|_{L^2} \|v\|_{L^2}\tag{1.5.42}\\
+&amp;\leq \frac{\linf{\sigma}}{\mu}\snorm{w}\enorm{v}.\tag{1.5.43}
+\end{align}
+</div>
+<div class="para">The inflow boundary term is bounded by</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-a.html ./knowl/xref/eqn-a-cont.html ./knowl/xref/eqn-a-cont-01.html ./knowl/xref/eqn-a-cont-01.html ./knowl/xref/eqn-supg-continuity.html ./knowl/xref/eqn-supg-continuity.html ./knowl/xref/eqn-a-cont-1.html ./knowl/xref/eqn-a-cont-2.html ./knowl/xref/eqn-a-cont-3.html ./knowl/xref/eqn-a-cont-4.html ./knowl/xref/eqn-a-cont-5.html" id="sec-fem-mc-det-4-8-1-10">
+\begin{align}
+\left| \int_{\Gamma_-} (\mathbf{b} \cdot \mathbf{n}) \, w v \, \mathrm{d}S \right|
+&amp;\leq 
+\int_{\Gamma_-} 
+|\mathbf{b} \cdot \mathbf{n}|
+\, |w| |v| \, \mathrm{d}S\tag{1.5.44}\\
+&amp;\leq
+\left(
+\int_{\Gamma_-} |\mathbf{b}\cdot\mathbf{n}|\,w^2\,\mathrm{d}S
+\right)^{1/2}
+\left(
+\int_{\Gamma_-} |\mathbf{b}\cdot\mathbf{n}|\,v^2\,\mathrm{d}S
+\right)^{1/2}\tag{1.5.45}\\
+&amp;\leq
+\left(
+\int_{\partial\Omega} |\mathbf{b}\cdot\mathbf{n}|\,w^2\,\mathrm{d}S
+\right)^{1/2}
+\left(
+\int_{\partial\Omega} |\mathbf{b}\cdot\mathbf{n}|\,v^2\,\mathrm{d}S
+\right)^{1/2}\tag{1.5.46}\\
+&amp;\leq
+\enorm{w}
+\enorm{v}\tag{1.5.47}\\
+&amp;\leq
+\snorm{w}
+\enorm{v}\tag{1.5.48}
+\end{align}
+</div>
+<div class="para">For the SUPG term, we have</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-a.html ./knowl/xref/eqn-a-cont.html ./knowl/xref/eqn-a-cont-01.html ./knowl/xref/eqn-a-cont-01.html ./knowl/xref/eqn-supg-continuity.html ./knowl/xref/eqn-supg-continuity.html ./knowl/xref/eqn-a-cont-1.html ./knowl/xref/eqn-a-cont-2.html ./knowl/xref/eqn-a-cont-3.html ./knowl/xref/eqn-a-cont-4.html ./knowl/xref/eqn-a-cont-5.html" id="sec-fem-mc-det-4-8-1-11">
+\begin{align}
+\sum_{K \in \mathscr{T}_h}
+\int_K
+\delta_K \, (\boldsymbol{b}\cdot\nabla w &amp;+ \sigma w)\,
+(\boldsymbol{b}\cdot\nabla v)\, \mathrm{d}x\tag{1.5.49}\\
+&amp;=
+\sum_{K \in \mathscr{T}_h}
+\int_K
+\delta_K \, (\boldsymbol{b}\cdot\nabla w)\,
+(\boldsymbol{b}\cdot\nabla v)\, \mathrm{d}x\tag{1.5.50}\\
+&amp; \qquad\qquad+
+\sum_{K \in \mathscr{T}_h}
+\int_K
+\delta_K \, \sigma w\,
+(\boldsymbol{b}\cdot\nabla v)\, \mathrm{d}x.\tag{1.5.51}
+\end{align}
+</div>
+<div class="para">We bound the first RHS term of<a href="sec-fem-mc-det.html#sec-fem-mc-det-4-8-1-11" class="xref" data-knowl="./knowl/xref/eqn-supg-continuity.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.5.51">(1.5.51)</a> as</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-a.html ./knowl/xref/eqn-a-cont.html ./knowl/xref/eqn-a-cont-01.html ./knowl/xref/eqn-a-cont-01.html ./knowl/xref/eqn-supg-continuity.html ./knowl/xref/eqn-supg-continuity.html ./knowl/xref/eqn-a-cont-1.html ./knowl/xref/eqn-a-cont-2.html ./knowl/xref/eqn-a-cont-3.html ./knowl/xref/eqn-a-cont-4.html ./knowl/xref/eqn-a-cont-5.html" id="sec-fem-mc-det-4-8-1-13">
+\begin{align}
+&amp;\left|\sum_{K \in \mathscr{T}_h}            
+\int_K\delta_K  
+(\boldsymbol{b}\cdot\nabla w)\,(\boldsymbol{b}\cdot\nabla v)\, \mathrm{d}x
+\right|\tag{1.5.52}\\
+&amp;\qquad\qquad\leq
+\left(\sum_{K \in \mathscr{T}_h}
+\delta_K \ltwok{\mathbf{b}\cdot \nabla w}^2 \right)^{1/2}
+\left(\sum_{K \in \mathscr{T}_h}
+\delta_K \ltwok{\mathbf{b}\cdot \nabla v}^2 \right)^{1/2}\tag{1.5.53}\\
+&amp;\qquad\qquad\leq
+\snorm{w}\enorm{v}\tag{1.5.54}
+\end{align}
+</div>
+<div class="para">we bound the second term in<a href="sec-fem-mc-det.html#sec-fem-mc-det-4-8-1-11" class="xref" data-knowl="./knowl/xref/eqn-supg-continuity.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.5.51">(1.5.51)</a> as</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-a.html ./knowl/xref/eqn-a-cont.html ./knowl/xref/eqn-a-cont-01.html ./knowl/xref/eqn-a-cont-01.html ./knowl/xref/eqn-supg-continuity.html ./knowl/xref/eqn-supg-continuity.html ./knowl/xref/eqn-a-cont-1.html ./knowl/xref/eqn-a-cont-2.html ./knowl/xref/eqn-a-cont-3.html ./knowl/xref/eqn-a-cont-4.html ./knowl/xref/eqn-a-cont-5.html" id="sec-fem-mc-det-4-8-1-15">
+\begin{align}
+\left|\sum_{K \in \mathscr{T}_h}
+\int_K
+\delta_K \, \sigma w\,
+(\boldsymbol{b}\cdot\nabla v)\, \mathrm{d}x\right|
+&amp;\leq
+\linf{\sigma}
+\sum_{K \in \mathscr{T}_h}
+\delta_K
+\ltwok{w}\ltwok{\mathbf{b}\cdot\nabla v}\tag{1.5.55}\\
+&amp;\leq
+\linf{\sigma}
+\left(
+\sum_{K \in \mathscr{T}_h}
+\delta_K
+\ltwok{w}^2
+\right)^{1/2}
+\left(
+\sum_{K \in \mathscr{T}_h}
+\delta_K
+\ltwok{\mathbf{b}\cdot\nabla v}^2
+\right)^{1/2}\tag{1.5.56}\\
+&amp;\leq
+\linf{\sigma}
+\delta_\text{max}^{1/2} 
+\ltwo{w}
+\enorm{v}\tag{1.5.57}\\
+&amp;\leq
+\linf{\sigma}
+\delta_\text{max}^{1/2}
+\frac{1}{\mu^{1/2}}
+\snorm{w}
+\enorm{v}\tag{1.5.58}\\
+&amp;\leq
+\snorm{w}
+\enorm{v}\tag{1.5.59}
+\end{align}
+</div>
+<div class="para">Adding together<a href="sec-fem-mc-det.html#eqn-a-cont-1" class="xref" data-knowl="./knowl/xref/eqn-a-cont-1.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.5.41">(1.5.41)</a>,<a href="sec-fem-mc-det.html#sec-fem-mc-det-4-8-1-9" class="xref" data-knowl="./knowl/xref/eqn-a-cont-2.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.5.43">(1.5.43)</a>,<a href="sec-fem-mc-det.html#sec-fem-mc-det-4-8-1-10" class="xref" data-knowl="./knowl/xref/eqn-a-cont-3.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.5.48">(1.5.48)</a>,<a href="sec-fem-mc-det.html#sec-fem-mc-det-4-8-1-13" class="xref" data-knowl="./knowl/xref/eqn-a-cont-4.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.5.54">(1.5.54)</a> and<a href="sec-fem-mc-det.html#sec-fem-mc-det-4-8-1-15" class="xref" data-knowl="./knowl/xref/eqn-a-cont-5.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.5.59">(1.5.59)</a>, we have</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-a.html ./knowl/xref/eqn-a-cont.html ./knowl/xref/eqn-a-cont-01.html ./knowl/xref/eqn-a-cont-01.html ./knowl/xref/eqn-supg-continuity.html ./knowl/xref/eqn-supg-continuity.html ./knowl/xref/eqn-a-cont-1.html ./knowl/xref/eqn-a-cont-2.html ./knowl/xref/eqn-a-cont-3.html ./knowl/xref/eqn-a-cont-4.html ./knowl/xref/eqn-a-cont-5.html" id="sec-fem-mc-det-4-8-1-21">
+\begin{equation}
+a(w,v) 
+\leq
+\left(5 + \frac{\linf{\sigma}}{\mu}\right)
+\snorm{w}
+\enorm{v}\tag{1.5.60}
+\end{equation}
+</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#sec-fem-mc-det-4-8-1" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Proof 1.5.3.3"><a href="#sec-fem-mc-det-4-8" title="Copy heading and permalink for Proof 1.5.3.3" aria-label="Copy heading and permalink for Proof 1.5.3.3">🔗</a></div>
+</article></details>
+<article class="lemma theorem-like" id="lem-bound-big-s"><h4 class="heading">
+<span class="type">Lemma</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="codenumber">1.5.4</span><span class="period heading-divison-mark heading-divison-mark__period">.</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="title">Boundedness of <span class="process-math">\(\mathcal{S}\)</span>.</span>
+</h4>
+<div class="para logical" id="lem-bound-big-s-2-1">
+<div class="para">For all <span class="process-math">\(v\in H^1(\Omega)\)</span> we have that</div>
+<div class="displaymath process-math" id="lem-bound-big-s-2-1-2">
+\begin{equation}
+\ltwo{\mathcal{S}v} \leq \linf{\sigma_T}\|\mathcal{K}\|_{L^2(\Omega\times\Omega)} \ltwo{v},\tag{1.5.61}
+\end{equation}
+</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#lem-bound-big-s-2-1" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Lemma 1.5.4: Boundedness of \mathcal{S}"><a href="#lem-bound-big-s" title="Copy heading and permalink for Lemma 1.5.4: Boundedness of \mathcal{S}" aria-label="Copy heading and permalink for Lemma 1.5.4: Boundedness of \mathcal{S}">🔗</a></div>
+</article>
+<details id="sec-fem-mc-det-4-10" class="hiddenproof born-hidden-knowl"><summary class="knowl__link"><h4 class="heading"><span class="type">Proof<span class="period heading-divison-mark heading-divison-mark__period">.</span></span></h4></summary>
+<article class="hiddenproof knowl__content">
+<div class="para logical" id="sec-fem-mc-det-4-10-1">
+<div class="para">By Cauchy-Schwarz, we have</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-def-big-s.html" id="sec-fem-mc-det-4-10-1-1">
+\begin{equation}
+\left| \int_{\Omega} \mathcal{K}(x,y) v(y)\, \mathrm{d}y \right|^2
+\leq
+\left( \int_{\Omega} |\mathcal{K}(x,y)|^2 \, \mathrm{d}y \right) \|v\|_{L^2}^2.\tag{1.5.62}
+\end{equation}
+</div>
+<div class="para">Thus, by definition of <span class="process-math">\(\mathcal{S}\)</span><a href="sec-fem-mc-variation.html#eqn-def-big-s" class="xref" data-knowl="./knowl/xref/eqn-def-big-s.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.4.2">(1.4.2)</a>,</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-def-big-s.html" id="sec-fem-mc-det-4-10-1-4">
+\begin{align}
+\ltwo{\mathcal{S}v} 
+&amp;= \ltwo{\sigma_T(x)\int_\Omega \mathcal{K}(x,y) v(y)\mathrm{d}y}\\
+&amp;\leq
+\linf{\sigma_T} 
+\left(
+\int_\Omega 
+\left| \int_{\Omega} \mathcal{K}(x,y) v(y)\, \mathrm{d}y \right|^2
+\mathrm{d}x
+\right)^{1/2}\tag{1.5.63}\\
+&amp;=
+\linf{\sigma_T} 
+\left(
+\int_\Omega 
+\int_\Omega 
+\left| \mathcal{K}(x,y) \right|^2
+\mathrm{d}x
+\mathrm{d}y
+\right)^{1/2}
+\,\ltwo{v}\tag{1.5.64}\\
+&amp;= 
+\linf{\sigma_T}\|\mathcal{K}\|_{L^2(\Omega\times\Omega)}
+\ltwo{v}.\tag{1.5.65}
+\end{align}
+</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#sec-fem-mc-det-4-10-1" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Proof 1.5.3.4"><a href="#sec-fem-mc-det-4-10" title="Copy heading and permalink for Proof 1.5.3.4" aria-label="Copy heading and permalink for Proof 1.5.3.4">🔗</a></div>
+</article></details>
+<article class="lemma theorem-like" id="lem-s-cont"><h4 class="heading">
+<span class="type">Lemma</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="codenumber">1.5.5</span><span class="period heading-divison-mark heading-divison-mark__period">.</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="title">Continuity of <span class="process-math">\(s(\cdot,\cdot)\)</span>.</span>
+</h4>
+<div class="para logical" id="lem-s-cont-2-1">
+<div class="para">For all <span class="process-math">\(w,v\in V_h\)</span> we have that</div>
+<div class="displaymath process-math" id="lem-s-cont-2-1-2">
+\begin{equation}
+s(w,v) \leq \tilde{C}_s \ltwo{w} \enorm{v},\tag{1.5.66}
+\end{equation}
+</div>
+<div class="para">and thus (by relation of norms),</div>
+<div class="displaymath process-math" id="lem-s-cont-2-1-3">
+\begin{equation}
+s(w,v) \leq C_s \enorm{w} \enorm{v}.\tag{1.5.67}
+\end{equation}
+</div>
+<div class="para">where</div>
+<div class="displaymath process-math" id="lem-s-cont-2-1-4">
+\begin{equation}
+C_s = \frac{1}{\mu^{1/2}}\tilde{C}_s = \linf{\sigma_T}\ldouble{\mathcal{K}}\frac{1}{\mu}\left(1 + \mu^{1/2}\delta_\text{max}^{1/2}\right)\tag{1.5.68}
+\end{equation}
+</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#lem-s-cont-2-1" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Lemma 1.5.5: Continuity of s(\cdot,\cdot)"><a href="#lem-s-cont" title="Copy heading and permalink for Lemma 1.5.5: Continuity of s(\cdot,\cdot)" aria-label="Copy heading and permalink for Lemma 1.5.5: Continuity of s(\cdot,\cdot)">🔗</a></div>
+</article>
+<details id="sec-fem-mc-det-4-12" class="hiddenproof born-hidden-knowl"><summary class="knowl__link"><h4 class="heading"><span class="type">Proof<span class="period heading-divison-mark heading-divison-mark__period">.</span></span></h4></summary>
+<article class="hiddenproof knowl__content">
+<div class="para logical" id="sec-fem-mc-det-4-12-1">
+<div class="para">We have</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/lem-bound-big-s.html ./knowl/xref/eqn-delta-bound.html" id="sec-fem-mc-det-4-12-1-1">
+\begin{align}
+s(w,v) 
+&amp;=
+\int_{\Omega} (\mathcal{S}w)\, v \, \mathrm{d}x
++ \sum_{K \in \mathscr{T}_h}
+\int_K \delta_K (\mathcal{S}w)\,(\boldsymbol{b}\cdot\nabla v)\, \mathrm{d}x \tag{1.5.69}\\
+&amp;\leq
+\ltwo{\mathcal{S}w}\ltwo{v}
++
+\sum_{K \in \mathscr{T}_h}
+\delta_K
+\ltwok{\mathcal{S}w}\ltwok{\mathbf{b}\cdot\nabla v}\tag{1.5.70}\\
+&amp;\leq
+\ltwo{\mathcal{S}w}
+\ltwo{v} 
++ 
+\delta_\text{max}^{1/2}
+\ltwo{\mathcal{S}w}
+\left(
+\sum_{K \in \mathscr{T}_h}
+\delta_K
+\ltwok{\mathbf{b}\cdot\nabla v}^2
+\right)^{1/2}\tag{1.5.71}\\
+&amp;\leq
+\ltwo{\mathcal{S}w}
+\ltwo{v} 
++
+\delta_\text{max}^{1/2}
+\ltwo{\mathcal{S}w}
+\enorm{v}\tag{1.5.72}\\
+&amp;\leq
+\ltwo{\mathcal{S}w}
+\left(
+\frac{1}{\mu^{1/2}} + \delta_\text{max}^{1/2}
+\right)\enorm{v}\\
+\text{by Lemma \knowl{./knowl/xref/lem-bound-big-s.html}{\text{Lemma 1.5.4}}, }\tag{1.5.73}\\
+&amp;\leq
+\linf{\sigma_T}\|\mathcal{K}\|_{L^2(\Omega\times\Omega)}
+\left(
+\frac{1}{\mu^{1/2}} + \delta_\text{max}^{1/2}
+\right)\ltwo{w}\enorm{v}\tag{1.5.74}\\
+&amp;\leq
+\linf{\sigma_T}\|\mathcal{K}\|_{L^2(\Omega\times\Omega)}
+\left(
+\frac{1}{\mu^{1/2}} + \delta_\text{max}^{1/2}
+\right)
+\frac{1}{\mu^{1/2}}
+\enorm{w}\enorm{v}.\tag{1.5.75}
+\end{align}
+</div>
+<div class="para">Using<a href="sec-fem-mc-variation.html#eqn-delta-bound" class="xref" data-knowl="./knowl/xref/eqn-delta-bound.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.4.4">(1.4.4)</a>, we take</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/lem-bound-big-s.html ./knowl/xref/eqn-delta-bound.html" id="sec-fem-mc-det-4-12-1-3">
+\begin{align}
+\tilde{C}_s &amp;= \linf{\sigma_T}\|\mathcal{K}\|_{L^2(\Omega\times\Omega)}
+\left(
+\frac{1}{\mu^{1/2}} + \delta_\text{max}^{1/2}
+\right)\tag{1.5.76}\\
+C_s &amp;= \frac{1}{\mu^{1/2}}\tilde{C}_s\tag{1.5.77}
+\end{align}
+</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#sec-fem-mc-det-4-12-1" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Proof 1.5.3.5"><a href="#sec-fem-mc-det-4-12" title="Copy heading and permalink for Proof 1.5.3.5" aria-label="Copy heading and permalink for Proof 1.5.3.5">🔗</a></div>
+</article></details>
+<article class="corollary theorem-like" id="cor-a-s-coer"><h4 class="heading">
+<span class="type">Corollary</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="codenumber">1.5.6</span><span class="period heading-divison-mark heading-divison-mark__period">.</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="title">Coercivity of <span class="process-math">\(a-s\)</span>.</span>
+</h4>
+<div class="para logical" id="cor-a-s-coer-2-1">
+<div class="para">Suppose</div>
+<div class="displaymath process-math" id="eqn-a-s-coer-1">
+\begin{equation}
+\label{eqn:a-s-coer-1}
+C_s
+\leq
+\frac{1}{2}.\tag{1.5.78}
+\end{equation}
+</div>
+<div class="para">Then the bilinear form <span class="process-math">\(a-s\)</span> is coercive. That is, there exists an <span class="process-math">\(\alpha&gt;0\)</span> such that for all <span class="process-math">\(v\in V_h\)</span>
+</div>
+<div class="displaymath process-math" id="cor-a-s-coer-2-1-5">
+\begin{equation}
+a(v,v) - s(v,v) \geq \alpha \enorm{v}^2.\tag{1.5.79}
+\end{equation}
+</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#cor-a-s-coer-2-1" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Corollary 1.5.6: Coercivity of a-s"><a href="#cor-a-s-coer" title="Copy heading and permalink for Corollary 1.5.6: Coercivity of a-s" aria-label="Copy heading and permalink for Corollary 1.5.6: Coercivity of a-s">🔗</a></div>
+</article>
+<details id="sec-fem-mc-det-4-14" class="hiddenproof born-hidden-knowl"><summary class="knowl__link"><h4 class="heading"><span class="type">Proof<span class="period heading-divison-mark heading-divison-mark__period">.</span></span></h4></summary>
+<article class="hiddenproof knowl__content">
+<div class="para logical" id="sec-fem-mc-det-4-14-1">
+<div class="para">By <a href="sec-fem-mc-det.html#lem-a-coer" class="xref" data-knowl="./knowl/xref/lem-a-coer.html" data-reveal-label="Reveal" data-close-label="Close" title="Lemma 1.5.2: Coercivity of a(\cdot,\cdot)">Lemma 1.5.2</a> and <a href="sec-fem-mc-det.html#lem-s-cont" class="xref" data-knowl="./knowl/xref/lem-s-cont.html" data-reveal-label="Reveal" data-close-label="Close" title="Lemma 1.5.5: Continuity of s(\cdot,\cdot)">Lemma 1.5.5</a>, we have</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/lem-a-coer.html ./knowl/xref/lem-s-cont.html ./knowl/xref/eqn-a-s-coer-1.html" id="sec-fem-mc-det-4-14-1-3">
+\begin{equation}
+a(v,v)-s(v,v) 
+\geq
+\frac{1}{2}\enorm{v}^2 - C_s\enorm{v}\enorm{v}.\tag{1.5.80}
+\end{equation}
+</div>
+<div class="para">By the assumption<a href="sec-fem-mc-det.html#eqn-a-s-coer-1" class="xref" data-knowl="./knowl/xref/eqn-a-s-coer-1.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.5.78">(1.5.78)</a>, we have</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/lem-a-coer.html ./knowl/xref/lem-s-cont.html ./knowl/xref/eqn-a-s-coer-1.html" id="sec-fem-mc-det-4-14-1-5">
+\begin{equation}
+C_s \leq \frac{1}{2}.\tag{1.5.81}
+\end{equation}
+</div>
+<div class="para">Therefore, taking <span class="process-math">\(\alpha = 1/2 - C_s\text{,}\)</span>
+</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/lem-a-coer.html ./knowl/xref/lem-s-cont.html ./knowl/xref/eqn-a-s-coer-1.html" id="sec-fem-mc-det-4-14-1-7">
+\begin{equation}
+a(v,v) - s(v,v) \geq \alpha \enorm{v}^2.\tag{1.5.82}
+\end{equation}
+</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#sec-fem-mc-det-4-14-1" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Proof 1.5.3.6"><a href="#sec-fem-mc-det-4-14" title="Copy heading and permalink for Proof 1.5.3.6" aria-label="Copy heading and permalink for Proof 1.5.3.6">🔗</a></div>
+</article></details>
+<article class="corollary theorem-like" id="cor-a-s-cont"><h4 class="heading">
+<span class="type">Corollary</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="codenumber">1.5.7</span><span class="period heading-divison-mark heading-divison-mark__period">.</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="title">Continuity of <span class="process-math">\(a-s\)</span>.</span>
+</h4>
+<div class="para logical" id="cor-a-s-cont-2-1">
+<div class="para">For all <span class="process-math">\(w,v\in V_h\text{,}\)</span> we have that</div>
+<div class="displaymath process-math" id="cor-a-s-cont-2-1-2">
+\begin{equation}
+a(w,v) - s(w,v) \leq C_A \snorm{w}\enorm{v},\tag{1.5.83}
+\end{equation}
+</div>
+<div class="para">where <span class="process-math">\(C_A = C_a + C_s\text{.}\)</span>
+</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#cor-a-s-cont-2-1" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Corollary 1.5.7: Continuity of a-s"><a href="#cor-a-s-cont" title="Copy heading and permalink for Corollary 1.5.7: Continuity of a-s" aria-label="Copy heading and permalink for Corollary 1.5.7: Continuity of a-s">🔗</a></div>
+</article>
+<details id="sec-fem-mc-det-4-16" class="hiddenproof born-hidden-knowl"><summary class="knowl__link"><h4 class="heading"><span class="type">Proof<span class="period heading-divison-mark heading-divison-mark__period">.</span></span></h4></summary>
+<article class="hiddenproof knowl__content">
+<div class="para logical" id="sec-fem-mc-det-4-16-1">
+<div class="para">By <a href="sec-fem-mc-det.html#lem-s-cont" class="xref" data-knowl="./knowl/xref/lem-s-cont.html" data-reveal-label="Reveal" data-close-label="Close" title="Lemma 1.5.5: Continuity of s(\cdot,\cdot)">Lemma 1.5.5</a> and <a href="sec-fem-mc-det.html#lem-a-cont" class="xref" data-knowl="./knowl/xref/lem-a-cont.html" data-reveal-label="Reveal" data-close-label="Close" title="Lemma 1.5.3: Continuity of a(\cdot,\cdot)">Lemma 1.5.3</a>, we have</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/lem-s-cont.html ./knowl/xref/lem-a-cont.html" id="sec-fem-mc-det-4-16-1-3">
+\begin{equation}
+a(w,v) - s(w,v) \leq C_a \snorm{w}\enorm{v} + C_s\enorm{w}\enorm{v} \leq (C_a + C_s)\snorm{w}\enorm{v}.\tag{1.5.84}
+\end{equation}
+</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#sec-fem-mc-det-4-16-1" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Proof 1.5.3.7"><a href="#sec-fem-mc-det-4-16" title="Copy heading and permalink for Proof 1.5.3.7" aria-label="Copy heading and permalink for Proof 1.5.3.7">🔗</a></div>
+</article></details>
+<article class="theorem theorem-like" id="thm-well-posed"><h4 class="heading">
+<span class="type">Theorem</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="codenumber">1.5.8</span><span class="period heading-divison-mark heading-divison-mark__period">.</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="title">Well-posedness.</span>
+</h4>
+<div class="para logical" id="thm-well-posed-2-1">
+<div class="para">Let <span class="process-math">\(g\in H^{1/2}(\partial\Omega)\)</span> with an extension <span class="process-math">\(\hat{g}\in H^1(\Omega)\)</span> such that <span class="process-math">\(\hat{g}|_{\partial\Omega} = g\text{.}\)</span> Then the variational problem of finding <span class="process-math">\(u\in H^1(\Omega)\)</span> such that <span class="process-math">\(u = g\)</span> on <span class="process-math">\(\Gamma_-\)</span> and</div>
+<div class="displaymath process-math" id="eqn-lax-2">
+\begin{equation}
+a(u,v) - s(u,v) = l(v) \qquad \forall v\in H_0^1(\Omega)\tag{1.5.85}
+\end{equation}
+</div>
+<div class="para">has a unique solution.</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#thm-well-posed-2-1" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Theorem 1.5.8: Well-posedness"><a href="#thm-well-posed" title="Copy heading and permalink for Theorem 1.5.8: Well-posedness" aria-label="Copy heading and permalink for Theorem 1.5.8: Well-posedness">🔗</a></div>
+</article>
+<details id="sec-fem-mc-det-4-18" class="hiddenproof born-hidden-knowl"><summary class="knowl__link"><h4 class="heading"><span class="type">Proof<span class="period heading-divison-mark heading-divison-mark__period">.</span></span></h4></summary>
+<article class="hiddenproof knowl__content">
+<div class="para logical" id="sec-fem-mc-det-4-18-1">
+<div class="para">Define <span class="process-math">\(\tilde{u} = u - \hat{g}\in H_0^1(\Omega)\text{.}\)</span> We seek</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/cor-a-s-coer.html ./knowl/xref/cor-a-s-cont.html ./knowl/xref/eqn-lax-1.html ./knowl/xref/eqn-lax-2.html" id="eqn-lax-1">
+\begin{equation}
+\label{eqn:lax-1}
+a(\tilde{u},v) - s(\tilde{u},v) = \tilde{l}(v) \qquad \forall v\in H_0^1(\Omega)\tag{1.5.86}
+\end{equation}
+</div>
+<div class="para">where</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/cor-a-s-coer.html ./knowl/xref/cor-a-s-cont.html ./knowl/xref/eqn-lax-1.html ./knowl/xref/eqn-lax-2.html" id="sec-fem-mc-det-4-18-1-3">
+\begin{equation}
+\tilde{l}(v) = l(v) - a(\hat{g},v) + s(\hat{g}, v).\tag{1.5.87}
+\end{equation}
+</div>
+<div class="para">By <a href="sec-fem-mc-det.html#cor-a-s-coer" class="xref" data-knowl="./knowl/xref/cor-a-s-coer.html" data-reveal-label="Reveal" data-close-label="Close" title="Corollary 1.5.6: Coercivity of a-s">Corollary 1.5.6</a> and <a href="sec-fem-mc-det.html#cor-a-s-cont" class="xref" data-knowl="./knowl/xref/cor-a-s-cont.html" data-reveal-label="Reveal" data-close-label="Close" title="Corollary 1.5.7: Continuity of a-s">Corollary 1.5.7</a>, we have that <span class="process-math">\(a-s\)</span> is coercive and bounded. Moreover, <span class="process-math">\(\tilde{l}\)</span> is controlled by the SUPG-norm, with each term bounded since <span class="process-math">\(q\in L^2(\Omega)\)</span> and <span class="process-math">\(\hat{g}\in H^1(\Omega)\text{.}\)</span> Therefore, the Lax-Milgram theorem applies to give a unique <span class="process-math">\(\tilde{u}\)</span> solving<a href="sec-fem-mc-det.html#eqn-lax-1" class="xref" data-knowl="./knowl/xref/eqn-lax-1.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.5.86">(1.5.86)</a>, hence a unique <span class="process-math">\(u = \tilde{u}+\hat{g}\)</span> solving<a href="sec-fem-mc-det.html#eqn-lax-2" class="xref" data-knowl="./knowl/xref/eqn-lax-2.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.5.85">(1.5.85)</a>.</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#sec-fem-mc-det-4-18-1" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Proof 1.5.3.8"><a href="#sec-fem-mc-det-4-18" title="Copy heading and permalink for Proof 1.5.3.8" aria-label="Copy heading and permalink for Proof 1.5.3.8">🔗</a></div>
+</article></details><div class="autopermalink" data-description="Subsection 1.5.3: Well-Posedness and Key Properties"><a href="#sec-fem-mc-det-4" title="Copy heading and permalink for Subsection 1.5.3: Well-Posedness and Key Properties" aria-label="Copy heading and permalink for Subsection 1.5.3: Well-Posedness and Key Properties">🔗</a></div>
+</section>
+<section class="subsection" id="sec-fem-mc-fe-det">
+<h3 class="heading hide-type">
+<span class="type">Subsection</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="codenumber">1.5.4</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="title">Finite Element Error</span>
+</h3>
+<div class="para" id="sec-fem-mc-fe-det-2">We consider the first term in the triangle inequality in<a href="sec-fem-mc-variation.html#eqn-triangle-ineq" class="xref" data-knowl="./knowl/xref/eqn-triangle-ineq.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.4.10">(1.4.10)</a>. That is, we find an error estimate and convergence rate for the theoretical finite element solution <span class="process-math">\(u_h\in V_h\)</span> of<a href="sec-fem-mc-variation.html#eqn-fe-problem" class="xref" data-knowl="./knowl/xref/eqn-fe-problem.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.4.8">(1.4.8)</a>.<div class="autopermalink" data-description="Paragraph"><a href="#sec-fem-mc-fe-det-2" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<article class="theorem theorem-like" id="thm-best-approx"><h4 class="heading">
+<span class="type">Theorem</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="codenumber">1.5.9</span><span class="period heading-divison-mark heading-divison-mark__period">.</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="title">C\’{e}a-type best-approximation estimate.</span>
+</h4>
+<div class="para logical" id="thm-best-approx-2-1">
+<div class="para">Let <span class="process-math">\(u\in H^1_0\)</span> be a solution of<a href="sec-fem-mc-model.html#eqn-strong" class="xref" data-knowl="./knowl/xref/eqn-strong.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.2.1">(1.2.1)</a> with <span class="process-math">\(g=0\)</span> and let <span class="process-math">\(u_h\in V_h\)</span> be a solution of<a href="sec-fem-mc-variation.html#eqn-fe-problem" class="xref" data-knowl="./knowl/xref/eqn-fe-problem.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.4.8">(1.4.8)</a>. Then we have the following best approximation result:</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-strong.html ./knowl/xref/eqn-fe-problem.html" id="thm-best-approx-2-1-6">
+\begin{equation}
+\enorm{u - u_h}
+\leq 
+\left(1 + \frac{C_A}{\alpha}\right)
+\inf_{w_h \in V_h} 
+\snorm{u - w_h}.\tag{1.5.88}
+\end{equation}
+</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#thm-best-approx-2-1" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Theorem 1.5.9: C\’{e}a-type best-approximation estimate"><a href="#thm-best-approx" title="Copy heading and permalink for Theorem 1.5.9: C\’{e}a-type best-approximation estimate" aria-label="Copy heading and permalink for Theorem 1.5.9: C\’{e}a-type best-approximation estimate">🔗</a></div>
+</article>
+<details id="sec-fem-mc-fe-det-4" class="hiddenproof born-hidden-knowl"><summary class="knowl__link"><h4 class="heading"><span class="type">Proof<span class="period heading-divison-mark heading-divison-mark__period">.</span></span></h4></summary>
+<article class="hiddenproof knowl__content">
+<div class="para logical" id="sec-fem-mc-fe-det-4-1">
+<div class="para">Let <span class="process-math">\(w_h\in V_h\)</span> be arbitrary, we split the error as</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/cor-a-s-coer.html ./knowl/xref/cor-a-s-cont.html ./knowl/xref/eqn-best-appro-1.html" id="eqn-best-appro-1">
+\begin{equation}
+\label{eqn:best-appro-1}
+u - u_h
+= (u - w_h)
++ \underbrace{(w_h - u_h)}_{\phi_h \in V_h}.\tag{1.5.89}
+\end{equation}
+</div>
+<div class="para">Applying coercivity to <span class="process-math">\(A = a-s\)</span> (<a href="sec-fem-mc-det.html#cor-a-s-coer" class="xref" data-knowl="./knowl/xref/cor-a-s-coer.html" data-reveal-label="Reveal" data-close-label="Close" title="Corollary 1.5.6: Coercivity of a-s">Corollary 1.5.6</a>), we have</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/cor-a-s-coer.html ./knowl/xref/cor-a-s-cont.html ./knowl/xref/eqn-best-appro-1.html" id="sec-fem-mc-fe-det-4-1-5">
+\begin{equation}
+\alpha \enorm{\phi_h}^2
+\leq
+A(\phi_h, \phi_h) = A(w_h-u_h, \phi_h).\tag{1.5.90}
+\end{equation}
+</div>
+<div class="para">We insert the exact solution <span class="process-math">\(u\)</span> into the first slot,</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/cor-a-s-coer.html ./knowl/xref/cor-a-s-cont.html ./knowl/xref/eqn-best-appro-1.html" id="sec-fem-mc-fe-det-4-1-7">
+\begin{align}
+A(w_h-u_h, \phi_h)
+&amp;=
+A(w_h-u + u-u_h, \phi_h)\tag{1.5.91}\\
+&amp;=
+A(w_h-u, \phi_h) + A(u-u_h, \phi_h)\tag{1.5.92}\\
+&amp;=
+A(w_h-u, \phi_h),\tag{1.5.93}
+\end{align}
+</div>
+<div class="para">where the last equality is due to Galerkin orthogonality. By continuity (<a href="sec-fem-mc-det.html#cor-a-s-cont" class="xref" data-knowl="./knowl/xref/cor-a-s-cont.html" data-reveal-label="Reveal" data-close-label="Close" title="Corollary 1.5.7: Continuity of a-s">Corollary 1.5.7</a>), we have</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/cor-a-s-coer.html ./knowl/xref/cor-a-s-cont.html ./knowl/xref/eqn-best-appro-1.html" id="sec-fem-mc-fe-det-4-1-9">
+\begin{equation}
+\alpha \enorm{\phi_h}^2
+\leq
+A(w_h-u, \phi_h)
+\leq
+C_A\snorm{w_h - u} \enorm{\phi_h}.\tag{1.5.94}
+\end{equation}
+</div>
+<div class="para">Thus,</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/cor-a-s-coer.html ./knowl/xref/cor-a-s-cont.html ./knowl/xref/eqn-best-appro-1.html" id="sec-fem-mc-fe-det-4-1-10">
+\begin{equation}
+\enorm{\phi_h} \leq \frac{C_A}{\alpha}\snorm{w_h - u}.\tag{1.5.95}
+\end{equation}
+</div>
+<div class="para">Applying the triangle inequality to<a href="sec-fem-mc-det.html#eqn-best-appro-1" class="xref" data-knowl="./knowl/xref/eqn-best-appro-1.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.5.89">(1.5.89)</a>,</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/cor-a-s-coer.html ./knowl/xref/cor-a-s-cont.html ./knowl/xref/eqn-best-appro-1.html" id="sec-fem-mc-fe-det-4-1-12">
+\begin{align}
+\enorm{u-u_h}
+&amp;\leq
+\enorm{u - w_h}
++
+\enorm{\phi_h}\tag{1.5.96}\\
+&amp;\leq
+\snorm{u - w_h}
++
+\frac{C_A}{\alpha}\snorm{w_h - u}\tag{1.5.97}\\
+&amp;=
+\left(
+1 + \frac{C_A}{\alpha}
+\right)\snorm{w_h - u}.\tag{1.5.98}
+\end{align}
+</div>
+<div class="para">Taking the infimum over <span class="process-math">\(w_h\in V_h\text{,}\)</span> we have the result</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/cor-a-s-coer.html ./knowl/xref/cor-a-s-cont.html ./knowl/xref/eqn-best-appro-1.html" id="sec-fem-mc-fe-det-4-1-14">
+\begin{equation}
+\enorm{u - u_h}
+\leq 
+\left(1 + \frac{C_A}{\alpha}\right)
+\inf_{w_h \in V_h} 
+\snorm{u - w_h}.\tag{1.5.99}
+\end{equation}
+</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#sec-fem-mc-fe-det-4-1" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Proof 1.5.4.1"><a href="#sec-fem-mc-fe-det-4" title="Copy heading and permalink for Proof 1.5.4.1" aria-label="Copy heading and permalink for Proof 1.5.4.1">🔗</a></div>
+</article></details>
+<article class="corollary theorem-like" id="cor-fe-conv-rate"><h4 class="heading">
+<span class="type">Corollary</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="codenumber">1.5.10</span><span class="period heading-divison-mark heading-divison-mark__period">.</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="title">Rates of Convergence.</span>
+</h4>
+<div class="para logical" id="cor-fe-conv-rate-2-1">
+<div class="para">Let <span class="process-math">\(k\geq 1\)</span> denote the piecewise polynomial degree of elements of <span class="process-math">\(V_h\text{.}\)</span> Suppose the exact solution <span class="process-math">\(u\in H_0^r(\Omega)\)</span> of<a href="sec-fem-mc-model.html#eqn-strong" class="xref" data-knowl="./knowl/xref/eqn-strong.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.2.1">(1.2.1)</a> is such that <span class="process-math">\(r\)</span> is sufficiently large for <span class="process-math">\(u\)</span> to belong to the domain of the Lagrange interpolation operator. Then, there exists a constant <span class="process-math">\(C\)</span> such that</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-strong.html" id="cor-fe-conv-rate-2-1-8">
+\begin{equation}
+\enorm{u-u_h} \leq C h^{\min\{k+1,r\} - 1/2} |u|_{H^r(\Omega)}.\tag{1.5.100}
+\end{equation}
+</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#cor-fe-conv-rate-2-1" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Corollary 1.5.10: Rates of Convergence"><a href="#cor-fe-conv-rate" title="Copy heading and permalink for Corollary 1.5.10: Rates of Convergence" aria-label="Copy heading and permalink for Corollary 1.5.10: Rates of Convergence">🔗</a></div>
+</article>
+<details id="sec-fem-mc-fe-det-6" class="hiddenproof born-hidden-knowl"><summary class="knowl__link"><h4 class="heading"><span class="type">Proof<span class="period heading-divison-mark heading-divison-mark__period">.</span></span></h4></summary>
+<article class="hiddenproof knowl__content">
+<div class="para logical" id="sec-fem-mc-fe-det-6-1">
+<div class="para">The proof follows that of~\cite{ashby2025nodally}, Corollary 3.5; we provide a brief overview. Denote by <span class="process-math">\(\mathcal{I}u\in V_h\)</span> the piecewise polynomial Lagrange interpolant of <span class="process-math">\(u\)</span> onto the finite element space <span class="process-math">\(V_h\text{.}\)</span> Taking <span class="process-math">\(v_h = \mathcal{I}u\)</span> in <a href="sec-fem-mc-det.html#thm-best-approx" class="xref" data-knowl="./knowl/xref/thm-best-approx.html" data-reveal-label="Reveal" data-close-label="Close" title="Theorem 1.5.9: C\’{e}a-type best-approximation estimate">Theorem 1.5.9</a>, we have</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/thm-best-approx.html ./knowl/xref/eqn-fe-conv-1.html" id="sec-fem-mc-fe-det-6-1-6">
+\begin{align}
+\enorm{u-u_h}^2
+&amp;\leq
+\snorm{u-\mathcal{I}u}^2 \tag{1.5.101}\\
+&amp;= \mu \ltwo{u-\mathcal{I}u}^2
++ \sum_{K\in\mathscr{T}} \delta_K \ltwok{\mathbf{b}\cdot\nabla (u-\mathcal{I}u)}^2\tag{1.5.102}\\
+&amp;\qquad \qquad + \||\mathbf{b}\cdot\mathbf{n}|^{1/2}(u-\mathcal{I}u)\|_{L^2(\partial\Omega)}^2
++ \sum_{K\in\mathscr{T}} \delta_K^{-1}\ltwok{u-\mathcal{I}u}^2.\tag{1.5.103}
+\end{align}
+</div>
+<div class="para">Each of these terms are bounded using standard interpolation estimates~\cite{ern2021finite}, which apply to norms over <span class="process-math">\(L^2(\Omega)\)</span> and <span class="process-math">\(L^2(K)\text{.}\)</span> The third term is first bounded by a trace estimate (see e.g.~\cite{evans2022partial}, Section 5.5) in terms of these norms. The following estimates combine to give<a href="sec-fem-mc-det.html#sec-fem-mc-fe-det-6-1-6" class="xref" data-knowl="./knowl/xref/eqn-fe-conv-1.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.5.103">(1.5.103)</a>:</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/thm-best-approx.html ./knowl/xref/eqn-fe-conv-1.html" id="sec-fem-mc-fe-det-6-1-10">
+\begin{equation}
+\|u - \mathcal{I}u\|_{L^2(\Omega)} \leq C_I \, h_K^r \, |u|_{H^r(\Omega)},\tag{1.5.104}
+\end{equation}
+</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/thm-best-approx.html ./knowl/xref/eqn-fe-conv-1.html" id="sec-fem-mc-fe-det-6-1-11">
+\begin{equation}
+\left\| \delta_K^{1/2} \, \mathbf{b} \cdot \nabla (u - \mathcal{I}u) \right\|_{L^2(K)}
+\leq C_I \, \|\mathbf{b}\|_{\infty,K} \, C_\delta^{1/2} \, h_K^{r - \tfrac{1}{2}} \, |u|_{H^r(\Omega)}, \tag{1.5.105}
+\end{equation}
+</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/thm-best-approx.html ./knowl/xref/eqn-fe-conv-1.html" id="sec-fem-mc-fe-det-6-1-12">
+\begin{align}
+\left\||\mathbf{b}\cdot\mathbf{n}|(u-\mathcal{I}u)\right\|_{L^2(\partial\Omega\cap K)}
+&amp;\leq C_{\mathrm{tr}} \left( h_K^{-1/2} \|u - Iu\|_{L^2(K)} + h_K^{1/2} \|\nabla (u - Iu)\|_{L^2(K)} \right)\tag{1.5.106}\\
+&amp;\leq 2 C_{\mathrm{tr}} C_I \, h_K^{r - \tfrac{1}{2}} \, |u|_{H^r(\Omega)},\tag{1.5.107}
+\end{align}
+</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/thm-best-approx.html ./knowl/xref/eqn-fe-conv-1.html" id="sec-fem-mc-fe-det-6-1-13">
+\begin{equation}
+\delta_K^{-1/2} \, \|u - \mathcal{I}u\|_{L^2(K)}
+\leq C_I \, C_\delta^{-1/2} \, h_K^{r - \tfrac{1}{2}} \, |u|_{H^r(\Omega)}.\tag{1.5.108}
+\end{equation}
+</div>
+<div class="para">where <span class="process-math">\(C_{\mathrm{tr}}\)</span> and <span class="process-math">\(C_\mathcal{I}\)</span> are constants for trace and interpolation estimates, respectively.</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#sec-fem-mc-fe-det-6-1" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Proof 1.5.4.2"><a href="#sec-fem-mc-fe-det-6" title="Copy heading and permalink for Proof 1.5.4.2" aria-label="Copy heading and permalink for Proof 1.5.4.2">🔗</a></div>
+</article></details><div class="autopermalink" data-description="Subsection 1.5.4: Finite Element Error"><a href="#sec-fem-mc-fe-det" title="Copy heading and permalink for Subsection 1.5.4: Finite Element Error" aria-label="Copy heading and permalink for Subsection 1.5.4: Finite Element Error">🔗</a></div>
+</section>
+<section class="subsection" id="sec-fem-mc-iter-det">
+<h3 class="heading hide-type">
+<span class="type">Subsection</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="codenumber">1.5.5</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="title">Fixed Point Error</span>
+</h3>
+<div class="para" id="sec-fem-mc-iter-det-2">Now, we turn to the second error term in the triangle inequality<a href="sec-fem-mc-variation.html#eqn-triangle-ineq" class="xref" data-knowl="./knowl/xref/eqn-triangle-ineq.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.4.10">(1.4.10)</a>. That is, we now derive a convergence rate for <span class="process-math">\(\enorm{u_h - u_h^{(n)}}\text{.}\)</span> In doing so, we also find a rate in the <span class="process-math">\(L^2(\Omega)\)</span>-norm.<div class="autopermalink" data-description="Paragraph"><a href="#sec-fem-mc-iter-det-2" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<article class="lemma theorem-like" id="lem-cont-mix"><h4 class="heading">
+<span class="type">Lemma</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="codenumber">1.5.11</span><span class="period heading-divison-mark heading-divison-mark__period">.</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="title">Contraction in mixed norms.</span>
+</h4>
+<div class="para logical" id="lem-cont-mix-2-1">
+<div class="para">Let <span class="process-math">\(u_h\in V_h\)</span> be the solution of the stationary finite element problem<a href="sec-fem-mc-variation.html#eqn-fe-problem" class="xref" data-knowl="./knowl/xref/eqn-fe-problem.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.4.8">(1.4.8)</a>. Take <span class="process-math">\(u_h^{(0)}\in V_h\)</span> and denote by <span class="process-math">\(\{u_h^{(n)}\}_{n\in\mathbb{N}_0}\)</span> the sequence of solutions to the iterative problem<a href="sec-fem-mc-variation.html#eqn-iter-problem" class="xref" data-knowl="./knowl/xref/eqn-iter-problem.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.4.9">(1.4.9)</a>. We have that, for all <span class="process-math">\(n\in \mathbb{N}_0\)</span>
+</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-fe-problem.html ./knowl/xref/eqn-iter-problem.html" id="lem-cont-mix-2-1-7">
+\begin{equation}
+\enorm{u_h-u_h^{(n)}} 
+\leq
+2\tilde{C}_s 
+\ltwo{u_h - u_h^{(n-1)}}.\tag{1.5.109}
+\end{equation}
+</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#lem-cont-mix-2-1" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Lemma 1.5.11: Contraction in mixed norms"><a href="#lem-cont-mix" title="Copy heading and permalink for Lemma 1.5.11: Contraction in mixed norms" aria-label="Copy heading and permalink for Lemma 1.5.11: Contraction in mixed norms">🔗</a></div>
+</article>
+<details id="sec-fem-mc-iter-det-4" class="hiddenproof born-hidden-knowl"><summary class="knowl__link"><h4 class="heading"><span class="type">Proof<span class="period heading-divison-mark heading-divison-mark__period">.</span></span></h4></summary>
+<article class="hiddenproof knowl__content">
+<div class="para logical" id="sec-fem-mc-iter-det-4-1">
+<div class="para">Let <span class="process-math">\(e = u_h - u_h^{(n)}\)</span> By coercivity of <span class="process-math">\(a(\cdot,\cdot)\)</span> (<a href="sec-fem-mc-det.html#lem-a-coer" class="xref" data-knowl="./knowl/xref/lem-a-coer.html" data-reveal-label="Reveal" data-close-label="Close" title="Lemma 1.5.2: Coercivity of a(\cdot,\cdot)">Lemma 1.5.2</a>),</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/lem-a-coer.html ./knowl/xref/lem-s-cont.html" id="sec-fem-mc-iter-det-4-1-4">
+\begin{align}
+\frac{1}{2}\enorm{e}^2
+&amp;\leq
+a(e,e)\tag{1.5.110}\\
+&amp;=
+a(u_h,e) - a(u_h^{(n)},e)\tag{1.5.111}\\
+&amp;=
+s(u_h,e) + l(e) - s(u_h^{(n-1)},e) - l(e)\tag{1.5.112}\\
+&amp;=
+s(u_h-u_h^{(n-1)},e)\tag{1.5.113}\\
+\text{by \knowl{./knowl/xref/lem-s-cont.html}{\text{Lemma 1.5.5}},}\tag{1.5.114}\\
+&amp;\leq
+\tilde{C}_s \ltwo{u_h-u_h^{(n-1)}}\enorm{e}.\tag{1.5.115}
+\end{align}
+</div>
+<div class="para">Thus,</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/lem-a-coer.html ./knowl/xref/lem-s-cont.html" id="sec-fem-mc-iter-det-4-1-5">
+\begin{equation}
+\enorm{e} 
+\leq
+2\tilde{C}_s 
+\ltwo{u_h - u_h^{(n-1)}}.\tag{1.5.116}
+\end{equation}
+</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#sec-fem-mc-iter-det-4-1" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Proof 1.5.5.1"><a href="#sec-fem-mc-iter-det-4" title="Copy heading and permalink for Proof 1.5.5.1" aria-label="Copy heading and permalink for Proof 1.5.5.1">🔗</a></div>
+</article></details>
+<article class="theorem theorem-like" id="thm-conv-l2"><h4 class="heading">
+<span class="type">Theorem</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="codenumber">1.5.12</span><span class="period heading-divison-mark heading-divison-mark__period">.</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="title">Convergence in <span class="process-math">\(L^2(\Omega)\)</span>-norm.</span>
+</h4>
+<div class="para logical" id="thm-conv-l2-2-1">
+<div class="para">Let <span class="process-math">\(u_h\in V_h\)</span> be the solution of the stationary finite element problem<a href="sec-fem-mc-variation.html#eqn-fe-problem" class="xref" data-knowl="./knowl/xref/eqn-fe-problem.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.4.8">(1.4.8)</a>. Take <span class="process-math">\(u_h^{(0)}\in V_h\)</span> and denote by <span class="process-math">\(\{u_h^{(n)}\}_{n\in\mathbb{N}_0}\)</span> the sequence of solutions to the iterative problem<a href="sec-fem-mc-variation.html#eqn-iter-problem" class="xref" data-knowl="./knowl/xref/eqn-iter-problem.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.4.9">(1.4.9)</a>. We have that, for all <span class="process-math">\(n\in \mathbb{N}_0\)</span>
+</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-fe-problem.html ./knowl/xref/eqn-iter-problem.html" id="eqn-conv-l2">
+\begin{equation}
+\label{eqn:conv-l2}
+\ltwo{u_h-u_h^{(n)}} 
+\leq
+\left(
+\frac{2\tilde{C}_s}{\mu^{1/2}}
+\right)^n
+\ltwo{u_h - u_h^{(0)}}.\tag{1.5.117}
+\end{equation}
+</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#thm-conv-l2-2-1" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Theorem 1.5.12: Convergence in L^2(\Omega)-norm"><a href="#thm-conv-l2" title="Copy heading and permalink for Theorem 1.5.12: Convergence in L^2(\Omega)-norm" aria-label="Copy heading and permalink for Theorem 1.5.12: Convergence in L^2(\Omega)-norm">🔗</a></div>
+</article>
+<details id="sec-fem-mc-iter-det-6" class="hiddenproof born-hidden-knowl"><summary class="knowl__link"><h4 class="heading"><span class="type">Proof<span class="period heading-divison-mark heading-divison-mark__period">.</span></span></h4></summary>
+<article class="hiddenproof knowl__content">
+<div class="para logical" id="sec-fem-mc-iter-det-6-1">
+<div class="para">By the relation of norms<a href="sec-fem-mc-det.html#eqn-rel-norms" class="xref" data-knowl="./knowl/xref/eqn-rel-norms.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.5.2">(1.5.2)</a>, we have</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-rel-norms.html ./knowl/xref/lem-cont-mix.html ./knowl/xref/eqn-cont-l2.html" id="sec-fem-mc-iter-det-6-1-2">
+\begin{equation}
+\ltwo{u_h-u_h^{(n)}} \leq \frac{1}{\mu^{1/2}}\enorm{u_h-u_h^{(n)} }.\tag{1.5.118}
+\end{equation}
+</div>
+<div class="para">Applying <a href="sec-fem-mc-det.html#lem-cont-mix" class="xref" data-knowl="./knowl/xref/lem-cont-mix.html" data-reveal-label="Reveal" data-close-label="Close" title="Lemma 1.5.11: Contraction in mixed norms">Lemma 1.5.11</a> gives</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-rel-norms.html ./knowl/xref/lem-cont-mix.html ./knowl/xref/eqn-cont-l2.html" id="eqn-cont-l2">
+\begin{equation}
+\label{eqn:cont-l2}
+\ltwo{u_h-u_h^{(n)}} 
+\leq
+\frac{2\tilde{C}_s}{\mu^{1/2}}
+\ltwo{u_h - u_h^{(n-1)}}.\tag{1.5.119}
+\end{equation}
+</div>
+<div class="para">Iterating<a href="sec-fem-mc-det.html#eqn-cont-l2" class="xref" data-knowl="./knowl/xref/eqn-cont-l2.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.5.119">(1.5.119)</a> yields the desired convergence result.</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#sec-fem-mc-iter-det-6-1" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Proof 1.5.5.2"><a href="#sec-fem-mc-iter-det-6" title="Copy heading and permalink for Proof 1.5.5.2" aria-label="Copy heading and permalink for Proof 1.5.5.2">🔗</a></div>
+</article></details>
+<article class="corollary theorem-like" id="cor-conv-supg"><h4 class="heading">
+<span class="type">Corollary</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="codenumber">1.5.13</span><span class="period heading-divison-mark heading-divison-mark__period">.</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="title">Convergence in SUPG-norm.</span>
+</h4>
+<div class="para logical" id="cor-conv-supg-2-1">
+<div class="para">Let <span class="process-math">\(u_h\in V_h\)</span> be the solution of the stationary finite element problem<a href="sec-fem-mc-variation.html#eqn-fe-problem" class="xref" data-knowl="./knowl/xref/eqn-fe-problem.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.4.8">(1.4.8)</a>. Take <span class="process-math">\(u_h^{(0)}\in V_h\)</span> and denote by <span class="process-math">\(\{u_h^{(n)}\}_{n\in\mathbb{N}_0}\)</span> the sequence of solutions to the iterative problem<a href="sec-fem-mc-variation.html#eqn-iter-problem" class="xref" data-knowl="./knowl/xref/eqn-iter-problem.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.4.9">(1.4.9)</a>. We have that, for all <span class="process-math">\(n\in \mathbb{N}_0\)</span>
+</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-fe-problem.html ./knowl/xref/eqn-iter-problem.html" id="cor-conv-supg-2-1-7">
+\begin{equation}
+\enorm{u_h-u_h^{(n)}} 
+\leq
+2\tilde{C}_s
+\left(
+\frac{2\tilde{C}_s}{\mu^{1/2}}
+\right)^{n-1}
+\ltwo{u_h - u_h^{(0)}}.\tag{1.5.120}
+\end{equation}
+</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#cor-conv-supg-2-1" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Corollary 1.5.13: Convergence in SUPG-norm"><a href="#cor-conv-supg" title="Copy heading and permalink for Corollary 1.5.13: Convergence in SUPG-norm" aria-label="Copy heading and permalink for Corollary 1.5.13: Convergence in SUPG-norm">🔗</a></div>
+</article>
+<details id="sec-fem-mc-iter-det-8" class="hiddenproof born-hidden-knowl"><summary class="knowl__link"><h4 class="heading"><span class="type">Proof<span class="period heading-divison-mark heading-divison-mark__period">.</span></span></h4></summary>
+<article class="hiddenproof knowl__content">
+<div class="para" id="sec-fem-mc-iter-det-8-1">The result follows from combining <a href="sec-fem-mc-det.html#lem-cont-mix" class="xref" data-knowl="./knowl/xref/lem-cont-mix.html" data-reveal-label="Reveal" data-close-label="Close" title="Lemma 1.5.11: Contraction in mixed norms">Lemma 1.5.11</a> and <a href="sec-fem-mc-det.html#thm-conv-l2" class="xref" data-knowl="./knowl/xref/thm-conv-l2.html" data-reveal-label="Reveal" data-close-label="Close" title="Theorem 1.5.12: Convergence in L^2(\Omega)-norm">Theorem 1.5.12</a>.<div class="autopermalink" data-description="Paragraph"><a href="#sec-fem-mc-iter-det-8-1" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Proof 1.5.5.3"><a href="#sec-fem-mc-iter-det-8" title="Copy heading and permalink for Proof 1.5.5.3" aria-label="Copy heading and permalink for Proof 1.5.5.3">🔗</a></div>
+</article></details><div class="autopermalink" data-description="Subsection 1.5.5: Fixed Point Error"><a href="#sec-fem-mc-iter-det" title="Copy heading and permalink for Subsection 1.5.5: Fixed Point Error" aria-label="Copy heading and permalink for Subsection 1.5.5: Fixed Point Error">🔗</a></div>
+</section>
+<section class="subsection" id="sec-fem-mc-combined-det">
+<h3 class="heading hide-type">
+<span class="type">Subsection</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="codenumber">1.5.6</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="title">Combined Error Estimate</span>
+</h3>
+<div class="para" id="sec-fem-mc-combined-det-2">We can now populate the triangle inequality for iterative solution error originally proposed in<a href="sec-fem-mc-variation.html#eqn-triangle-ineq" class="xref" data-knowl="./knowl/xref/eqn-triangle-ineq.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.4.10">(1.4.10)</a>.<div class="autopermalink" data-description="Paragraph"><a href="#sec-fem-mc-combined-det-2" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<article class="theorem theorem-like" id="thm-det"><h4 class="heading">
+<span class="type">Theorem</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="codenumber">1.5.14</span><span class="period heading-divison-mark heading-divison-mark__period">.</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="title">Error Estimate in the Deterministic Setting.</span>
+</h4>
+<div class="para logical" id="thm-det-2-1">
+<div class="para">Let <span class="process-math">\(u\)</span> be the solution of<a href="sec-fem-mc-model.html#eqn-strong" class="xref" data-knowl="./knowl/xref/eqn-strong.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.2.1">(1.2.1)</a> and suppose <span class="process-math">\(u_h\in V_h\)</span> is the solution of the stationary finite element problem<a href="sec-fem-mc-variation.html#eqn-fe-problem" class="xref" data-knowl="./knowl/xref/eqn-fe-problem.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.4.8">(1.4.8)</a>. Take <span class="process-math">\(u_h^{(0)}\in V_h\)</span> and denote by <span class="process-math">\(\{u_h^{(n)}\}_{n\in\mathbb{N}_0}\)</span> the sequence of solutions to the iterative problem<a href="sec-fem-mc-variation.html#eqn-iter-problem" class="xref" data-knowl="./knowl/xref/eqn-iter-problem.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.4.9">(1.4.9)</a>. We have that, for all <span class="process-math">\(n\in \mathbb{N}_0\)</span>
+</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/eqn-strong.html ./knowl/xref/eqn-fe-problem.html ./knowl/xref/eqn-iter-problem.html" id="thm-det-2-1-9">
+\begin{equation}
+\enorm{u-u_h^{(n)}}
+\leq
+C h^{\min\{k+1,r\} - 1/2} |u|_{H^r(\Omega)}
++
+2\tilde{C}_s
+\left(
+\frac{2\tilde{C}_s}{\mu^{1/2}}
+\right)^{n-1}
+\ltwo{u_h - u_h^{(0)}}.\tag{1.5.121}
+\end{equation}
+</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#thm-det-2-1" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Theorem 1.5.14: Error Estimate in the Deterministic Setting"><a href="#thm-det" title="Copy heading and permalink for Theorem 1.5.14: Error Estimate in the Deterministic Setting" aria-label="Copy heading and permalink for Theorem 1.5.14: Error Estimate in the Deterministic Setting">🔗</a></div>
+</article>
+<details id="sec-fem-mc-combined-det-4" class="hiddenproof born-hidden-knowl"><summary class="knowl__link"><h4 class="heading"><span class="type">Proof<span class="period heading-divison-mark heading-divison-mark__period">.</span></span></h4></summary>
+<article class="hiddenproof knowl__content">
+<div class="para logical" id="sec-fem-mc-combined-det-4-1">
+<div class="para">By the triangle inequality,</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/cor-conv-supg.html ./knowl/xref/cor-fe-conv-rate.html" id="sec-fem-mc-combined-det-4-1-1">
+\begin{equation}
+\enorm{u-u_h^{(n)}}
+\leq
+\enorm{u-u_h}
++
+\enorm{u_h-u_h^{(n)}},\tag{1.5.122}
+\end{equation}
+</div>
+<div class="para">and the result follows from applying <a href="sec-fem-mc-det.html#cor-conv-supg" class="xref" data-knowl="./knowl/xref/cor-conv-supg.html" data-reveal-label="Reveal" data-close-label="Close" title="Corollary 1.5.13: Convergence in SUPG-norm">Corollary 1.5.13</a> and <a href="sec-fem-mc-det.html#cor-fe-conv-rate" class="xref" data-knowl="./knowl/xref/cor-fe-conv-rate.html" data-reveal-label="Reveal" data-close-label="Close" title="Corollary 1.5.10: Rates of Convergence">Corollary 1.5.10</a>.</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#sec-fem-mc-combined-det-4-1" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Proof 1.5.6.1"><a href="#sec-fem-mc-combined-det-4" title="Copy heading and permalink for Proof 1.5.6.1" aria-label="Copy heading and permalink for Proof 1.5.6.1">🔗</a></div>
+</article></details><div class="autopermalink" data-description="Subsection 1.5.6: Combined Error Estimate"><a href="#sec-fem-mc-combined-det" title="Copy heading and permalink for Subsection 1.5.6: Combined Error Estimate" aria-label="Copy heading and permalink for Subsection 1.5.6: Combined Error Estimate">🔗</a></div>
+</section>
+<section class="subsection" id="sec-fem-mc-det-8">
+<h3 class="heading hide-type">
+<span class="type">Subsection</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="codenumber">1.5.7</span><span class="space heading-divison-mark heading-divison-mark__space"> </span><span class="title">Discussion</span>
+</h3>
+<div class="para" id="sec-fem-mc-det-8-2">The analysis above identifies two key constraints on the parameters of the problem.<div class="autopermalink" data-description="Paragraph"><a href="#sec-fem-mc-det-8-2" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="para logical" id="sec-fem-mc-det-8-3">
+<div class="para">First, the combined coercivity result for <span class="process-math">\(a - s\)</span> (<a href="sec-fem-mc-det.html#cor-a-s-coer" class="xref" data-knowl="./knowl/xref/cor-a-s-coer.html" data-reveal-label="Reveal" data-close-label="Close" title="Corollary 1.5.6: Coercivity of a-s">Corollary 1.5.6</a>) and the contraction rate for source iteration (<a href="sec-fem-mc-det.html#thm-conv-l2" class="xref" data-knowl="./knowl/xref/thm-conv-l2.html" data-reveal-label="Reveal" data-close-label="Close" title="Theorem 1.5.12: Convergence in L^2(\Omega)-norm">Theorem 1.5.12</a> and <a href="sec-fem-mc-det.html#cor-conv-supg" class="xref" data-knowl="./knowl/xref/cor-conv-supg.html" data-reveal-label="Reveal" data-close-label="Close" title="Corollary 1.5.13: Convergence in SUPG-norm">Corollary 1.5.13</a>) both rely on the single constraint</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/cor-a-s-coer.html ./knowl/xref/thm-conv-l2.html ./knowl/xref/cor-conv-supg.html" id="eqn-cs-condition">
+\begin{equation}
+\label{eqn:Cs-condition}
+C_s = \frac{\linf{\sigma_T}\,\ldouble{\mathcal{K}}}{\mu}
+\left(1 + (\mu\,\delta_{\max})^{1/2}\right)
+\;\leq\; \tfrac{1}{2}.\tag{1.5.123}
+\end{equation}
+</div>
+<div class="para">This is a subcriticality condition on the scattering operator: it requires the scattering cross section <span class="process-math">\(\sigma_T\text{,}\)</span> kernel mass <span class="process-math">\(\ldouble{\mathcal{K}}\text{,}\)</span> and stabilisation parameter <span class="process-math">\(\delta_{\max}\)</span> to be small relative to the positivity constant <span class="process-math">\(\mu\text{.}\)</span> Physically, this refers to absorption effects sufficiently dominating over scattering.</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#sec-fem-mc-det-8-3" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="para logical" id="sec-fem-mc-det-8-4">
+<div class="para">Second, the coercivity proof for <span class="process-math">\(a\)</span> (<a href="sec-fem-mc-det.html#lem-a-coer" class="xref" data-knowl="./knowl/xref/lem-a-coer.html" data-reveal-label="Reveal" data-close-label="Close" title="Lemma 1.5.2: Coercivity of a(\cdot,\cdot)">Lemma 1.5.2</a>) requires</div>
+<div class="displaymath process-math" data-contains-math-knowls="./knowl/xref/lem-a-coer.html ./knowl/xref/eqn-delta-condition.html" id="eqn-delta-condition">
+\begin{equation}
+\label{eqn:delta-condition}
+\delta_{\max} \;\leq\; \frac{\mu}{\linf{\sigma}^2},\tag{1.5.124}
+\end{equation}
+</div>
+<div class="para">which prevents the indefinite SUPG cross term <span class="process-math">\(\delta_K \sigma v\,(\mathbf{b}\cdot\nabla v)\)</span> from overwhelming the streamline diffusion contribution. The standard SUPG scaling <span class="process-math">\(\delta_K = h_K\)</span> used in our numerical experiments satisfies<a href="sec-fem-mc-det.html#eqn-delta-condition" class="xref" data-knowl="./knowl/xref/eqn-delta-condition.html" data-reveal-label="Reveal" data-close-label="Close" title="Equation 1.5.124">(1.5.124)</a> for sufficiently fine meshes, namely <span class="process-math">\(h \leq \mu/\linf{\sigma}^2\text{.}\)</span>
+</div>
+<div class="autopermalink" data-description="Paragraph"><a href="#sec-fem-mc-det-8-4" title="Copy heading and permalink for Paragraph" aria-label="Copy heading and permalink for Paragraph">🔗</a></div>
+</div>
+<div class="autopermalink" data-description="Subsection 1.5.7: Discussion"><a href="#sec-fem-mc-det-8" title="Copy heading and permalink for Subsection 1.5.7: Discussion" aria-label="Copy heading and permalink for Subsection 1.5.7: Discussion">🔗</a></div>
+</section><div class="autopermalink" data-description="Section 1.5: Deterministic Analysis"><a href="#sec-fem-mc-det" title="Copy heading and permalink for Section 1.5: Deterministic Analysis" aria-label="Copy heading and permalink for Section 1.5: Deterministic Analysis">🔗</a></div>
+</section>
+</div>
+<div id="ptx-content-footer" class="ptx-content-footer">
+<a class="previous-button button" href="sec-fem-mc-variation.html" title="Previous"><span class="icon material-symbols-outlined" aria-hidden="true">&#xe5cb;</span><span class="name">Prev</span></a><a class="top-button button" href="#" title="Top"><span class="icon material-symbols-outlined" aria-hidden="true">&#xe5ce;</span><span class="name">Top</span></a><a class="next-button button" href="sec-fem-mc-sto.html" title="Next"><span class="name">Next</span><span class="icon material-symbols-outlined" aria-hidden="true">&#xe5cc;</span></a>
+</div></main>
+</div>
+<div id="ptx-page-footer" class="ptx-page-footer">
+<a class="pretext-link" href="https://pretextbook.org" title="PreTeXt"><div class="logo"><svg xmlns="http://www.w3.org/2000/svg" height="100%" viewBox="338 3000 8772 6866" role="img"><title>PreTeXt logo</title><g style="stroke-width:.025in; stroke:currentColor; fill:none"><polyline points="472,3590 472,9732 " style="stroke-width:174; stroke-linejoin:miter; stroke-linecap:round; "></polyline><path style="stroke-width:126;stroke-linecap:butt;" d="M 4724,9448 A 4660 4660  0  0  1  8598  9259"></path><path style="stroke-width:174;stroke-linecap:butt;" d="M 4488,9685 A 4228 4228  0  0  0   472  9732"></path><path style="stroke-width:126;stroke-linecap:butt;" d="M 4724,3590 A 4241 4241  0  0  1  8598  3496"></path><path style="stroke-width:126;stroke-linecap:round;" d="M 850,3496  A 4241 4241  0  0  1  4724  3590"></path><path style="stroke-width:126;stroke-linecap:round;" d="M 850,9259  A 4507 4507  0  0  1  4724  9448"></path><polyline points="5385,4299 4062,8125" style="stroke-width:300; stroke-linejoin:miter; stroke-linecap:round;"></polyline><polyline points="8598,3496 8598,9259" style="stroke-width:126; stroke-linejoin:miter; stroke-linecap:round;"></polyline><polyline points="850,3496 850,9259" style="stroke-width:126; stroke-linejoin:miter; stroke-linecap:round;"></polyline><polyline points="4960,9685 4488,9685" style="stroke-width:174; stroke-linejoin:miter; stroke-linecap:round;"></polyline><polyline points="3070,4582 1889,6141 3070,7700" style="stroke-width:300; stroke-linejoin:miter; stroke-linecap:round;"></polyline><polyline points="6418,4582 7600,6141 6418,7700" style="stroke-width:300; stroke-linejoin:miter; stroke-linecap:round;"></polyline><polyline points="8976,3590 8976,9732" style="stroke-width:174; stroke-linejoin:miter; stroke-linecap:round;"></polyline><path style="stroke-width:174;stroke-linecap:butt;" d="M 4960,9685 A 4228 4228  0  0  1  8976  9732"></path></g></svg></div></a><a class="runestone-link" href="https://runestone.academy" title="Runestone Academy"><img class="logo" src="https://runestone.academy/runestone/static/images/RAIcon_cropped.png" alt="Runstone Academy logo"></a><a class="mathjax-link" href="https://www.mathjax.org" title="MathJax"><img class="logo" src="https://www.mathjax.org/badge/badge-square-2.png" alt="MathJax logo"></a>
+</div>
+</body>
+</html>
